@@ -1,0 +1,109 @@
+{
+  "coffees": [
+    {
+      "id": "1",
+      "name": "Cappuccino",
+      "bean": "Arabica",
+      "milk": "Cow Milk",
+      "calories": 120,
+      "price": 180,
+      "rating": 4.5,
+      "benefits": "Rich flavor, improves focus"
+    },
+    {
+      "id": "2",
+      "name": "Americano",
+      "bean": "Robusta",
+      "milk": "No Milk",
+      "calories": 15,
+      "price": 150,
+      "rating": 4.2,
+      "benefits": "Low calories, boosts metabolism"
+    },
+    {
+      "id": "3",
+      "name": "Latte",
+      "bean": "Arabica",
+      "milk": "Almond Milk",
+      "calories": 90,
+      "price": 200,
+      "rating": 4.6,
+      "benefits": "Creamy texture, dairy-free"
+    }
+  ],
+  "snacks": [
+    {
+      "id": "1",
+      "name": "Butter Croissant",
+      "type": "French",
+      "twist": "Classic",
+      "calories": 250,
+      "price": 120,
+      "rating": 4.4
+    },
+    {
+      "id": "2",
+      "name": "Masala Croissant",
+      "type": "French-Indian Fusion",
+      "twist": "Spiced Potato Filling",
+      "calories": 280,
+      "price": 140,
+      "rating": 4.7
+    },
+    {
+      "id": "3",
+      "name": "Paneer Bagel",
+      "type": "Bagel",
+      "twist": "Indian Cottage Cheese",
+      "calories": 300,
+      "price": 160,
+      "rating": 4.5
+    }
+  ],
+  "milkVariants": [
+    {
+      "id": "1",
+      "name": "Cow Milk"
+    },
+    {
+      "id": "2",
+      "name": "Camel Milk"
+    },
+    {
+      "id": "3",
+      "name": "Almond Milk"
+    },
+    {
+      "id": "4",
+      "name": "Coconut Milk"
+    }
+  ],
+  "beans": [
+    {
+      "id": "1",
+      "name": "Arabica"
+    },
+    {
+      "id": "2",
+      "name": "Robusta"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "fname": "Athila",
+      "lname": "uv",
+      "email": "athila@gmail.com",
+      "password": "123456",
+      "role": "customer"
+    },
+    {
+      "id": "f9fb",
+      "fname": "knn",
+      "lname": "knk",
+      "email": "adhilahussainar@gmail.com",
+      "password": "111111",
+      "role": "customer"
+    }
+  ]
+}
