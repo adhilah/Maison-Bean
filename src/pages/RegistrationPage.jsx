@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,8 @@ const RegistrationPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [valid, setValid] = useState(true);
+
+  const navigate=useNavigate()
 
   // --------------------------------validation-------------------------------------------------------------------------------------------------------------------
 
@@ -69,7 +72,7 @@ const RegistrationPage = () => {
         .then((result) => {
           alert("Registered Successfully! Welcome " + formData.fname);
           console.log("User added:", result.data);
-
+          navigate('/login ')
           setFormData({
             fname: "",
             lname: "",

@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ function Login() {
 
   const [errors, setErrors] = useState({});
   const [valid, setValid] = useState(true);
+  const navigate=useNavigate();
 
   // --------------------------------validation-------------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +61,7 @@ function Login() {
 
           if (userFound && passwordCorrect) {
             alert("Login successfully");
+            navigate("/home")
             setFormData({
               email: "",
               password: "",

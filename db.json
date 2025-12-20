@@ -104,6 +104,22 @@
       "email": "adhilahussainar@gmail.com",
       "password": "111111",
       "role": "customer"
+    },
+    {
+      "id": "41ba",
+      "fname": "Adil",
+      "lname": "Shinas",
+      "email": "adil@gmail.com",
+      "password": "adil@123",
+      "role": "customer"
+    },
+    {
+      "id": "7e21",
+      "fname": "adhila",
+      "lname": "hussainar",
+      "email": "adhila@gmail.com",
+      "password": "111111",
+      "role": "customer"
     }
   ]
 }
