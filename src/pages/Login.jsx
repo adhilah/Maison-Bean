@@ -38,11 +38,10 @@ function Login() {
       validationErrors.password = "password length at least 6 character";
     }
 
-    // ============= ADD THIS: Set errors for FORM VALIDATION =============
     setErrors(validationErrors);
     setValid(isvalid);
 
-    // ============= Only proceed with API call if form is valid =============
+// ====================================================================================
     if (isvalid) {
       axios
         .get("http://localhost:3000/users")

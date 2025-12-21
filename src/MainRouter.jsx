@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import HeroSection from './components/heroSection'
 import Wishlist from './components/Wishlist'
 import Cart from './components/cart'
+// import ProductCard from './components/ProductCard'
+// import ProductCard from './components/ProductCard'
 
 
 function MainRouter() {
@@ -20,6 +22,9 @@ function MainRouter() {
             <Route path="/herosection" element={<HeroSection />} />
             <Route path='/registration' element={<RegistrationPage />} />
             <Route path='/login' element={<Login />} />
+            {/* <Route path='/product' element={<ProductCard />}/> */}
+
+      
         </Routes>
     </div>
   )
