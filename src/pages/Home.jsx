@@ -3,8 +3,9 @@ import Navbar from '../components/Navbar'
 import HeroSection from '../components/heroSection'
 import ProductCategories from '../components/ProductCategories'
 import Footer from '../components/Footer'
-import ProductCard from '../components/card'
-import FeaturedProductCard from '../components/FeaturedProduct'
+import Card from '../components/Card'
+// import ProductCard from '../components/card'
+// import FeaturedProductCard from '../components/FeaturedProduct'
 
 function Home() {
   return (
@@ -12,8 +13,10 @@ function Home() {
       <Navbar />
       <HeroSection />
       <ProductCategories />
-      <FeaturedProductCard />
-      <ProductCard />
+      
+      <Card />
+      {/* <FeaturedProductCard /> */}
+      {/* <ProductCard /> */}
       <Footer />
     </div>
   )

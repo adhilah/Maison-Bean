@@ -1,12 +1,12 @@
 import React from 'react';
-import coffeeVideo from '../assets/coffee-video1.mp4';
+// import coffeeVideo from '../assets/coffee-video1.mp4';
 
 const HeroSection = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video
+       <div className="absolute inset-0 z-0">
+        {/* <video 
           autoPlay
           loop
           muted
@@ -14,7 +14,10 @@ const HeroSection = () => {
           className="w-full h-full object-cover"
         >
           <source src={coffeeVideo} type="video/mp4" />
-        </video>
+        </video> */}
+
+        <img src='https://i.pinimg.com/736x/c6/1f/8f/c61f8f42ee089bee27de77f4a64cdbf6.jpg'
+        className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/50"></div>
       </div>
 

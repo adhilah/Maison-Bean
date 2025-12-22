@@ -1,286 +1,398 @@
 {
   "categories": [
-    { "id": 1, "name": "Hot Coffees", "slug": "hot-coffees" },
-    { "id": 2, "name": "Cold Coffees", "slug": "cold-coffees" },
-    { "id": 3, "name": "Bakery & Snacks", "slug": "bakery-snacks" },
-    { "id": 4, "name": "Healthy Add-ons", "slug": "healthy-addons" }
+    {
+      "id": "1",
+      "name": "Hot Coffees",
+      "slug": "hot-coffees"
+    },
+    {
+      "id": "2",
+      "name": "Cold Coffees",
+      "slug": "cold-coffees"
+    },
+    {
+      "id": "3",
+      "name": "Bakery & Snacks",
+      "slug": "bakery-snacks"
+    },
+    {
+      "id": "4",
+      "name": "Healthy Add-ons",
+      "slug": "healthy-addons"
+    }
   ],
-
   "beanTypes": [
-  { "id": 1, "name": "Arabica (Standard)", "priceAdd": 0, "description": "Smooth, sweet, fruity notes – the classic choice" },
-  { "id": 2, "name": "Robusta", "priceAdd": 1.50, "description": "Bold, earthy, higher caffeine for a strong kick" },
-  { "id": 3, "name": "Liberica", "priceAdd": 3.00, "description": "Floral, woody, smoky – rare and unique" },
-  { "id": 4, "name": "Excelsa", "priceAdd": 4.00, "description": "Tart, fruity, dark roast complexity" },
-  { "id": 5, "name": "Geisha / Gesha", "priceAdd": 6.00, "description": "Jasmine, bergamot, tea-like – award-winning delicacy" },
-  { "id": 6, "name": "Bourbon", "priceAdd": 2.50, "description": "Sweet, balanced, caramel and chocolate notes" },
-  { "id": 7, "name": "Yellow Bourbon", "priceAdd": 3.50, "description": "Brighter acidity, honey and citrus – rare yellow cherries" },
-  { "id": 8, "name": "Typica", "priceAdd": 2.00, "description": "Clean, sweet, classic Arabica ancestor" },
-  { "id": 9, "name": "Caturra", "priceAdd": 1.80, "description": "Bright acidity, citrus and floral – compact plant" },
-  { "id": 10, "name": "Catuai", "priceAdd": 2.20, "description": "Balanced, nutty, good body – hybrid strength" },
-  { "id": 11, "name": "Pacamara", "priceAdd": 5.00, "description": "Huge beans, floral, berry explosion – rare giant" },
-  { "id": 12, "name": "SL28", "priceAdd": 4.50, "description": "Kenyan legend – blackcurrant, tomato, bright acidity" },
-  { "id": 13, "name": "Ethiopian Heirloom Blend", "priceAdd": 5.50, "description": "Wild mix of thousands of ancient varieties – blueberry, floral magic" }
-],
-
-  "milkOptions": [
-    { "id": 1, "name": "Cow Milk", "priceAdd": 0, "calories": 50 },
-    { "id": 2, "name": "Almond Milk", "priceAdd": 1.00, "calories": 20 },
-    { "id": 3, "name": "Oat Milk", "priceAdd": 1.20, "calories": 40 },
-    { "id": 4, "name": "Soy Milk", "priceAdd": 0.80, "calories": 35 },
-    { "id": 5, "name": "Coconut Milk", "priceAdd": 1.50, "calories": 45 },
-    { "id": 6, "name": "Camel Milk", "priceAdd": 2.50, "calories": 60 }
+    {
+      "id": "1",
+      "name": "Arabica (Standard)",
+      "priceAdd": 0,
+      "description": "Smooth, sweet, fruity notes – the classic choice"
+    },
+    {
+      "id": "2",
+      "name": "Robusta",
+      "priceAdd": 1.5,
+      "description": "Bold, earthy, higher caffeine for a strong kick"
+    },
+    {
+      "id": "3",
+      "name": "Liberica",
+      "priceAdd": 3,
+      "description": "Floral, woody, smoky – rare and unique"
+    },
+    {
+      "id": "4",
+      "name": "Excelsa",
+      "priceAdd": 4,
+      "description": "Tart, fruity, dark roast complexity"
+    },
+    {
+      "id": "5",
+      "name": "Geisha / Gesha",
+      "priceAdd": 6,
+      "description": "Jasmine, bergamot, tea-like – award-winning delicacy"
+    },
+    {
+      "id": "6",
+      "name": "Bourbon",
+      "priceAdd": 2.5,
+      "description": "Sweet, balanced, caramel and chocolate notes"
+    },
+    {
+      "id": "7",
+      "name": "Yellow Bourbon",
+      "priceAdd": 3.5,
+      "description": "Brighter acidity, honey and citrus – rare yellow cherries"
+    },
+    {
+      "id": "8",
+      "name": "Typica",
+      "priceAdd": 2,
+      "description": "Clean, sweet, classic Arabica ancestor"
+    },
+    {
+      "id": "9",
+      "name": "Caturra",
+      "priceAdd": 1.8,
+      "description": "Bright acidity, citrus and floral – compact plant"
+    },
+    {
+      "id": "10",
+      "name": "Catuai",
+      "priceAdd": 2.2,
+      "description": "Balanced, nutty, good body – hybrid strength"
+    },
+    {
+      "id": "11",
+      "name": "Pacamara",
+      "priceAdd": 5,
+      "description": "Huge beans, floral, berry explosion – rare giant"
+    },
+    {
+      "id": "12",
+      "name": "SL28",
+      "priceAdd": 4.5,
+      "description": "Kenyan legend – blackcurrant, tomato, bright acidity"
+    },
+    {
+      "id": "13",
+      "name": "Ethiopian Heirloom Blend",
+      "priceAdd": 5.5,
+      "description": "Wild mix of thousands of ancient varieties – blueberry, floral magic"
+    }
   ],
-
+  "milkOptions": [
+    {
+      "id": "1",
+      "name": "Cow Milk",
+      "priceAdd": 0,
+      "calories": 50
+    },
+    {
+      "id": "2",
+      "name": "Almond Milk",
+      "priceAdd": 1,
+      "calories": 20
+    },
+    {
+      "id": "3",
+      "name": "Oat Milk",
+      "priceAdd": 1.2,
+      "calories": 40
+    },
+    {
+      "id": "4",
+      "name": "Soy Milk",
+      "priceAdd": 0.8,
+      "calories": 35
+    },
+    {
+      "id": "5",
+      "name": "Coconut Milk",
+      "priceAdd": 1.5,
+      "calories": 45
+    },
+    {
+      "id": "6",
+      "name": "Camel Milk",
+      "priceAdd": 2.5,
+      "calories": 60
+    }
+  ],
   "products": [
-  {
-    "id": 1,
-    "name": "Cappuccino",
-    "category": "Hot Coffee",
-    "basePrice": 4.99,
-    "baseCalories": 120,
-    "image": "/assets/cappuccino.jpg",
-    "description": "Classic espresso with steamed milk and foam",
-    "healthBenefits": "Rich in antioxidants, boosts energy",
-    "rating": 4.8,
-    "reviewsCount": 245
-  },
-  {
-    "id": 2,
-    "name": "Chocolate Almond Croissant",
-    "category": "Croissant",
-    "basePrice": 6.49,
-    "baseCalories": 480,
-    "image": "/assets/chocolate-almond-croissant.jpg",
-    "description": "Classic French croissant with dark chocolate and almonds",
-    "healthBenefits": "Rich in antioxidants and healthy fats",
-    "rating": 4.8,
-    "reviewsCount": 540
-  },
-  {
-    "id": 3,
-    "name": "Americano",
-    "category": "Hot Coffee",
-    "basePrice": 3.99,
-    "baseCalories": 10,
-    "image": "/assets/Americano.jpg",
-    "description": "Espresso diluted with hot water",
-    "healthBenefits": "Low calorie, high caffeine kick",
-    "rating": 4.5,
-    "reviewsCount": 180
-  },
-  {
-    "id": 4,
-    "name": "Iced Mocha",
-    "category": "Cold Coffee",
-    "basePrice": 6.49,
-    "baseCalories": 280,
-    "image": "/assets/iced-mocha.jpg",
-    "description": "Cold espresso with chocolate and milk",
-    "healthBenefits": "Chocolate antioxidants + caffeine boost",
-    "rating": 4.7,
-    "reviewsCount": 198
-  },
-  {
-    "id": 5,
-    "name": "Butter Chicken Croissant",
-    "category": "Croissant",
-    "basePrice": 7.99,
-    "baseCalories": 450,
-    "image": "/assets/butter-chicken-croissant.jpg",
-    "description": "Flaky croissant filled with spiced butter chicken",
-    "healthBenefits": "Protein-rich, satisfying savory snack",
-    "rating": 4.9,
-    "reviewsCount": 420
-  },
-  {
-    "id": 6,
-    "name": "Paneer Tikka Bagel",
-    "category": "Croissant",
-    "basePrice": 6.99,
-    "baseCalories": 380,
-    "image": "/assets/paneer-tikka-bagel.jpg",
-    "description": "Toasted bagel with spiced paneer and veggies",
-    "healthBenefits": "High protein from paneer, vegetarian delight",
-    "rating": 4.8,
-    "reviewsCount": 356
-  },
-  {
-    "id": 7,
-    "name": "Masala Chai Cookie",
-    "category": "Cup Coffee",
-    "basePrice": 2.99,
-    "baseCalories": 180,
-    "image": "/images/masala-cookie.jpg",
-    "description": "Spiced chai-infused soft cookie",
-    "healthBenefits": "Warming spices aid digestion",
-    "rating": 4.6,
-    "reviewsCount": 289
-  },
-  {
-    "id": 8,
-    "name": "Espresso",
-    "category": "Hot Coffee",
-    "basePrice": 3.49,
-    "baseCalories": 5,
-    "image": "/assets/Espresso.jpg",
-    "description": "Pure, intense shot of concentrated coffee",
-    "healthBenefits": "High antioxidants, improves focus and metabolism",
-    "rating": 4.7,
-    "reviewsCount": 289
-  },
-  {
-    "id": 9,
-    "name": "Flat White",
-    "category": "Hot Coffee",
-    "basePrice": 5.29,
-    "baseCalories": 140,
-    "image": "/assets/flat-white.jpg",
-    "description": "Espresso with velvety microfoam milk, stronger than latte",
-    "healthBenefits": "Balanced caffeine, supports bone health with milk",
-    "rating": 4.8,
-    "reviewsCount": 201
-  },
-  {
-    "id": 10,
-    "name": "Honey Mustard Chicken Croissant",
-    "category": "Croissant",
-    "basePrice": 7.49,
-    "baseCalories": 460,
-    "image": "/assets/honey-mustard-chicken-croissant.jpg",
-    "description": "Tender chicken with honey mustard sauce in a buttery croissant",
-    "healthBenefits": "High protein with balanced carbs",
-    "rating": 4.8,
-    "reviewsCount": 375
-  },
-  {
-    "id": 11,
-    "name": "Mocha",
-    "category": "Hot Coffee",
-    "basePrice": 5.99,
-    "baseCalories": 250,
-    "image": "/assets/Mocha.png",
-    "description": "Espresso with chocolate, steamed milk, and whipped cream",
-    "healthBenefits": "Mood-boosting from chocolate, energy from caffeine",
-    "rating": 4.9,
-    "reviewsCount": 378
-  },
-  {
-    "id": 12,
-    "name": "Latte",
-    "category": "Hot Coffee",
-    "basePrice": 5.49,
-    "baseCalories": 150,
-    "image": "/assets/latte.jpg",
-    "description": "Smooth espresso with creamy steamed milk",
-    "healthBenefits": "Good calcium source (with dairy), mood enhancer",
-    "rating": 4.9,
-    "reviewsCount": 312
-  },
-  {
-    "id": 13,
-    "name": "Spinach & Cheese Croissant",
-    "category": "Croissant",
-    "basePrice": 6.29,
-    "baseCalories": 410,
-    "image": "/assets/spinach&cheese-croissant.jpg",
-    "description": "Flaky croissant filled with spinach and melted cheese",
-    "healthBenefits": "Provides iron and calcium",
-    "rating": 4.5,
-    "reviewsCount": 198
-  },
-  {
-    "id": 14,
-    "name": "Macchiato",
-    "category": "Hot Coffee",
-    "basePrice": 4.29,
-    "baseCalories": 80,
-    "image": "/assets/Macchiato.jpg",
-    "description": "Espresso marked with a dollop of foamed milk",
-    "healthBenefits": "Low calorie caffeine boost, aids concentration",
-    "rating": 4.6,
-    "reviewsCount": 167
-  },
-  {
-    "id": 15,
-    "name": "Butter Croissant",
-    "category": "Croissant",
-    "basePrice": 4.99,
-    "baseCalories": 420,
-    "image": "/assets/butter-croissant.jpg",
-    "description": "Flaky French croissant made with real butter",
-    "healthBenefits": "Good source of energy",
-    "rating": 4.5,
-    "reviewsCount": 410
-  },
-  {
-    "id": 16,
-    "name": "Almond Croissant",
-    "category": "Croissant",
-    "basePrice": 6.99,
-    "baseCalories": 500,
-    "image": "/assets/almond-croissant.jpg",
-    "description": "Crispy croissant filled with almond cream and topped with almonds",
-    "healthBenefits": "Rich in healthy fats and protein",
-    "rating": 4.7,
-    "reviewsCount": 380
-  },
-  {
-    "id": 17,
-    "name": "Strawberry Cream Croissant",
-    "category": "Croissant",
-    "basePrice": 7.49,
-    "baseCalories": 520,
-    "image": "/assets/strawberry-cream-croissant.jpg",
-    "description": "Fresh strawberry cream-filled croissant with a sweet glaze",
-    "healthBenefits": "Contains antioxidants from strawberries",
-    "rating": 4.6,
-    "reviewsCount": 295
-  },
-  {
-    "id": 18,
-    "name": "Nutella Croissant",
-    "category": "Croissant",
-    "basePrice": 6.99,
-    "baseCalories": 510,
-    "image": "/assets/nutella-croissant.jpg",
-    "description": "Soft croissant filled with rich Nutella chocolate spread",
-    "healthBenefits": "Provides quick energy",
-    "rating": 4.9,
-    "reviewsCount": 620
-  },
-  {
-    "id": 19,
-    "name": "Cheese Croissant",
-    "category": "Croissant",
-    "basePrice": 5.99,
-    "baseCalories": 450,
-    "image": "/assets/cheese-croissant.jpg",
-    "description": "Savory croissant stuffed with creamy cheese",
-    "healthBenefits": "High in protein and calcium",
-    "rating": 4.4,
-    "reviewsCount": 310
-  },
-  {
-    "id": 20,
-    "name": "Cinnamon Croissant",
-    "category": "Croissant",
-    "basePrice": 5.49,
-    "baseCalories": 470,
-    "image": "/assets/cinnamon-croissant.jpg",
-    "description": "Fluffy croissant with cinnamon sugar filling and glaze",
-    "healthBenefits": "Contains antioxidants from cinnamon",
-    "rating": 4.5,
-    "reviewsCount": 275
-  }
-],
-
-  "cart": [],
-
+    {
+      "id": "1",
+      "name": "Cappuccino",
+      "category": "Hot Coffee",
+      "basePrice": 4.99,
+      "baseCalories": 120,
+      "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+      "description": "Classic espresso with steamed milk and foam",
+      "healthBenefits": "Rich in antioxidants, boosts energy",
+      "rating": 4.8,
+      "reviewsCount": 245
+    },
+    {
+      "id": "2",
+      "name": "Chocolate Almond Croissant",
+      "category": "Croissant",
+      "basePrice": 6.49,
+      "baseCalories": 480,
+      "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
+      "description": "Classic French croissant with dark chocolate and almonds",
+      "healthBenefits": "Rich in antioxidants and healthy fats",
+      "rating": 4.8,
+      "reviewsCount": 540
+    },
+    {
+      "id": "3",
+      "name": "Americano",
+      "category": "Cold Coffee",
+      "basePrice": 3.99,
+      "baseCalories": 10,
+      "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+      "description": "Espresso diluted with hot water",
+      "healthBenefits": "Low calorie, high caffeine kick",
+      "rating": 4.5,
+      "reviewsCount": 180
+    },
+    {
+      "id": "4",
+      "name": "Iced Mocha",
+      "category": "Cold Coffee",
+      "basePrice": 6.49,
+      "baseCalories": 280,
+      "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+      "description": "Cold espresso with chocolate and milk",
+      "healthBenefits": "Chocolate antioxidants + caffeine boost",
+      "rating": 4.7,
+      "reviewsCount": 198
+    },
+    {
+      "id": "5",
+      "name": "Butter Chicken Croissant",
+      "category": "Croissant",
+      "basePrice": 7.99,
+      "baseCalories": 450,
+      "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+      "description": "Flaky croissant filled with spiced butter chicken",
+      "healthBenefits": "Protein-rich, satisfying savory snack",
+      "rating": 4.9,
+      "reviewsCount": 420
+    },
+    {
+      "id": "6",
+      "name": "Paneer Tikka Bagel",
+      "category": "Croissant",
+      "basePrice": 6.99,
+      "baseCalories": 380,
+      "image": "https://i.pinimg.com/736x/cc/3e/56/cc3e568171e5545217badc2fb7e17841.jpg",
+      "description": "Toasted bagel with spiced paneer and veggies",
+      "healthBenefits": "High protein from paneer, vegetarian delight",
+      "rating": 4.8,
+      "reviewsCount": 356
+    },
+    {
+      "id": "7",
+      "name": "Affogato",
+      "category": "Cold Coffee",
+      "basePrice": 6,
+      "baseCalories": 250,
+      "image": "https://i.pinimg.com/736x/74/99/f7/7499f70c3c2cc42bf98c1231ca4465dd.jpg",
+      "description": "Espresso poured over a scoop of vanilla ice cream",
+      "healthBenefits": "Boosts energy, dessert-like treat",
+      "rating": 4.9,
+      "reviewsCount": 80
+    },
+    {
+      "id": "8",
+      "name": "Espresso",
+      "category": "Hot Coffee",
+      "basePrice": 3.49,
+      "baseCalories": 5,
+      "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
+      "description": "Pure, intense shot of concentrated coffee",
+      "healthBenefits": "High antioxidants, improves focus and metabolism",
+      "rating": 4.7,
+      "reviewsCount": 289
+    },
+    {
+      "id": "9",
+      "name": "Flat White",
+      "category": "Hot Coffee",
+      "basePrice": 5.29,
+      "baseCalories": 140,
+      "image": "https://i.pinimg.com/1200x/03/4b/1b/034b1b949ecd48ba8e3f8bed4dd6cc83.jpg",
+      "description": "Espresso with velvety microfoam milk, stronger than latte",
+      "healthBenefits": "Balanced caffeine, supports bone health with milk",
+      "rating": 4.8,
+      "reviewsCount": 201
+    },
+    {
+      "id": "10",
+      "name": "Spinach & Cheese Croissant",
+      "category": "Croissant",
+      "basePrice": 6.29,
+      "baseCalories": 410,
+      "image": "https://i.pinimg.com/1200x/23/cd/35/23cd35a53e1271aea3ac68a12386560b.jpg",
+      "description": "Flaky croissant filled with spinach and melted cheese",
+      "healthBenefits": "Provides iron and calcium",
+      "rating": 4.5,
+      "reviewsCount": 198
+    },
+    {
+      "id": "11",
+      "name": "Mocha",
+      "category": "Hot Coffee",
+      "basePrice": 5.99,
+      "baseCalories": 250,
+      "image": "/assets/Mocha.png",
+      "description": "Espresso with chocolate, steamed milk, and whipped cream",
+      "healthBenefits": "Mood-boosting from chocolate, energy from caffeine",
+      "rating": 4.9,
+      "reviewsCount": 378
+    },
+    {
+      "id": "12",
+      "name": "Latte",
+      "category": "Hot Coffee",
+      "basePrice": 5.49,
+      "baseCalories": 150,
+      "image": "/assets/latte.jpg",
+      "description": "Smooth espresso with creamy steamed milk",
+      "healthBenefits": "Good calcium source (with dairy), mood enhancer",
+      "rating": 4.9,
+      "reviewsCount": 312
+    },
+    {
+      "id": "13",
+      "name": "Honey Mustard Chicken Croissant",
+      "category": "Croissant",
+      "basePrice": 7.49,
+      "baseCalories": 460,
+      "image": "/assets/honey-mustard-chicken-croissant.jpg",
+      "description": "Tender chicken with honey mustard sauce in a buttery croissant",
+      "healthBenefits": "High protein with balanced carbs",
+      "rating": 4.8,
+      "reviewsCount": 375
+    },
+    {
+      "id": "14",
+      "name": "Macchiato",
+      "category": "Hot Coffee",
+      "basePrice": 4.29,
+      "baseCalories": 80,
+      "image": "/assets/Macchiato.jpg",
+      "description": "Espresso marked with a dollop of foamed milk",
+      "healthBenefits": "Low calorie caffeine boost, aids concentration",
+      "rating": 4.6,
+      "reviewsCount": 167
+    },
+    {
+      "id": "15",
+      "name": "Butter Croissant",
+      "category": "Croissant",
+      "basePrice": 4.99,
+      "baseCalories": 420,
+      "image": "/assets/butter-croissant.jpg",
+      "description": "Flaky French croissant made with real butter",
+      "healthBenefits": "Good source of energy",
+      "rating": 4.5,
+      "reviewsCount": 410
+    },
+    {
+      "id": "16",
+      "name": "Almond Croissant",
+      "category": "Croissant",
+      "basePrice": 6.99,
+      "baseCalories": 500,
+      "image": "/assets/almond-croissant.jpg",
+      "description": "Crispy croissant filled with almond cream and topped with almonds",
+      "healthBenefits": "Rich in healthy fats and protein",
+      "rating": 4.7,
+      "reviewsCount": 380
+    },
+    {
+      "id": "17",
+      "name": "Strawberry Cream Croissant",
+      "category": "Croissant",
+      "basePrice": 7.49,
+      "baseCalories": 520,
+      "image": "/assets/strawberry-cream-croissant.jpg",
+      "description": "Fresh strawberry cream-filled croissant with a sweet glaze",
+      "healthBenefits": "Contains antioxidants from strawberries",
+      "rating": 4.6,
+      "reviewsCount": 295
+    },
+    {
+      "id": "18",
+      "name": "Nutella Croissant",
+      "category": "Croissant",
+      "basePrice": 6.99,
+      "baseCalories": 510,
+      "image": "/assets/nutella-croissant.jpg",
+      "description": "Soft croissant filled with rich Nutella chocolate spread",
+      "healthBenefits": "Provides quick energy",
+      "rating": 4.9,
+      "reviewsCount": 620
+    },
+    {
+      "id": "19",
+      "name": "Cheese Croissant",
+      "category": "Croissant",
+      "basePrice": 5.99,
+      "baseCalories": 450,
+      "image": "/assets/cheese-croissant.jpg",
+      "description": "Savory croissant stuffed with creamy cheese",
+      "healthBenefits": "High in protein and calcium",
+      "rating": 4.4,
+      "reviewsCount": 310
+    },
+    {
+      "id": "20",
+      "name": "Cinnamon Croissant",
+      "category": "Croissant",
+      "basePrice": 5.49,
+      "baseCalories": 470,
+      "image": "/assets/cinnamon-croissant.jpg",
+      "description": "Fluffy croissant with cinnamon sugar filling and glaze",
+      "healthBenefits": "Contains antioxidants from cinnamon",
+      "rating": 4.5,
+      "reviewsCount": 275
+    }
+  ],
+  "cart": [
+    {
+      "id": "2",
+      "productId": 2,
+      "quantity": 1,
+      "beanId": 2
+    }
+  ],
   "orders": [],
-
   "reviews": [
     {
-      "id": 1,
+      "id": "1",
       "productId": 5,
       "userId": 1,
       "rating": 5,
