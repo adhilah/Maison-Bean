@@ -1,5 +1,6 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../hooks/useWishlist";
 
 // Main Navbar Component
 function Navbar() {
@@ -13,6 +14,9 @@ function Navbar() {
     const goToLogin = ()=>{
         navigation("/login")
     }
+
+    const { cartCount } = useCart();
+    const { wishlistCount } = useWishlist();
   return (
     <nav className="bg-white shadow py-4">
       <div className="container mx-auto px-6">
@@ -24,7 +28,12 @@ function Navbar() {
           <SearchBar />
 
           {/* Right Icons: Cart, Wishlist, Login */}
-          <RightIcons onCartClick={goToCart} onWishlistClick={goToWishlist} onLoginClick={goToLogin}/>
+         <RightIcons
+  onCartClick={goToCart}
+  onWishlistClick={goToWishlist}
+  onLoginClick={goToLogin}
+  cartCount={cartCount}
+  wishlistCount={wishlistCount}/>
         </div>
       </div>
     </nav>
@@ -60,8 +69,14 @@ function SearchBar() {
 }
 
 // Right Side Icons
-function RightIcons({ onCartClick ,onWishlistClick ,onLoginClick}) {
-    // const navigate = useNavigate();
+function RightIcons({
+  onCartClick,
+  onWishlistClick,
+  onLoginClick,
+  cartCount,
+  wishlistCount,
+}){
+
   return (
     <div className="flex items-center space-x-6">
       {/* Cart */}
@@ -69,7 +84,7 @@ function RightIcons({ onCartClick ,onWishlistClick ,onLoginClick}) {
         onClick={onCartClick}
         className="relative hover:text-amber-900 transition"
       >
-        <IconWithBadge iconName="shopping_cart" badgeCount={3} />
+        <IconWithBadge iconName="shopping_cart" badgeCount={cartCount} />
       </button>
 
       {/* Wishlist (Heart) */}
@@ -77,7 +92,7 @@ function RightIcons({ onCartClick ,onWishlistClick ,onLoginClick}) {
       onClick={onWishlistClick}
        className="relative hover:text-amber-900 transition"
        >
-      <IconWithBadge iconName="favorite" badgeCount={2} />
+      <IconWithBadge iconName="favorite" badgeCount={wishlistCount} />
       </button>
 
       {/* Login */}

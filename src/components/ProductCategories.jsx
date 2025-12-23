@@ -76,7 +76,7 @@ const [activeTab, setActiveTab]= useState('All');
   ];
 
   return (
-    <section className="from-[#efe6d6] to-[#f8f4ee] py-12">
+    <section className="from-[#9c7635] to-[#f8f4ee] py-15">
       <div className="max-w-6xl mx-auto px-4">
 
         {/* Section Title */}

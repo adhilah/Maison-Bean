@@ -42,15 +42,7 @@ const HeroSection = () => {
           Customize every detail to match your taste and preferences.
         </p>
 
-        {/* Call to Action */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="bg-amber-700 hover:bg-amber-800 text-white font-bold py-3 px-8 rounded-lg transition">
-            Start Creating
-          </button>
-          <button className="bg-transparent border border-amber-300 hover:bg-amber-300/10 text-amber-100 font-bold py-3 px-8 rounded-lg transition">
-            View Menu
-          </button>
-        </div>
+    
 
         {/* Stats */}
         {/* <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6">

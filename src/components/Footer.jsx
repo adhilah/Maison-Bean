@@ -10,8 +10,8 @@ const Footer = () => {
   );
 
   const ListItem = ({ icon, children }) => (
-    <li className="flex items-center text-amber-800">
-      <Icon name={icon} className="text-amber-600 mr-3 text-xl" />
+    <li className="flex items-center text-amber-900">
+      <Icon name={icon} className="text-amber-700 mr-3 text-xl" />
       <span>{children}</span>
     </li>
   );
@@ -24,25 +24,25 @@ const Footer = () => {
           {/* Column 1: Brand & Social */}
           <div>
             <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-amber-700 rounded-full flex items-center justify-center mr-3 shadow-md">
+              <div className="w-12 h-12 bg-amber-800 rounded-full flex items-center justify-center mr-3 shadow-md">
                 <span className="text-white font-bold text-xl">MB</span>
               </div>
               <h2 className="text-2xl font-bold text-amber-900">Maison Bean</h2>
             </div>
-            <p className="text-amber-700 mb-6 leading-relaxed">
+            <p className="text-amber-800 mb-6 leading-relaxed">
               A modern coffee house offering specialty brews, fresh bakery items, and wholesome snacks 
               with full customization and nutritional transparency.
             </p>
 
             {/* Social Icons - UPDATED */}
             <div className="flex gap-5">
-  <a href="#" className="text-amber-700 hover:text-amber-900 transition">
+  <a href="#" className="text-amber-800 hover:text-amber-900 transition">
     <FaFacebook className="text-2xl" />
   </a>
-  <a href="#" className="text-amber-700 hover:text-amber-900 transition">
+  <a href="#" className="text-amber-800 hover:text-amber-900 transition">
     <FaInstagram className="text-2xl" />
   </a>
-  <a href="#" className="text-amber-700 hover:text-amber-900 transition">
+  <a href="#" className="text-amber-800 hover:text-amber-900 transition">
     <FaTwitter className="text-2xl" />
   </a>
 </div>

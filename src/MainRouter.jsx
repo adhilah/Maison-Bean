@@ -1,11 +1,12 @@
 import React from 'react'
 import { Routes,Route } from 'react-router-dom'
 import RegistrationPage from './pages/RegistrationPage'
-import Home from './pages/Home'
+import Home from './pages'
 import Login from './pages/Login'
 import HeroSection from './components/heroSection'
 import Wishlist from './components/Wishlist'
-import Cart from './components/cart'
+import Cart from './components/Cart'
+import Cards from './components/cards/MainProducts'
 // import ProductCard from './components/ProductCard'
 // import ProductCard from './components/ProductCard'
 
@@ -22,6 +23,7 @@ function MainRouter() {
             <Route path="/herosection" element={<HeroSection />} />
             <Route path='/registration' element={<RegistrationPage />} />
             <Route path='/login' element={<Login />} />
+            <Route path='/menu' element={<Cards />} />
             {/* <Route path='/product' element={<ProductCard />}/> */}
 
       
