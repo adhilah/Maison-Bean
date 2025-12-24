@@ -2,19 +2,25 @@ import { createContext, useContext, useState } from "react";
 
 const WishlistContext = createContext(null);
 
-export function WishlistProvider({ children }) {
-  const [wishlist, setWishlist] = useState([]);
+export const WishlistProvider = ({ children }) => {
+  const [wishlist, setWishlist] = useState({});
+  
 
   const toggleWishlist = (product) => {
-    setWishlist((prev) =>
-      prev.some((item) => item.id === product.id)
-        ? prev.filter((item) => item.id !== product.id)
-        : [...prev, product]
-    );
+    setWishlist((prev) => {
+      const updated = { ...prev };
+
+      if (updated[product.id]) {
+        delete updated[product.id];
+      } else {
+        updated[product.id] = product;
+      }
+
+      return updated;
+    });
   };
 
-  const isWishlisted = (id) =>
-    wishlist.some((item) => item.id === id);
+  const isWishlisted = (id) => Boolean(wishlist[id]);
 
   return (
     <WishlistContext.Provider
@@ -23,8 +29,6 @@ export function WishlistProvider({ children }) {
       {children}
     </WishlistContext.Provider>
   );
-}
+};
 
-export function useWishlist() {
-  return useContext(WishlistContext);
-}
+export const useWishlist = () => useContext(WishlistContext);

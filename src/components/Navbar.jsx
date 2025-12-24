@@ -15,10 +15,10 @@ function Navbar() {
         navigation("/login")
     }
 
-    const { cartCount } = useCart();
+    const { cartTotalItems } = useCart();
     const { wishlistCount } = useWishlist();
   return (
-    <nav className="bg-white shadow py-4">
+    <nav className="bg-white/40 backdrop-blur-md shadow py-4 sticky top-0 z-100">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -32,7 +32,7 @@ function Navbar() {
   onCartClick={goToCart}
   onWishlistClick={goToWishlist}
   onLoginClick={goToLogin}
-  cartCount={cartCount}
+  cartCount={cartTotalItems}
   wishlistCount={wishlistCount}/>
         </div>
       </div>
@@ -43,7 +43,7 @@ function Navbar() {
 // Logo
 function Logo() {
   return (
-    <div className="text-2xl font-bold text-amber-900">
+    <div className="text-2xl font-bold text-[#6c5225]">
       Maison Bean
     </div>
   );
@@ -82,7 +82,7 @@ function RightIcons({
       {/* Cart */}
       <button
         onClick={onCartClick}
-        className="relative hover:text-amber-900 transition"
+        className="relative hover:text-[#6c5225] transition"
       >
         <IconWithBadge iconName="shopping_cart" badgeCount={cartCount} />
       </button>
@@ -90,7 +90,7 @@ function RightIcons({
       {/* Wishlist (Heart) */}
       <button
       onClick={onWishlistClick}
-       className="relative hover:text-amber-900 transition"
+       className="relative hover:text-[#6c5225] transition"
        >
       <IconWithBadge iconName="favorite" badgeCount={wishlistCount} />
       </button>
@@ -98,7 +98,7 @@ function RightIcons({
       {/* Login */}
       <button
       onClick={onLoginClick}
-      className="relative hover:text-amber-900 transition"
+      className="relative hover:text-[#6c5225] transition"
       >
       <LoginButton />
       </button>
@@ -124,7 +124,7 @@ function IconWithBadge({ iconName, badgeCount }) {
 // Login Button with Person Icon
 function LoginButton() {
   return (
-    <div className="flex items-center space-x-2 cursor-pointer hover:text-amber-900 transition">
+    <div className="flex items-center space-x-2 cursor-pointer hover:text-[#6c5225] transition">
       <span className="material-symbols-outlined text-3xl text-gray-700">
         account_circle
       </span>

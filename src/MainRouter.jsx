@@ -7,6 +7,7 @@ import HeroSection from './components/heroSection'
 import Wishlist from './components/Wishlist'
 import Cart from './components/Cart'
 import Cards from './components/cards/MainProducts'
+
 // import ProductCard from './components/ProductCard'
 // import ProductCard from './components/ProductCard'
 
@@ -24,6 +25,7 @@ function MainRouter() {
             <Route path='/registration' element={<RegistrationPage />} />
             <Route path='/login' element={<Login />} />
             <Route path='/menu' element={<Cards />} />
+            <Route path="/menu/:category?" element={<Cards />} />
             {/* <Route path='/product' element={<ProductCard />}/> */}
 
       

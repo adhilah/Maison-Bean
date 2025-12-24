@@ -57,51 +57,53 @@
 
 
 
-import cappuccino from "../assets/cappuccino.jpg";
-import coldCoffee from "../assets/cup-three-layered-coffee-dark.jpg";
-import cupCoffee from "../assets/coffee-cup.jpg";
-import dessert from "../assets/croissant.jpg";
-import { useState } from "react";
+// import cappuccino from "../assets/cappuccino.jpg";
+// import coldCoffee from "../assets/cup-three-layered-coffee-dark.jpg";
+// import dessert from "../assets/croissant.jpg";
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
 
 
-function ProductCategories() {
+// function ProductCategories() {
 
-const [activeTab, setActiveTab]= useState('All');
+// const [activeTab, setActiveTab]= useState('All');
+// const navigate = useNavigate();
 
-  const categories = [
-    { id: 1, title: "Hot Coffee", image: cappuccino },
-    { id: 2, title: "Cold Coffee", image: coldCoffee },
-    { id: 3, title: "Cup Coffee", image: cupCoffee },
-    { id: 4, title: "croissant", image: dessert },
-  ];
+//   const categories = [
+//     { id: 1, title: "Hot Coffee", image: cappuccino },
+//     { id: 2, title: "Cold Coffee", image: coldCoffee },
+//     { id: 4, title: "croissant", image: dessert },
+//   ];
 
-  return (
-    <section className="from-[#9c7635] to-[#f8f4ee] py-15">
-      <div className="max-w-6xl mx-auto px-4">
+//   return (
+//     <section className="from-[#9c7635] to-[#f8f4ee] py-15">
+//       <div className="max-w-6xl mx-auto px-4">
 
-        {/* Section Title */}
-        <h2 className="text-2xl font-semibold text-gray-800 text-center mb-10">
-          The Maison Menu
-        </h2>
+//         {/* Section Title */}
+//         <h2 className="text-2xl font-semibold text-gray-800 text-center mb-10">
+//           The Maison Menu
+//         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-          {categories.map((item) => (
-            <button
-              key={item.id}
-              className="
-                group relative bg-white rounded-2xl p-6
-                flex flex-col items-center
-                shadow-md
-                transition-all duration-300
-                hover:shadow-xl hover:-translate-y-2
-                focus:outline-none"
-
-
-
+//         <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
+//           {categories.map((item) => (
+//             <button
+//               key={item.id}
+//               className="
+//                 group relative bg-white rounded-2xl p-6
+//                 flex flex-col items-center
+//                 shadow-md
+//                 transition-all duration-300
+//                 hover:shadow-xl hover:-translate-y-2
+//                 focus:outline-none"
 
 
 
-                onClick={()=>setActiveTab(categories)}
+
+
+
+//                 onClick={() =>
+//   navigate(`/menu/${item.title.toLowerCase().replace(" ", "-")}`)
+// }
 
 
 
@@ -110,28 +112,85 @@ const [activeTab, setActiveTab]= useState('All');
 
 
                 
+//             >
+//               {/* Image */}
+//               <div className="w-20 h-20 rounded-full overflow-hidden 
+//                               bg-[#efe6d6] flex items-center justify-center
+//                               group-hover:scale-110 transition-transform duration-300">
+//                 <img
+//                   src={item.image}
+//                   alt={item.title}
+//                   className="w-full h-full object-cover"
+//                   loading="lazy"
+//                 />
+//               </div>
+
+//               {/* Title */}
+//               <p className="mt-5 text-base font-medium text-gray-800 group-hover:text-[#6b4f2c] transition-colors">
+//                 {item.title}
+//               </p>
+
+//               {/* Hover underline */}
+//               <span className="absolute bottom-4 w-10 bg-[#6b4f2c]
+//                                scale-x-0 group-hover:scale-x-100
+//                                transition-transform duration-300" />
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// export default ProductCategories;
+
+
+
+// ======================================================================================
+
+
+
+
+import cappuccino from "../assets/cappuccino.jpg";
+import coldCoffee from "../assets/cup-three-layered-coffee-dark.jpg";
+import dessert from "../assets/croissant.jpg";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function ProductCategories() {
+  const [activeTab, setActiveTab] = useState('All');
+  const navigate = useNavigate();
+
+  const categories = [
+    { id: 1, title: "Hot Coffee", image: cappuccino },
+    { id: 2, title: "Cold Coffee", image: coldCoffee },
+    { id: 3, title: "Croissant", image: dessert },
+  ];
+
+  return (
+    <section className="py-10 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 text-center">
+        <h2 className="text-2xl font-bold mb-8">Explore Our Menu</h2>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+          {categories.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => {
+                setActiveTab(item.title);
+                navigate(`/menu/${item.title.toLowerCase().replace(" ", "-")}`);
+              }}
+              className={`bg-white rounded-xl p-4 flex flex-col items-center
+                          shadow hover:shadow-lg transition ${
+                            activeTab === item.title ? 'ring-2 ring-[#9c7635]' : ''
+                          }`}
             >
-              {/* Image */}
-              <div className="w-20 h-20 rounded-full overflow-hidden 
-                              bg-[#efe6d6] flex items-center justify-center
-                              group-hover:scale-110 transition-transform duration-300">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-
-              {/* Title */}
-              <p className="mt-5 text-base font-medium text-gray-800 group-hover:text-[#6b4f2c] transition-colors">
-                {item.title}
-              </p>
-
-              {/* Hover underline */}
-              <span className="absolute bottom-4 w-10 bg-[#6b4f2c]
-                               scale-x-0 group-hover:scale-x-100
-                               transition-transform duration-300" />
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-20 h-20 object-cover rounded-full mb-2"
+              />
+              <span className="font-medium text-gray-800">{item.title}</span>
             </button>
           ))}
         </div>

@@ -1,74 +1,178 @@
+// import axios from "axios";
+// import { memo, useEffect, useState } from "react";
+// import { useCart } from "../context/CartContext";
+// import { useWishlist } from "../context/WishlistContext";
+
+// const FeaturedProducts = () => {
+//   const [products, setProducts] = useState([]);
+//   const { addToCart } = useCart();
+//   const { wishlist, toggleWishlist, isWishlisted } = useWishlist();
+
+//   useEffect(() => {
+//     axios
+//       .get("http://localhost:3000/products")
+//       .then((res) => setProducts(res.data))
+//       .catch((err) => console.error("API ERROR:", err));
+//   }, []);
+
+// const { carts, addToCarts } = useCart();
+
+// useEffect(() => {
+//   console.log("CART UPDATED:", carts);
+// }, [carts]);
+
+//   if (products.length === 0) {
+//     return <p className="text-center py-10">Loading...</p>;
+//   }
+
+//   return (
+//     <div className="bg-[#ded4b0] px-4 sm:px-10">
+//       <h2 className="text-2xl text-center font-semibold py-6">
+//         Featured Products
+//       </h2>
+
+//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-8">
+//         {products.slice(0, 8).map((item) => (
+//           <div
+//             key={item.id}
+//             className="bg-white rounded-2xl shadow-md hover:shadow-lg transition flex flex-col"
+//           >
+//             {/* IMAGE */}
+//             <div className="h-40 relative">
+//               <img
+//                 src={item.image}
+//                 alt={item.name}
+//                 className="h-full w-full object-cover rounded-t-2xl"
+//               />
+
+//               {/* WISHLIST */}
+//               <button
+//                 onClick={(e) => {
+//                   e.stopPropagation();
+//                   toggleWishlist(item);
+//                 }}
+//                 className="absolute top-3 right-3 bg-white rounded-full p-1 shadow"
+//               >
+//                 <span
+//                   className={`material-symbols-rounded text-xl ${
+//                     isWishlisted(item.id)
+//                       ? "text-red-500"
+//                       : "text-gray-400"
+//                   }`}
+//                 >
+//                   favorite
+//                 </span>
+//               </button>
+//             </div>
+
+//             {/* CONTENT */}
+//             <div className="p-4 flex flex-col flex-1">
+//               <h3 className="font-semibold line-clamp-2 min-h-[3rem]">
+//                 {item.name}
+//               </h3>
+
+//               <p className="font-semibold text-[#9c7635] mt-1">
+//                 ₹{item.basePrice}
+//               </p>
+
+//               <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+//                 {item.description}
+//               </p>
+
+//               {/* ADD TO CART */}
+//               <button
+//                 onClick={() => addToCart(item)}
+//                 className="mt-auto bg-[#9c7635] hover:bg-[#6c5225] text-white py-2 rounded-lg"
+//               >
+//                 Add to Cart
+//               </button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default memo(FeaturedProducts);
+
+
+// // =============================================================================================
+
+
 import axios from "axios";
 import { memo, useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
-import { useWishlist } from "../hooks/useWishlist";
+import { useWishlist } from "../context/WishlistContext";
+import toast from "react-hot-toast"; 
 
-const Card = () => {
-  const [product, setProduct] = useState([]);
-  const { fetchCart } = useCart();
-  const { wishlist, toggleWishlist } = useWishlist();
-
-  const fetchProduct = async () => {
-    try {
-      const res = await axios.get("http://localhost:3000/products");
-      setProduct(res.data);
-    } catch (err) {
-      console.error("API ERROR:", err);
-    }
-  };
+const FeaturedProducts = () => {
+  const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
+  const { toggleWishlist, isWishlisted } = useWishlist();
 
   useEffect(() => {
-    fetchProduct();
+    axios
+      .get("http://localhost:3000/products")
+      .then((res) => setProducts(res.data))
+      .catch((err) => console.error("API ERROR:", err));
   }, []);
 
-  /* ---------------- ADD TO CART ---------------- */
-  const addToCart = async (item) => {
-    try {
-      await axios.post("http://localhost:3000/cart", {
-        productId: item.id,
-        quantity: 1,
-      });
-
-      fetchCart(); // ✅ THIS IS THE ANSWER
-      alert("Added to cart");
-    } catch (error) {
-      console.error("Add to cart error:", error);
-    }
+const handleAddToCart = (item) => {
+    addToCart(item);
+    toast.success(`${item.name} added to cart!`, {
+      icon: ' ',
+      duration: 2200,
+      position: "top-center", 
+      style: {
+        background: '#7a5c2a',
+        color: 'white',
+        fontSize: '16px',
+        fontWeight: '600',
+        borderRadius: '12px',
+        padding: '14px 24px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      },
+    });
   };
 
-  /* ---------------- LOADING ---------------- */
-  if (product.length === 0) {
-    return <p className="text-center">Loading...</p>;
+  if (products.length === 0) {
+    return <p className="text-center py-10">Loading...</p>;
   }
 
   return (
-    <div className="bg-amber-100 px-4 sm:px-10 lg:px-25">
-      <h2 className="text-2xl  text-black text-center mb-4 px-4 pt-6">
+    <div className="bg-[#ded4b0] px-4 sm:px-10">
+      <h2 className="text-2xl text-center font-semibold py-6">
         Featured Products
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-        {product.slice(0, 8).map((item) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-8">
+        {products.slice(0, 8).map((item) => (
           <div
             key={item.id}
             className="bg-white rounded-2xl shadow-md hover:shadow-lg transition flex flex-col"
           >
-            {/* IMAGE ===============================================================================================*/}
+            {/* IMAGE */}
             <div className="h-40 relative">
               <img
                 src={item.image}
                 alt={item.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover rounded-t-2xl"
               />
 
-              {/* WISHLIST========================================================================================== */}
+              {/* WISHLIST */}
               <button
-                onClick={() => toggleWishlist(item.id)}
-                className="absolute top-3 right-3 bg-white rounded-full p-1 shadow hover:scale-110 transition"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleWishlist(item);
+                }}
+                className="absolute top-3 right-3 bg-white rounded-full p-1 shadow"
               >
                 <span
                   className={`material-symbols-rounded text-xl ${
-                    wishlist[item.id] ? "text-red-500" : "text-gray-400"
+                    isWishlisted(item.id)
+                      ? "text-red-500"
+                      : "text-gray-400"
                   }`}
                 >
                   favorite
@@ -76,20 +180,24 @@ const Card = () => {
               </button>
             </div>
 
-            {/* CONTENT==================================================================================================== */}
-            <div className="p-4 flex-1 flex flex-col justify-between">
-              <div>
-                <h3 className="font-semibold">{item.name}</h3>
-                <p className="text-amber-700 font-semibold mt-1">
-                  ${item.basePrice}
-                </p>
-                <p className="text-sm">{item.description}</p>
-              </div>
+            {/* CONTENT */}
+            <div className="p-4 flex flex-col flex-1">
+              <h3 className="font-semibold line-clamp-2 min-h-[3rem]">
+                {item.name}
+              </h3>
 
-              {/* ADD TO CART============================================================================================= */}
+              <p className="font-semibold text-[#9c7635] mt-1">
+                ₹{item.basePrice}
+              </p>
+
+              <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                {item.description}
+              </p>
+
+              {/* ADD TO CART */}
               <button
-                onClick={() => addToCart(item)}
-                className="bg-amber-700 text-white py-2 rounded mt-3"
+                onClick={() => handleAddToCart(item)}
+                className="mt-auto bg-[#9c7635] hover:bg-[#6c5225] text-white py-2 rounded-lg transition"
               >
                 Add to Cart
               </button>
@@ -101,4 +209,4 @@ const Card = () => {
   );
 };
 
-export default memo(Card);
+export default memo(FeaturedProducts);

@@ -10,7 +10,7 @@ export default function CategoryFilter({ categories, selected, onSelect }) {
               onClick={() => onSelect(cat)}
               className={`w-full text-left px-4 py-3 rounded-lg transition ${
                 selected === cat
-                  ? 'bg-orange-800 text-white'
+                  ? 'bg-[#6c5225] text-white'
                   : 'hover:bg-gray-100'
               }`}
             >
