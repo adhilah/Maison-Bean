@@ -1,5 +1,5 @@
 import React from 'react'
-import MainRouter from './MAinRouter'
+import MainRouter from './MainRouter'
 
 function App() {
   return (
@@ -8,5 +8,3 @@ function App() {
 }
 
 export default App
-
-// test

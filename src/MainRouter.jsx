@@ -24,8 +24,8 @@ function MainRouter() {
             <Route path="/herosection" element={<HeroSection />} />
             <Route path='/registration' element={<RegistrationPage />} />
             <Route path='/login' element={<Login />} />
-            <Route path='/menu' element={<Cards />} />
-            <Route path="/menu/:category?" element={<Cards />} />
+            <Route path="/menu" element={<Cards />} />
+            <Route path="/menu/:category" element={<Cards />} />
             {/* <Route path='/product' element={<ProductCard />}/> */}
 
       

@@ -1,17 +1,3 @@
-// 
-
-
-// ===================================================================================================
-
-
-
-
-
-
-
-
-
-
 import { useState } from "react";
 import { useWishlist } from "../../context/WishlistContext";
 import { useCart } from "../../context/CartContext";
