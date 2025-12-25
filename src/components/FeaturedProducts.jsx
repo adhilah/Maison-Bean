@@ -1,13 +1,12 @@
-
 import axios from "axios";
 import { memo, useEffect, useState } from "react";
-import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
-import toast from "react-hot-toast"; 
+import ProductModal from "./cards/ProductModal";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
-  const { addToCart } = useCart();
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   const { toggleWishlist, isWishlisted } = useWishlist();
 
   useEffect(() => {
@@ -16,24 +15,6 @@ const FeaturedProducts = () => {
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("API ERROR:", err));
   }, []);
-
-const handleAddToCart = (item) => {
-    addToCart(item);
-    toast.success(`${item.name} added to cart!`, {
-      icon: ' ',
-      duration: 2200,
-      position: "top-center", 
-      style: {
-        background: '#7a5c2a',
-        color: 'white',
-        fontSize: '16px',
-        fontWeight: '600',
-        borderRadius: '12px',
-        padding: '14px 24px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-      },
-    });
-  };
 
   if (products.length === 0) {
     return <p className="text-center py-10">Loading...</p>;
@@ -49,7 +30,8 @@ const handleAddToCart = (item) => {
         {products.slice(0, 8).map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-lg transition flex flex-col"
+            onClick={() => setSelectedProduct(item)}
+            className="bg-white rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer flex flex-col"
           >
             {/* IMAGE */}
             <div className="h-40 relative">
@@ -85,25 +67,38 @@ const handleAddToCart = (item) => {
                 {item.name}
               </h3>
 
-              <p className="font-semibold text-[#9c7635] mt-1">
+              {/* RATING */}
+              {item.rating && (
+                <div className="flex items-center gap-1 text-sm mt-1">
+                  <span className="text-yellow-500">★</span>
+                  <span className="font-medium">{item.rating}</span>
+                  {item.reviewsCount && (
+                    <span className="text-gray-500">
+                      ({item.reviewsCount})
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <p className="font-semibold text-[#9c7635] mt-2">
                 ₹{item.basePrice}
               </p>
 
               <p className="text-sm text-gray-600 line-clamp-2 mt-1">
                 {item.description}
               </p>
-
-              {/* ADD TO CART */}
-              <button
-                onClick={() => handleAddToCart(item)}
-                className="mt-auto bg-[#9c7635] hover:bg-[#6c5225] text-white py-2 rounded-lg transition"
-              >
-                Add to Cart
-              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* MODAL */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 };

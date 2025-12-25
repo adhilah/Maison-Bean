@@ -393,7 +393,44 @@
       "reviewsCount": 275
     }
   ],
-  "wishlist": [],
+  "wishlist": [
+    {
+      "id": "5",
+      "name": "Butter Chicken Croissant",
+      "category": "Croissant",
+      "basePrice": 7.99,
+      "baseCalories": 450,
+      "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+      "description": "Flaky croissant filled with spiced butter chicken",
+      "healthBenefits": "Protein-rich, satisfying savory snack",
+      "rating": 4.9,
+      "reviewsCount": 420
+    },
+    {
+      "id": "3",
+      "name": "Americano",
+      "category": "Cold Coffee",
+      "basePrice": 3.99,
+      "baseCalories": 10,
+      "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+      "description": "Espresso diluted with hot water",
+      "healthBenefits": "Low calorie, high caffeine kick",
+      "rating": 4.5,
+      "reviewsCount": 180
+    },
+    {
+      "id": "2",
+      "name": "Chocolate Almond Croissant",
+      "category": "Croissant",
+      "basePrice": 6.49,
+      "baseCalories": 480,
+      "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
+      "description": "Classic French croissant with dark chocolate and almonds",
+      "healthBenefits": "Rich in antioxidants and healthy fats",
+      "rating": 4.8,
+      "reviewsCount": 540
+    }
+  ],
   "cart": [
     {
       "id": "1",
