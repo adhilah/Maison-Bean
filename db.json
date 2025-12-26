@@ -395,235 +395,224 @@
   ],
   "wishlist": [
     {
-      "id": "5",
-      "name": "Butter Chicken Croissant",
-      "category": "Croissant",
-      "basePrice": 7.99,
-      "baseCalories": 450,
-      "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
-      "description": "Flaky croissant filled with spiced butter chicken",
-      "healthBenefits": "Protein-rich, satisfying savory snack",
-      "rating": 4.9,
-      "reviewsCount": 420
+      "userId": 1,
+      "productId": 2,
+      "product": {
+        "id": 2,
+        "name": "Cappuccino",
+        "category": "Coffee",
+        "basePrice": 150,
+        "image": "https://example.com/cappuccino.jpg",
+        "description": "Rich espresso with steamed milk...",
+        "healthBenefits": "Antioxidants, energy boost",
+        "rating": 4.8,
+        "reviewsCount": 120,
+        "baseCalories": 120
+      },
+      "id": "1"
     },
     {
-      "id": "3",
-      "name": "Americano",
-      "category": "Cold Coffee",
-      "basePrice": 3.99,
-      "baseCalories": 10,
-      "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-      "description": "Espresso diluted with hot water",
-      "healthBenefits": "Low calorie, high caffeine kick",
-      "rating": 4.5,
-      "reviewsCount": 180
+      "id": "f7c6",
+      "userId": "7e21",
+      "productId": "2",
+      "product": {
+        "id": "2",
+        "name": "Chocolate Almond Croissant",
+        "category": "Croissant",
+        "basePrice": 6.49,
+        "baseCalories": 480,
+        "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
+        "description": "Classic French croissant with dark chocolate and almonds",
+        "healthBenefits": "Rich in antioxidants and healthy fats",
+        "rating": 4.8,
+        "reviewsCount": 540
+      }
     },
     {
-      "id": "2",
-      "name": "Chocolate Almond Croissant",
-      "category": "Croissant",
-      "basePrice": 6.49,
-      "baseCalories": 480,
-      "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
-      "description": "Classic French croissant with dark chocolate and almonds",
-      "healthBenefits": "Rich in antioxidants and healthy fats",
-      "rating": 4.8,
-      "reviewsCount": 540
+      "id": "f1ce",
+      "userId": "7e21",
+      "productId": "3",
+      "product": {
+        "id": "3",
+        "name": "Americano",
+        "category": "Cold Coffee",
+        "basePrice": 3.99,
+        "baseCalories": 10,
+        "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+        "description": "Espresso diluted with hot water",
+        "healthBenefits": "Low calorie, high caffeine kick",
+        "rating": 4.5,
+        "reviewsCount": 180
+      }
+    },
+    {
+      "id": "3227",
+      "userId": "7e21",
+      "productId": "4",
+      "product": {
+        "id": "4",
+        "name": "Iced Mocha",
+        "category": "Cold Coffee",
+        "basePrice": 6.49,
+        "baseCalories": 280,
+        "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+        "description": "Cold espresso with chocolate and milk",
+        "healthBenefits": "Chocolate antioxidants + caffeine boost",
+        "rating": 4.7,
+        "reviewsCount": 198
+      }
+    },
+    {
+      "id": "a2b0",
+      "userId": "f9fb",
+      "productId": "3",
+      "product": {
+        "id": "3",
+        "name": "Americano",
+        "category": "Cold Coffee",
+        "basePrice": 3.99,
+        "baseCalories": 10,
+        "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+        "description": "Espresso diluted with hot water",
+        "healthBenefits": "Low calorie, high caffeine kick",
+        "rating": 4.5,
+        "reviewsCount": 180
+      }
+    },
+    {
+      "id": "1ea8",
+      "userId": "f9fb",
+      "productId": "4",
+      "product": {
+        "id": "4",
+        "name": "Iced Mocha",
+        "category": "Cold Coffee",
+        "basePrice": 6.49,
+        "baseCalories": 280,
+        "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+        "description": "Cold espresso with chocolate and milk",
+        "healthBenefits": "Chocolate antioxidants + caffeine boost",
+        "rating": 4.7,
+        "reviewsCount": 198
+      }
     }
   ],
   "cart": [
     {
-      "id": "1",
-      "productId": 2,
+      "id": "318b",
+      "userId": "7e21",
+      "productId": "2",
       "quantity": 2,
-      "beanId": 2
+      "beanId": null,
+      "milkId": null,
+      "isCustomized": false
     },
     {
-      "id": "2",
-      "productId": 1,
-      "quantity": 1,
-      "beanId": 2
-    },
-    {
-      "id": "4",
-      "productId": 7,
-      "quantity": 2,
-      "beanId": 2
-    },
-    {
-      "id": "66ab",
+      "id": "aaac",
+      "userId": "7e21",
       "productId": "1",
-      "quantity": 1
+      "quantity": 1,
+      "beanId": "2",
+      "milkId": "5",
+      "isCustomized": true
     },
     {
-      "id": "49bb",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "74f5",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "af99",
+      "id": "8355",
+      "userId": "7e21",
       "productId": "3",
-      "quantity": 1
+      "quantity": 2,
+      "beanId": "11",
+      "milkId": "6",
+      "isCustomized": true
     },
     {
-      "id": "670a",
+      "id": "1c58",
+      "userId": "7e21",
+      "productId": "4",
+      "quantity": 2,
+      "beanId": null,
+      "milkId": null,
+      "isCustomized": false
+    },
+    {
+      "id": "c316",
+      "userId": "7e21",
+      "productId": "8",
+      "quantity": 1,
+      "beanId": "2",
+      "milkId": "5",
+      "isCustomized": true
+    },
+    {
+      "id": "0db2",
+      "userId": "7e21",
       "productId": "3",
-      "quantity": 1
+      "quantity": 1,
+      "beanId": "2",
+      "milkId": "5",
+      "isCustomized": true
     },
     {
-      "id": "223e",
-      "productId": "3",
-      "quantity": 1
+      "id": "898f",
+      "userId": "f9fb",
+      "productId": "1",
+      "quantity": 2,
+      "beanId": null,
+      "milkId": null,
+      "isCustomized": false
     },
     {
-      "id": "1ee8",
-      "productId": "3",
-      "quantity": 1
+      "id": "1766726576481",
+      "name": "Customized Cappuccino",
+      "category": "Hot Coffee",
+      "basePrice": 11.99,
+      "qty": 1,
+      "bean": "SL28",
+      "milk": "Camel Milk",
+      "description": "SL28 + Camel Milk",
+      "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+      "isCustomized": true,
+      "userId": "f9fb"
     },
     {
-      "id": "1d0d",
-      "productId": "3",
-      "quantity": 1
+      "id": "898f",
+      "userId": "7e21",
+      "productId": "1",
+      "quantity": 2,
+      "beanId": null,
+      "milkId": null,
+      "isCustomized": false
     },
     {
-      "id": "b2f6",
-      "productId": "3",
-      "quantity": 1
+      "id": "1766726576481",
+      "name": "Customized Cappuccino",
+      "category": "Hot Coffee",
+      "basePrice": 11.99,
+      "qty": 1,
+      "bean": "SL28",
+      "milk": "Camel Milk",
+      "description": "SL28 + Camel Milk",
+      "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+      "isCustomized": true,
+      "userId": "7e21"
     },
     {
-      "id": "0916",
-      "productId": "3",
-      "quantity": 1
+      "id": "5bf6",
+      "userId": "41ba",
+      "productId": "1",
+      "quantity": 1,
+      "beanId": null,
+      "milkId": null,
+      "isCustomized": false
     },
     {
-      "id": "d06d",
-      "productId": "3",
-      "quantity": 1
-    },
-    {
-      "id": "bfd1",
-      "productId": "3",
-      "quantity": 1
-    },
-    {
-      "id": "17a8",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "c8f0",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "b431",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "209e",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "6cc5",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "ebef",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "6768",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "697c",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "c8cf",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "34cb",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "9368",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "14d1",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "cdb7",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "809a",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "9164",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "44bb",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "1758",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "90cc",
-      "quantity": 1
-    },
-    {
-      "id": "204f",
-      "quantity": 1
-    },
-    {
-      "id": "ec53",
-      "quantity": 1
-    },
-    {
-      "id": "5c99",
-      "quantity": 1
-    },
-    {
-      "id": "e1f3",
-      "quantity": 1
-    },
-    {
-      "id": "c17e",
-      "productId": "2",
-      "quantity": 1
-    },
-    {
-      "id": "c0b8",
-      "productId": "2",
-      "quantity": 1
+      "id": "cd0d",
+      "userId": "41ba",
+      "productId": "4",
+      "quantity": 1,
+      "beanId": "10",
+      "milkId": "2",
+      "isCustomized": true
     }
   ],
   "orders": [],

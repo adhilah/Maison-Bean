@@ -1,7 +1,9 @@
-import { Link, useNavigate } from "react-router-dom"; 
-import { useWishlist } from "../../context/WishlistContext";
+import { useNavigate } from "react-router-dom"; 
+// import { useWishlist } from "../../context/WishlistContext";
 import { useCart } from "../../context/CartContext";
 import toast from "react-hot-toast";
+import { getLoggedInUser } from "../../utils/auth";
+
 
 export default function ProductModal({ product, onClose }) {
   const { addToCart } = useCart();
@@ -12,14 +14,21 @@ export default function ProductModal({ product, onClose }) {
     .includes("coffee");
 
   const handleAddToCart = () => {
-    addToCart({
-      ...product,
-      quantity: 1,
-      isCustomized: false,
-    });
-    toast.success("Added to cart");
-    onClose();
-  };
+  const user = getLoggedInUser();
+
+  if (!user) {
+    toast.error("Please login to add to cart");
+    return;
+  }
+
+  addToCart({
+  productId: product.id,
+  isCustomized: false,
+});
+
+  onClose();
+};
+
 
   if (!product) return null;
 
@@ -103,18 +112,24 @@ export default function ProductModal({ product, onClose }) {
             </button>
 
             {isCoffee && (
-                <Link to="/customize/:id">
-              <button
-                onClick={() => {
-                  onClose();
-                  navigate(`/customize/${product.id}`);
-                }}
-                className="w-full border-2 border-[#9c7635] text-[#9c7635] py-3 rounded-xl font-semibold hover:bg-[#9c7635]/10 transition"
-              >
-                Customize
-              </button>
-              </Link>
-            )}
+  <button
+    onClick={() => {
+      const user = getLoggedInUser();
+
+      if (!user) {
+        toast.error("Please login to customize product");
+        return;
+      }
+
+      onClose();
+      navigate(`/customize/${product.id}`);
+    }}
+    className="w-full border-2 border-[#9c7635] text-[#9c7635] py-3 rounded-xl font-semibold hover:bg-[#9c7635]/10 transition"
+  >
+    Customize
+  </button>
+)}
+
           </div>
         </div>
       </div>

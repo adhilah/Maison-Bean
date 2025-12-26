@@ -1,98 +1,129 @@
-
-// import { createContext, useContext, useState } from "react";
-
-// const WishlistContext = createContext(null);
-
-// export const WishlistProvider = ({ children }) => {
-//   const [wishlist, setWishlist] = useState({});
-  
-
-//   const toggleWishlist = (product) => {
-//     setWishlist((prev) => {
-//       const updated = { ...prev };
-
-//       if (updated[product.id]) {
-//         delete updated[product.id];
-//       } else {
-//         updated[product.id] = product;
-//       }
-
-//       return updated;
-//     });
-//   };
-
-//   const isWishlisted = (id) => Boolean(wishlist[id]);
-
-//   return (
-//     <WishlistContext.Provider
-//       value={{ wishlist, toggleWishlist, isWishlisted }}
-//     >
-//       {children}
-//     </WishlistContext.Provider>
-//   );
-// };
-
-// export const useWishlist = () => useContext(WishlistContext);
-
-
-
-
-
+// src/context/WishlistContext.jsx
 
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { getLoggedInUser } from "../utils/auth";
 
 const WishlistContext = createContext(null);
-const API = "http://localhost:3000/wishlist";
+const API_URL = "http://localhost:3000/wishlist";
 
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
+  const user = getLoggedInUser();
+  const userId = user?.id;
 
-  // FETCH wishlist from db.json
+  // ===============================
+  // LOAD WISHLIST (LOGIN / REFRESH)
+  // ===============================
   useEffect(() => {
-    const fetchWishlist = async () => {
+    const loadWishlist = async () => {
       try {
-        const res = await axios.get(API);
-        setWishlist(res.data);
+        if (userId) {
+          const res = await axios.get(`${API_URL}?userId=${userId}`);
+          setWishlist(res.data || []);
+          localStorage.setItem("wishlist", JSON.stringify(res.data || []));
+        } else {
+          const guestWishlist =
+            JSON.parse(localStorage.getItem("wishlist")) || [];
+          setWishlist(guestWishlist);
+        }
       } catch (err) {
-        console.error("Failed to fetch wishlist", err);
+        console.error("Failed to load wishlist", err);
       }
     };
-    fetchWishlist();
-  }, []);
 
-  const isWishlisted = (id) =>
-    wishlist.some((item) => item.id === id);
+    loadWishlist();
+  }, [userId]);
 
-  const wishlistCount = wishlist.length;
-
-  // ADD / REMOVE wishlist item
+  // ===============================
+  // TOGGLE WISHLIST
+  // ===============================
   const toggleWishlist = async (product) => {
+    // ---------- GUEST USER ----------
+    if (!userId) {
+      const guestWishlist =
+        JSON.parse(localStorage.getItem("wishlist")) || [];
+
+      const exists = guestWishlist.find(
+        (item) => item.productId === product.id
+      );
+
+      let updated;
+
+      if (exists) {
+        updated = guestWishlist.filter(
+          (item) => item.productId !== product.id
+        );
+        toast.success("Removed from wishlist ❤️");
+      } else {
+        updated = [
+          ...guestWishlist,
+          {
+            productId: product.id,
+            product,
+          },
+        ];
+        toast.success("Added to wishlist ❤️");
+      }
+
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+      setWishlist(updated);
+      return;
+    }
+
+    // ---------- LOGGED-IN USER ----------
     try {
-      const existing = wishlist.find((item) => item.id === product.id);
+      const existing = wishlist.find(
+        (item) => item.productId === product.id
+      );
 
       if (existing) {
-        // REMOVE
-        await axios.delete(`${API}/${existing.id}`);
+        await axios.delete(`${API_URL}/${existing.id}`);
         setWishlist((prev) =>
-          prev.filter((item) => item.id !== product.id)
+          prev.filter((item) => item.id !== existing.id)
         );
+        toast.success("Removed from wishlist ❤️");
       } else {
-        // ADD
-        const res = await axios.post(API, product);
+        const newItem = {
+          userId,
+          productId: product.id,
+          product,
+        };
+
+        const res = await axios.post(API_URL, newItem);
         setWishlist((prev) => [...prev, res.data]);
+        toast.success("Added to wishlist ❤️");
       }
     } catch (err) {
-      console.error("Wishlist update failed", err);
+      console.error("Wishlist toggle failed", err);
+      toast.error("Failed to update wishlist");
     }
   };
 
+  // ===============================
+  // HELPERS
+  // ===============================
+  const isWishlisted = (productId) =>
+    wishlist.some((item) => item.productId === productId);
+
+  const wishlistCount = wishlist.length;
+
   const removeFromWishlist = async (id) => {
+    if (!userId) {
+      const updated = wishlist.filter((item) => item.productId !== id);
+      setWishlist(updated);
+      localStorage.setItem("wishlist", JSON.stringify(updated));
+      toast.success("Removed from wishlist");
+      return;
+    }
+
     try {
-      await axios.delete(`${API}/${id}`);
+      await axios.delete(`${API_URL}/${id}`);
       setWishlist((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Removed from wishlist");
     } catch (err) {
-      console.error("Remove failed", err);
+      toast.error("Failed to remove");
     }
   };
 
@@ -111,5 +142,10 @@ export const WishlistProvider = ({ children }) => {
   );
 };
 
-export const useWishlist = () => useContext(WishlistContext);
-
+export const useWishlist = () => {
+  const context = useContext(WishlistContext);
+  if (!context) {
+    throw new Error("useWishlist must be used within WishlistProvider");
+  }
+  return context;
+};

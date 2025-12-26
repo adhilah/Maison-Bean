@@ -8,13 +8,14 @@ import Wishlist from './components/Wishlist'
 import Cart from './components/Cart'
 import Cards from './components/cards/MainProducts'
 import CustomizeProduct from "./components/customization/CustomizeProduct";
-// 
+import CustomizePage from './components/customization/CustomizationPage'
+
+
 
 // import ProductCard from './components/ProductCard'
-// import ProductCard from './components/ProductCard'
 
 
-function MainRouter() {
+function  MainRouter() {
   return (
     <div>
         <Routes>
@@ -29,7 +30,7 @@ function MainRouter() {
             <Route path="/menu" element={<Cards />} />
             <Route path="/menu/:category" element={<Cards />} />
              <Route path="/customize/:id" element={<CustomizeProduct />}/>
-            {/* <Route path="/customize" element={<CustomizationModal />} /> */}
+            <Route path="/customize" element={<CustomizePage />} />
             {/* <Route path='/product' element={<ProductCard />}/> */}
 
       

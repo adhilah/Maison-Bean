@@ -52,8 +52,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-[#6c5225] mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              {["/", "/menu", "/coffee", "/bakery", "/snacks", "/customize"].map((path, i) => {
-                const labels = ["Home", "Menu", "Specialty Coffee", "Bakery Items", "Healthy Snacks", "Customize Your Order"];
+              {["/", "/menu", "/product", "/customize"].map((path, i) => {
+                const labels = ["Home", "Menu", "Specialty Coffee", "Customize Your Order"];
                 return (
                   <li key={i}>
                     <Link to={path} className="text-[#9c7635] hover:text-[#6c5225] transition">
@@ -72,7 +72,7 @@ const Footer = () => {
               <ListItem icon="check_circle">Coffee Customization</ListItem>
               <ListItem icon="check_circle">Calories & Benefits Display</ListItem>
               <ListItem icon="check_circle">Rating & Review System</ListItem>
-              <ListItem icon="check_circle">Dynamic Price Updates</ListItem>
+              {/* <ListItem icon="check_circle">Dynamic Price Updates</ListItem> */}
               <ListItem icon="check_circle">Multiple Bean & Milk Options</ListItem>
             </ul>
           </div>
@@ -81,8 +81,8 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold text-[#6c5225] mb-6">Contact Us</h3>
             <ul className="space-y-4">
-              <ListItem icon="location_on">123 Coffee Street, Brew City, BC 12345</ListItem>
-              <ListItem icon="phone">(123) 456-7890</ListItem>
+              <ListItem icon="location_on">123 Coffee Street, Brew City, kozhikode, kerala</ListItem>
+              <ListItem icon="phone">+91 0987654321</ListItem>
               <ListItem icon="mail">info@maisonbean.com</ListItem>
             </ul>
 

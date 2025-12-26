@@ -1,29 +1,103 @@
+// src/pages/CartPage.jsx  (or src/components/CartPage.jsx)
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
-const API = "http://localhost:3000";
+const API_PRODUCTS = "http://localhost:3000/products";
+const API_BEANS = "http://localhost:3000/beanTypes";
+const API_MILKS = "http://localhost:3000/milkOptions";
 
 const CartPage = () => {
-  const {
-    cart,
-    updateQuantity,
-    removeFromCart,
-    cartSubtotal,
-  } = useCart();
+  const { cart, updateQuantity, removeFromCart } = useCart();
 
-  const [shippingMode, setShippingMode] = useState("pickup");
+  const [enrichedCart, setEnrichedCart] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const shippingCost = shippingMode === "delivery" ? 9.9 : 0;
-  const total = cartSubtotal + shippingCost;
+  useEffect(() => {
+    const enrichCart = async () => {
+      if (!cart || cart.length === 0) {
+        setEnrichedCart([]);
+        setLoading(false);
+        return;
+      }
 
-  if (cart.length === 0) {
+      try {
+        const [productsRes, beansRes, milksRes] = await Promise.all([
+          fetch(API_PRODUCTS).then((res) => res.json()),
+          fetch(API_BEANS).then((res) => res.json()),
+          fetch(API_MILKS).then((res) => res.json()),
+        ]);
+
+        const productMap = {};
+        productsRes.forEach((p) => (productMap[p.id] = p));
+
+        const beanMap = {};
+        beansRes.forEach((b) => (beanMap[b.id] = b));
+
+        const milkMap = {};
+        milksRes.forEach((m) => (milkMap[m.id] = m));
+
+        const enriched = cart.map((cartItem) => {
+          const product = productMap[cartItem.productId] || {
+            name: "Unknown Product",
+            image: "/placeholder.jpg",
+            basePrice: 0,
+            category: "N/A",
+            description: "Product details not found.",
+          };
+
+          const bean = cartItem.beanId ? beanMap[cartItem.beanId] : null;
+          const milk = cartItem.milkId ? milkMap[cartItem.milkId] : null;
+
+          const beanAdd = bean?.priceAdd || 0;
+          const milkAdd = milk?.priceAdd || 0;
+          const totalPricePerUnit = (product.basePrice || 0) + beanAdd + milkAdd;
+
+          return {
+            cartId: cartItem.id,
+            product,
+            bean,
+            milk,
+            quantity: cartItem.quantity || 1,
+            totalPricePerUnit,
+            lineTotal: totalPricePerUnit * (cartItem.quantity || 1),
+            isCustomized: cartItem.isCustomized || false,
+          };
+        });
+
+        setEnrichedCart(enriched);
+      } catch (err) {
+        console.error("Failed to enrich cart:", err);
+        setError("Could not load product details. Try refreshing.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    enrichCart();
+  }, [cart]);
+
+  const shippingCost = 9.9;
+  const subtotal = enrichedCart.reduce((sum, item) => sum + item.lineTotal, 0);
+  const total = subtotal + shippingCost;
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 text-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-xl">Loading your cart...</p>
+      </div>
+    );
+  }
+
+  if (!cart || cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 text-center">
         <h1 className="text-4xl font-bold mb-8">My Cart</h1>
         <p className="text-xl text-gray-600 mb-8">Your cart is empty</p>
         <Link to="/">
-          <button className="bg-[#9c7635] text-white px-6 py-3 rounded-lg">
+          <button className="bg-[#9c7635] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#7a5c2a] transition">
             Continue Shopping
           </button>
         </Link>
@@ -38,119 +112,135 @@ const CartPage = () => {
         <div className="flex justify-between items-center mb-10">
           <h1 className="text-4xl font-bold">My Cart</h1>
           <Link to="/">
-            <button className="w-full mt-4 text-[#9c7635] font-medium hover:underline">
+            <button className="text-[#9c7635] font-medium hover:underline">
               ← Continue shopping
             </button>
           </Link>
         </div>
 
+        {error && (
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded mb-6">
+            {error}
+          </div>
+        )}
+
         {/* Cart Items */}
-        <div className="space-y-6 mb-10">
-          {cart.map((item) => (
+        <div className="space-y-6 mb-12">
+          {enrichedCart.map((item) => (
             <div
-              key={item.id}
-              className="bg-white rounded-lg p-6 grid grid-cols-12 gap-4 items-center shadow-sm"
+              key={item.cartId}
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow grid grid-cols-12 gap-6 items-center"
             >
-              {/* Product */}
-              <div className="col-span-6 flex gap-6">
+              {/* Image & Details */}
+              <div className="col-span-12 md:col-span-6 flex gap-6">
                 <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-24 h-24 object-cover rounded"
+                  src={item.product.image || "/placeholder.jpg"}
+                  alt={item.product.name}
+                  className="w-28 h-28 object-cover rounded-xl shadow"
                 />
-                <div>
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-gray-600">
-                    Category: {item.category}
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-gray-800">
+                    {item.isCustomized ? `Customized ${item.product.name}` : item.product.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {item.product.description}
                   </p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Category: {item.product.category}
+                  </p>
+
+                  {/* Customization Details */}
+                  {item.isCustomized && (
+                    <div className="mt-4 space-y-2 text-sm bg-gray-50 p-4 rounded-lg">
+                      {item.bean && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Bean:</span>
+                          <span>
+                            {item.bean.name}
+                            {item.bean.priceAdd > 0 && (
+                              <span className="text-[#9c7635] ml-2">+₹{item.bean.priceAdd.toFixed(2)}</span>
+                            )}
+                          </span>
+                        </div>
+                      )}
+                      {item.milk && (
+                        <div className="flex justify-between">
+                          <span className="font-medium">Milk:</span>
+                          <span>
+                            {item.milk.name}
+                            {item.milk.priceAdd > 0 && (
+                              <span className="text-[#9c7635] ml-2">+₹{item.milk.priceAdd.toFixed(2)}</span>
+                            )}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Price */}
-              <div className="col-span-2 text-center font-semibold">
-                ₹{item.basePrice.toFixed(2)}
+              {/* Unit Price */}
+              <div className="col-span-6 md:col-span-2 text-center">
+                <p className="text-lg font-semibold">${item.totalPricePerUnit.toFixed(2)}</p>
               </div>
 
               {/* Quantity */}
-              <div className="col-span-2 flex justify-center gap-3 items-center">
+              <div className="col-span-6 md:col-span-2 flex justify-center items-center gap-4">
                 <button
-                  onClick={() => updateQuantity(item.id, item.qty - 1)}
-                  className="w-8 h-8 border rounded hover:bg-gray-100"
+                  onClick={() => updateQuantity(item.cartId, item.quantity - 1)}
+                  className="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center text-xl"
+                  disabled={item.quantity <= 1}
                 >
                   −
                 </button>
-                <span className="w-8 text-center">{item.qty}</span>
+                <span className="text-xl font-medium w-12 text-center">{item.quantity}</span>
                 <button
-                  onClick={() => updateQuantity(item.id, item.qty + 1)}
-                  className="w-8 h-8 border rounded hover:bg-gray-100"
+                  onClick={() => updateQuantity(item.cartId, item.quantity + 1)}
+                  className="w-10 h-10 rounded-full border border-gray-300 hover:bg-gray-100 flex items-center justify-center text-xl"
                 >
                   +
                 </button>
               </div>
 
-              {/* Total */}
-              <div className="col-span-1 text-right font-bold">
-                ₹{(item.basePrice * item.qty).toFixed(2)}
+              {/* Line Total */}
+              <div className="col-span-6 md:col-span-1 text-right">
+                <p className="text-xl font-bold">${item.lineTotal.toFixed(2)}</p>
               </div>
 
               {/* Remove */}
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="text-gray-400 hover:text-red-500 text-2xl"
-              >
-                ×
-              </button>
+              <div className="col-span-6 md:col-span-1 text-right">
+                <button
+                  onClick={() => removeFromCart(item.cartId)}
+                  className="text-2xl text-gray-400 hover:text-red-600 transition"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Summary */}
-        <div className="bg-gray-100 rounded-2xl p-8 max-w-6xl ml-auto">
-          <h2 className="text-xl font-semibold mb-6">Choose shipping mode</h2>
-
-          <div className="space-y-4 mb-8">
-            <label className="flex gap-4 cursor-pointer">
-              <input
-                type="radio"
-                name="shipping"
-                checked={shippingMode === "pickup"}
-                onChange={() => setShippingMode("pickup")}
-              />
-              <p className="font-medium">Store pickup</p>
-            </label>
-
-            <label className="flex gap-4 cursor-pointer">
-              <input
-                type="radio"
-                name="shipping"
-                checked={shippingMode === "delivery"}
-                onChange={() => setShippingMode("delivery")}
-              />
-              <p className="font-medium">Delivery at home (30 min) - ₹9.90</p>
-            </label>
-          </div>
-
-          <div className="space-y-3 text-lg">
+        {/* Order Summary */}
+        <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-8 max-w-md ml-auto shadow-lg">
+          <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
+          <div className="space-y-4 text-lg">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>₹{cartSubtotal.toFixed(2)}</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
-
             <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
-              <span>{shippingCost === 0 ? "Free" : `₹${shippingCost.toFixed(2)}`}</span>
+              <span>${shippingCost.toFixed(2)}</span>
             </div>
-
-            <div className="flex justify-between font-bold text-xl pt-4 border-t">
-              <span>Total</span>
-              <span>₹{total.toFixed(2)}</span>
+            <div className="border-t-2 border-dashed pt-4">
+              <div className="flex justify-between text-2xl font-bold text-[#9c7635]">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
             </div>
           </div>
-
-          <button
-            className="w-full mt-8 py-4 rounded-lg text-xl font-bold bg-[#9c7635] hover:bg-[#6c5225] text-white transition"
-          >
-            Checkout ₹{total.toFixed(2)}
+          <button className="w-full mt-8 py-5 bg-[#9c7635] hover:bg-[#7a5c2a] text-white text-xl font-bold rounded-2xl transition transform hover:scale-105">
+            Proceed to Checkout
           </button>
         </div>
       </div>
@@ -158,4 +248,5 @@ const CartPage = () => {
   );
 };
 
+// THIS IS CRITICAL — DEFAULT EXPORT
 export default CartPage;
