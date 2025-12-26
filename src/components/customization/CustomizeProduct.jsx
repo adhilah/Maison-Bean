@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import toast from "react-hot-toast";
 import axios from "axios";
 
 const API = "http://localhost:3000";
@@ -98,7 +99,7 @@ export default function CustomizeProduct() {
 
   const handleAddToCart = () => {
     if (isCoffee && (!selectedBean || !selectedMilk)) {
-      alert("Please select both bean type and milk option for your coffee ☕");
+      alert("Please select both bean type and milk option for your coffee");
       return;
     }
 
@@ -124,8 +125,9 @@ export default function CustomizeProduct() {
 
     console.log("Adding to cart:", customizedItem);
     addToCart(customizedItem);
-    alert(`Added customized ${product.name} to cart! Total: ₹${totalPrice.toFixed(2)}`);
-    navigate("/cart");
+   toast.success(`Added customized ${product.name} to cart! Total: ₹${totalPrice.toFixed(2)}`);
+
+navigate("/cart");
   };
 
   return (
@@ -291,7 +293,7 @@ export default function CustomizeProduct() {
             disabled={isCoffee && (!selectedBean || !selectedMilk)}
             className="w-full py-5 px-8 text-xl font-bold bg-gradient-to-r from-[#9c7635] to-[#d4a574] hover:from-[#7a5c2a] hover:to-[#b88c5f] text-white rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
-            {isCoffee ? "Add Customized Coffee to Cart ☕" : "Add to Cart"}
+            {isCoffee ? "Add Customized Coffee to Cart" : "Add to Cart"}
           </button>
         </div>
       </div>

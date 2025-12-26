@@ -303,7 +303,7 @@ export default function CustomizeProduct({ product, onClose }) {
           <p>Bean: <b>{selectedBean?.name || "-"}</b></p>
           <p>Milk: <b>{selectedMilk?.name || "-"}</b></p>
           <p className="mt-2 text-xl font-bold">
-            Total: ₹{totalPrice.toFixed(2)}
+            Total: ${totalPrice.toFixed(2)}
           </p>
 
           <button

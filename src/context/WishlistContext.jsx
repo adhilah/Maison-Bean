@@ -83,7 +83,7 @@ export const WishlistProvider = ({ children }) => {
         setWishlist((prev) =>
           prev.filter((item) => item.id !== existing.id)
         );
-        toast.success("Removed from wishlist ❤️");
+        toast.success("Removed from wishlist");
       } else {
         const newItem = {
           userId,
@@ -93,7 +93,7 @@ export const WishlistProvider = ({ children }) => {
 
         const res = await axios.post(API_URL, newItem);
         setWishlist((prev) => [...prev, res.data]);
-        toast.success("Added to wishlist ❤️");
+        toast.success("Added to wishlist");
       }
     } catch (err) {
       console.error("Wishlist toggle failed", err);

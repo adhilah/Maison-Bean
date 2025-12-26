@@ -99,7 +99,7 @@ export default function ProductModal({ product, onClose }) {
 
           {/* Price */}
           <p className="text-2xl font-bold text-[#9c7635] mb-6">
-            ₹{product.basePrice}
+            ${product.basePrice}
           </p>
 
           {/* Actions */}

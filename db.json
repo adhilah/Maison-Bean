@@ -395,25 +395,8 @@
   ],
   "wishlist": [
     {
-      "userId": 1,
-      "productId": 2,
-      "product": {
-        "id": 2,
-        "name": "Cappuccino",
-        "category": "Coffee",
-        "basePrice": 150,
-        "image": "https://example.com/cappuccino.jpg",
-        "description": "Rich espresso with steamed milk...",
-        "healthBenefits": "Antioxidants, energy boost",
-        "rating": 4.8,
-        "reviewsCount": 120,
-        "baseCalories": 120
-      },
-      "id": "1"
-    },
-    {
-      "id": "f7c6",
-      "userId": "7e21",
+      "id": "8115",
+      "userId": "41ba",
       "productId": "2",
       "product": {
         "id": "2",
@@ -429,71 +412,20 @@
       }
     },
     {
-      "id": "f1ce",
-      "userId": "7e21",
-      "productId": "3",
+      "id": "c461",
+      "userId": "41ba",
+      "productId": "5",
       "product": {
-        "id": "3",
-        "name": "Americano",
-        "category": "Cold Coffee",
-        "basePrice": 3.99,
-        "baseCalories": 10,
-        "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-        "description": "Espresso diluted with hot water",
-        "healthBenefits": "Low calorie, high caffeine kick",
-        "rating": 4.5,
-        "reviewsCount": 180
-      }
-    },
-    {
-      "id": "3227",
-      "userId": "7e21",
-      "productId": "4",
-      "product": {
-        "id": "4",
-        "name": "Iced Mocha",
-        "category": "Cold Coffee",
-        "basePrice": 6.49,
-        "baseCalories": 280,
-        "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-        "description": "Cold espresso with chocolate and milk",
-        "healthBenefits": "Chocolate antioxidants + caffeine boost",
-        "rating": 4.7,
-        "reviewsCount": 198
-      }
-    },
-    {
-      "id": "a2b0",
-      "userId": "f9fb",
-      "productId": "3",
-      "product": {
-        "id": "3",
-        "name": "Americano",
-        "category": "Cold Coffee",
-        "basePrice": 3.99,
-        "baseCalories": 10,
-        "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-        "description": "Espresso diluted with hot water",
-        "healthBenefits": "Low calorie, high caffeine kick",
-        "rating": 4.5,
-        "reviewsCount": 180
-      }
-    },
-    {
-      "id": "1ea8",
-      "userId": "f9fb",
-      "productId": "4",
-      "product": {
-        "id": "4",
-        "name": "Iced Mocha",
-        "category": "Cold Coffee",
-        "basePrice": 6.49,
-        "baseCalories": 280,
-        "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-        "description": "Cold espresso with chocolate and milk",
-        "healthBenefits": "Chocolate antioxidants + caffeine boost",
-        "rating": 4.7,
-        "reviewsCount": 198
+        "id": "5",
+        "name": "Butter Chicken Croissant",
+        "category": "Croissant",
+        "basePrice": 7.99,
+        "baseCalories": 450,
+        "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+        "description": "Flaky croissant filled with spiced butter chicken",
+        "healthBenefits": "Protein-rich, satisfying savory snack",
+        "rating": 4.9,
+        "reviewsCount": 420
       }
     }
   ],
@@ -612,6 +544,24 @@
       "quantity": 1,
       "beanId": "10",
       "milkId": "2",
+      "isCustomized": true
+    },
+    {
+      "id": "a871",
+      "userId": "41ba",
+      "productId": "3",
+      "quantity": 1,
+      "beanId": "3",
+      "milkId": "3",
+      "isCustomized": true
+    },
+    {
+      "id": "fa2e",
+      "userId": "41ba",
+      "productId": "7",
+      "quantity": 1,
+      "beanId": "10",
+      "milkId": "4",
       "isCustomized": true
     }
   ],
