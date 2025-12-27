@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import Navbar from "./Navbar";
 
 const API_BEANS = "http://localhost:3000/beanTypes";
 const API_MILKS = "http://localhost:3000/milkOptions";
 
 const CartPage = () => {
   const { cart, updateQuantity, removeFromCart } = useCart();
-
   const [enrichedCart, setEnrichedCart] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const enrichCart = async () => {
@@ -20,89 +19,88 @@ const CartPage = () => {
         return;
       }
 
-      const [beans, milks] = await Promise.all([
-        fetch(API_BEANS).then(res => res.json()),
-        fetch(API_MILKS).then(res => res.json()),
-      ]);
+      try {
+        const [beans, milks] = await Promise.all([
+          fetch(API_BEANS).then(res => res.json()),
+          fetch(API_MILKS).then(res => res.json()),
+        ]);
 
-      const beanMap = Object.fromEntries(beans.map(b => [b.id, b]));
-      const milkMap = Object.fromEntries(milks.map(m => [m.id, m]));
+        const beanMap = Object.fromEntries(beans.map(b => [b.id, b]));
+        const milkMap = Object.fromEntries(milks.map(m => [m.id, m]));
 
-      const enriched = cart.map(item => {
-        const product = item.product || {};
+        const enriched = cart.map(item => {
+          const product = item.product || {};
 
-        //  normalize price
-        const basePrice = Number(product.basePrice ?? product.price ?? 0);
+          const basePrice = Number(product.basePrice ?? product.price ?? 0);
+          const bean = item.beanId ? beanMap[item.beanId] : null;
+          const milk = item.milkId ? milkMap[item.milkId] : null;
 
-        const bean = item.beanId ? beanMap[item.beanId] : null;
-        const milk = item.milkId ? milkMap[item.milkId] : null;
+          const beanAdd = Number(bean?.priceAdd ?? 0);
+          const milkAdd = Number(milk?.priceAdd ?? 0);
 
-        const beanAdd = Number(bean?.priceAdd ?? 0);
-        const milkAdd = Number(milk?.priceAdd ?? 0);
+          const unitPrice = basePrice + beanAdd + milkAdd;
+          const qty = Number(item.quantity ?? 1);
 
-        const unitPrice = basePrice + beanAdd + milkAdd;
-        const qty = Number(item.quantity ?? 1);
+          return {
+            cartId: item.id,
+            product: {
+              name: product.name || "Unknown Item",
+              image: product.image || "/placeholder.jpg",
+              description: product.description || "",
+              category: product.category || "N/A",
+            },
+            bean,
+            milk,
+            quantity: qty,
+            unitPrice,
+            lineTotal: unitPrice * qty,
+            isCustomized: item.isCustomized,
+          };
+        });
 
-        return {
-          cartId: item.id,
-          product: {
-            name: product.name || "Unknown Item",
-            image: product.image || "/placeholder.jpg",
-            description: product.description || "",
-            category: product.category || "N/A",
-          },
-          bean,
-          milk,
-          quantity: qty,
-          unitPrice,
-          lineTotal: unitPrice * qty,
-          isCustomized: item.isCustomized,
-        };
-      });
-
-      setEnrichedCart(enriched);
-      setLoading(false);
+        setEnrichedCart(enriched);
+      } catch (error) {
+        console.error("Error enriching cart:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     enrichCart();
   }, [cart]);
 
   const shippingCost = 9.9;
-
   const subtotal = enrichedCart.reduce(
     (sum, item) => sum + (Number.isFinite(item.lineTotal) ? item.lineTotal : 0),
     0
   );
-
   const total = subtotal + shippingCost;
 
   if (loading) return <p className="text-center mt-20">Loading cart...</p>;
 
+  // Empty Cart View
   if (!cart.length) {
     return (
-      <div className="text-center mt-20">
-        <h1 className="text-3xl font-bold mb-4">Your cart is empty</h1>
-        <Link to="/" className="text-[#9c7635] underline">
-          Continue Shopping
+      <div className="min-h-screen bg-gray-50 py-12 px-4 text-center">
+        <h1 className="text-4xl font-bold mb-8">My Cart</h1>
+        <p className="text-xl text-gray-600 mb-8">Your cart is empty</p>
+        <Link to="/">
+          <button className="bg-[#9c7635] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#7a5c2a] transition">
+            Continue Shopping
+          </button>
         </Link>
       </div>
     );
   }
 
+  // Cart with Items View
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <Navbar />
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
 
-        <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-bold">My Cart</h1>
-          <button onClick={() => navigate("/")} className="text-[#9c7635]">
-            ← Continue shopping
-          </button>
-        </div>
-
-
-        <div className="space-y-6">
+        {/* Cart Items */}
+        <div className="flex-1 space-y-6">
+          <h1 className="text-4xl font-bold mb-4">My Cart</h1>
           {enrichedCart.map(item => (
             <div
               key={item.cartId}
@@ -117,7 +115,6 @@ const CartPage = () => {
                 <div>
                   <h3 className="font-bold text-lg">{item.product.name}</h3>
                   <p className="text-sm text-gray-500">{item.product.category}</p>
-
                   {item.isCustomized && (
                     <div className="text-sm mt-2 text-gray-600">
                       {item.bean && <p>Bean: {item.bean.name}</p>}
@@ -164,8 +161,8 @@ const CartPage = () => {
           ))}
         </div>
 
-         {/* Order Summary */}
-        <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-8 ml-auto shadow-lg">
+        {/* Order Summary */}
+        <div className="w-full lg:w-96 bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-8 shadow-lg self-start">
           <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
           <div className="space-y-4 text-lg">
             <div className="flex justify-between">
@@ -183,7 +180,11 @@ const CartPage = () => {
               </div>
             </div>
           </div>
-          <button className="w-full mt-8 py-5 bg-[#9c7635] hover:bg-[#7a5c2a] text-white text-xl font-bold rounded-2xl transition transform hover:scale-105">
+
+          <button
+            onClick={() => navigate("/checkout")}
+            className="w-full mt-8 py-5 bg-[#9c7635] hover:bg-[#7a5c2a] text-white text-xl font-bold rounded-2xl transition transform hover:scale-105"
+          >
             Proceed to Checkout
           </button>
         </div>

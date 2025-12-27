@@ -162,7 +162,7 @@ navigate("/cart");
     {/* ================= BEAN TYPES ================= */}
     <div className="bg-white rounded-2xl border shadow-sm p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-        ☕ Bean Type
+        Bean Type
       </h2>
 
       <div className="max-h-[320px] overflow-y-auto pr-2 space-y-4">
@@ -202,7 +202,7 @@ navigate("/cart");
     {/* ================= MILK TYPES ================= */}
     <div className="bg-white rounded-2xl border shadow-sm p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-        🥛 Milk Type
+        Milk Type
       </h2>
 
       <div className="max-h-[320px] overflow-y-auto pr-2 space-y-4">

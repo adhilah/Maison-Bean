@@ -39,6 +39,7 @@ function Login() {
 
   return (
     <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
+      
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-amber-900 mb-2">Maison Bean</h1>

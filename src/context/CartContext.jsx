@@ -8,15 +8,13 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Load cart from user
+  // Load cart
   useEffect(() => {
     if (!user) return;
 
     axios
       .get(`http://localhost:3000/users/${user.id}`)
-      .then((res) => {
-        setCart(res.data.cart || []);
-      })
+      .then(res => setCart(res.data.cart || []))
       .catch(() => toast.error("Failed to load cart"));
   }, [user]);
 
@@ -27,9 +25,9 @@ export const CartProvider = ({ children }) => {
     }
 
     const cartItem = {
-      id: Date.now().toString(), // unique cart item ID
+      id: Date.now().toString(),
       productId: item.id,
-      product: item,             // full product object
+      product: item,               // ✅ store FULL product
       quantity: 1,
       isCustomized: item.isCustomized || false,
       beanId: item.beanId || null,
@@ -38,31 +36,35 @@ export const CartProvider = ({ children }) => {
 
     const updatedCart = [...cart, cartItem];
 
-    await axios.patch(`http://localhost:3000/users/${user.id}`, { cart: updatedCart });
-    setCart(updatedCart);
+    await axios.patch(`http://localhost:3000/users/${user.id}`, {
+      cart: updatedCart,
+    });
 
-    toast.success(
-      item?.name ? `${item.name} added to cart` : "Item added to cart"
-    );
+    setCart(updatedCart);
+    toast.success(`${item.name} added to cart`);
   };
 
   const updateQuantity = async (cartId, newQty) => {
-    if (!user) return;
-    if (newQty < 1) return; // prevent negative quantity
+    if (newQty < 1) return;
 
     const updatedCart = cart.map(item =>
       item.id === cartId ? { ...item, quantity: newQty } : item
     );
 
-    await axios.patch(`http://localhost:3000/users/${user.id}`, { cart: updatedCart });
+    await axios.patch(`http://localhost:3000/users/${user.id}`, {
+      cart: updatedCart,
+    });
+
     setCart(updatedCart);
   };
 
   const removeFromCart = async (cartId) => {
-    if (!user) return;
-
     const updatedCart = cart.filter(item => item.id !== cartId);
-    await axios.patch(`http://localhost:3000/users/${user.id}`, { cart: updatedCart });
+
+    await axios.patch(`http://localhost:3000/users/${user.id}`, {
+      cart: updatedCart,
+    });
+
     setCart(updatedCart);
   };
 

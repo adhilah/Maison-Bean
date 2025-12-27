@@ -49,7 +49,7 @@ const Footer = () => {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div>
+          {/* <div>
             <h3 className="text-lg font-semibold text-[#6c5225] mb-6">Quick Links</h3>
             <ul className="space-y-3">
               {["/", "/menu", "/product", "/customize"].map((path, i) => {
@@ -63,7 +63,7 @@ const Footer = () => {
                 );
               })}
             </ul>
-          </div>
+          </div> */}
 
           {/* Column 3: Our Features */}
           <div>

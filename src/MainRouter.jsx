@@ -5,11 +5,12 @@ import Login from "./pages/Login";
 import RegistrationPage from "./pages/RegistrationPage";
 import Cards from "./components/cards/MainProducts";
 import Cart from "./components/Cart";
-import Wishlist from "./components/Wishlist";
+import Wishlist from "./components/cards/Wishlist";
 import CustomizeProduct from "./components/customization/CustomizeProduct";
 import CustomizePage from "./components/customization/CustomizationPage";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CheckoutPage from "./pages/CheckoutPage";
 
 export default function MainRouter() {
   return (
@@ -21,6 +22,7 @@ export default function MainRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/registration" element={<RegistrationPage />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
       {/* PROTECTED */}
       <Route
         path="/cart"

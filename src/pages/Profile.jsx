@@ -185,9 +185,13 @@ const Profile = () => {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6">
-      <h2 className="text-4xl font-bold text-[#5c4033] mb-12 text-center">
-        My Profile
-      </h2>
+      <div className="flex justify-between mb-8">
+          <h1 className="text-3xl font-bold">Profile</h1>
+          <button onClick={() => navigate("/")} className="text-[#9c7635]">
+            ← Continue shopping
+          </button>
+        </div>
+
 
       {/* ================= USER INFO ================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
