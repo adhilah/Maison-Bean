@@ -1,5 +1,3 @@
-// src/pages/CartPage.jsx  (or src/components/CartPage.jsx)
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -25,22 +23,22 @@ const CartPage = () => {
 
       try {
         const [productsRes, beansRes, milksRes] = await Promise.all([
-          fetch(API_PRODUCTS).then((res) => res.json()),
-          fetch(API_BEANS).then((res) => res.json()),
-          fetch(API_MILKS).then((res) => res.json()),
+          fetch(API_PRODUCTS).then(res => res.json()),
+          fetch(API_BEANS).then(res => res.json()),
+          fetch(API_MILKS).then(res => res.json()),
         ]);
 
         const productMap = {};
-        productsRes.forEach((p) => (productMap[p.id] = p));
+        productsRes.forEach(p => (productMap[p.id] = p));
 
         const beanMap = {};
-        beansRes.forEach((b) => (beanMap[b.id] = b));
+        beansRes.forEach(b => (beanMap[b.id] = b));
 
         const milkMap = {};
-        milksRes.forEach((m) => (milkMap[m.id] = m));
+        milksRes.forEach(m => (milkMap[m.id] = m));
 
-        const enriched = cart.map((cartItem) => {
-          const product = productMap[cartItem.productId] || {
+        const enriched = cart.map(cartItem => {
+          const product = cartItem.product || productMap[cartItem.productId] || {
             name: "Unknown Product",
             image: "/placeholder.jpg",
             basePrice: 0,
@@ -126,7 +124,7 @@ const CartPage = () => {
 
         {/* Cart Items */}
         <div className="space-y-6 mb-12">
-          {enrichedCart.map((item) => (
+          {enrichedCart.map(item => (
             <div
               key={item.cartId}
               className="bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow grid grid-cols-12 gap-6 items-center"
@@ -142,12 +140,8 @@ const CartPage = () => {
                   <h3 className="text-xl font-bold text-gray-800">
                     {item.isCustomized ? `Customized ${item.product.name}` : item.product.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {item.product.description}
-                  </p>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Category: {item.product.category}
-                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{item.product.description}</p>
+                  <p className="text-sm text-gray-500 mt-2">Category: {item.product.category}</p>
 
                   {/* Customization Details */}
                   {item.isCustomized && (
@@ -174,6 +168,7 @@ const CartPage = () => {
                           </span>
                         </div>
                       )}
+
                     </div>
                   )}
                 </div>
@@ -248,5 +243,4 @@ const CartPage = () => {
   );
 };
 
-// THIS IS CRITICAL — DEFAULT EXPORT
 export default CartPage;

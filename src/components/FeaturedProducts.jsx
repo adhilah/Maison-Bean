@@ -1,117 +1,7 @@
-// import axios from "axios";
-// import { memo, useEffect, useState } from "react";
-// import { useWishlist } from "../context/WishlistContext";
-// import ProductModal from "./cards/ProductModal";
-
-// const FeaturedProducts = () => {
-//   const [products, setProducts] = useState([]);
-//   const [selectedProduct, setSelectedProduct] = useState(null);
-
-//   const { toggleWishlist, isWishlisted } = useWishlist();
-
-//   useEffect(() => {
-//     axios
-//       .get("http://localhost:3000/products")
-//       .then((res) => setProducts(res.data))
-//       .catch((err) => console.error("API ERROR:", err));
-//   }, []);
-
-//   if (products.length === 0) {
-//     return <p className="text-center py-10">Loading...</p>;
-//   }
-
-//   return (
-//     <div className="bg-[#ded4b0] px-4 sm:px-10">
-//       <h2 className="text-2xl text-center font-semibold py-6">
-//         Featured Products
-//       </h2>
-
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-8">
-//         {products.slice(0, 8).map((item) => (
-//           <div
-//             key={item.id}
-//             onClick={() => setSelectedProduct(item)}
-//             className="bg-white rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer flex flex-col"
-//           >
-//             {/* IMAGE */}
-//             <div className="h-40 relative">
-//               <img
-//                 src={item.image}
-//                 alt={item.name}
-//                 className="h-full w-full object-cover rounded-t-2xl"
-//               />
-
-//               {/* WISHLIST */}
-//               <button
-//                 onClick={(e) => {
-//                   e.stopPropagation();
-//                   toggleWishlist(item);
-//                 }}
-//                 className="absolute top-3 right-3 bg-white rounded-full p-1 shadow"
-//               >
-//                 <span
-//                   className={`material-symbols-rounded text-xl ${
-//                     isWishlisted(item.id)
-//                       ? "text-red-500"
-//                       : "text-gray-400"
-//                   }`}
-//                 >
-//                   favorite
-//                 </span>
-//               </button>
-//             </div>
-
-//             {/* CONTENT */}
-//             <div className="p-4 flex flex-col flex-1">
-//               <h3 className="font-semibold line-clamp-2 min-h-[3rem]">
-//                 {item.name}
-//               </h3>
-
-//               {/* RATING */}
-//               {item.rating && (
-//                 <div className="flex items-center gap-1 text-sm mt-1">
-//                   <span className="text-yellow-500">★</span>
-//                   <span className="font-medium">{item.rating}</span>
-//                   {item.reviewsCount && (
-//                     <span className="text-gray-500">
-//                       ({item.reviewsCount})
-//                     </span>
-//                   )}
-//                 </div>
-//               )}
-
-//               <p className="font-semibold text-[#9c7635] mt-2">
-//                 ₹{item.basePrice}
-//               </p>
-
-//               <p className="text-sm text-gray-600 line-clamp-2 mt-1">
-//                 {item.description}
-//               </p>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* MODAL */}
-//       {selectedProduct && (
-//         <ProductModal
-//           product={selectedProduct}
-//           onClose={() => setSelectedProduct(null)}
-//         />
-//       )}
-//     </div>
-//   );
-// };
-
-// export default memo(FeaturedProducts);
-
-
-
-
+import React, { useState, useEffect, memo } from "react";
 import axios from "axios";
-import { memo, useEffect, useState } from "react";
-import { useWishlist } from "../context/WishlistContext";
 import ProductModal from "./cards/ProductModal";
+import { useWishlist } from "../context/WishlistContext";
 
 const FeaturedProducts = () => {
   const [products, setProducts] = useState([]);
@@ -127,7 +17,11 @@ const FeaturedProducts = () => {
   }, []);
 
   if (products.length === 0) {
-    return <p className="text-center py-20 text-gray-600">Loading products...</p>;
+    return (
+      <p className="text-center py-20 text-gray-600">
+        Loading products...
+      </p>
+    );
   }
 
   return (
@@ -137,80 +31,59 @@ const FeaturedProducts = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-        {products.slice(0, 8).map((item) => (
-          <div
-            key={item.id}
-            onClick={() => setSelectedProduct(item)}
-            className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden group flex flex-col"
-          >
-            {/* Image Container */}
-            <div className="relative h-56 overflow-hidden">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
+        {products.slice(0, 8).map((product) => {
+          const wishlisted = isWishlisted(product);
 
-              {/* Wishlist Button */}
+          return (
+            <div
+              key={product.id}
+              onClick={() => setSelectedProduct(product)}
+              className="relative cursor-pointer bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+            >
+              {/* Wishlist Icon */}
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent opening modal
-                  toggleWishlist(item);
+                  e.stopPropagation();
+                  toggleWishlist(product);
                 }}
-                className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-200 z-10"
-                aria-label={
-                  isWishlisted(item.id)
-                    ? "Remove from wishlist"
-                    : "Add to wishlist"
-                }
+                className="absolute top-3 right-3 p-1"
               >
-                <span
-                  className={`material-symbols-rounded text-2xl font-bold ${
-                    isWishlisted(item.id)
-                      ? "text-red-600 fill-current"
-                      : "text-gray-600"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className={`w-6 h-6 transition ${
+                    wishlisted
+                      ? "fill-red-500 stroke-red-500"
+                      : "fill-none stroke-gray-400 hover:stroke-red-500"
                   }`}
+                  strokeWidth="2"
                 >
-                  favorite
-                </span>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 21s-7.5-4.35-10-8.5C.5 8 3.5 4 7.5 4c2 0 3.5 1 4.5 2.5C13 5 14.5 4 16.5 4 20.5 4 23.5 8 22 12.5 19.5 16.65 12 21 12 21z"
+                  />
+                </svg>
               </button>
+
+              <img
+                src={product.image}
+                alt={product.name}
+                className="h-40 w-full object-cover rounded"
+              />
+
+              <h3 className="mt-2 font-semibold">{product.name}</h3>
+
+              <p className="text-sm text-gray-500 line-clamp-2">
+                {product.description}
+              </p>
+
+              <p className="mt-2 font-bold text-[#9c7635]">
+                ₹{product.basePrice}
+              </p>
             </div>
-
-            {/* Product Details */}
-            <div className="p-6 flex flex-col flex-1">
-              <h3 className="text-lg font-bold text-[#5c4033] line-clamp-2 mb-3">
-                {item.name}
-              </h3>
-
-              {/* Rating */}
-              {item.rating && (
-                <div className="flex items-center gap-2 text-sm mb-4">
-                  <span className="text-yellow-500 text-lg">★</span>
-                  <span className="font-semibold text-gray-800">
-                    {item.rating}
-                  </span>
-                  {item.reviewsCount && (
-                    <span className="text-gray-500">
-                      ({item.reviewsCount} reviews)
-                    </span>
-                  )}
-                </div>
-              )}
-
-              {/* Price */}
-              <div className="mt-auto">
-                <p className="text-2xl font-bold text-[#9c7635]">
-                  ₹{item.basePrice}
-                </p>
-
-                {/* Short Description */}
-                <p className="text-sm text-gray-600 line-clamp-2 mt-2">
-                  {item.description}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Product Modal */}

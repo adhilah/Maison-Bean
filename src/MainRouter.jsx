@@ -1,42 +1,59 @@
-import React from 'react'
-import { Routes,Route } from 'react-router-dom'
-import RegistrationPage from './pages/RegistrationPage'
-import Home from './pages'
-import Login from './pages/Login'
-import HeroSection from './components/heroSection'
-import Wishlist from './components/Wishlist'
-import Cart from './components/Cart'
-import Cards from './components/cards/MainProducts'
+// MainRouter.jsx
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages";
+import Login from "./pages/Login";
+import RegistrationPage from "./pages/RegistrationPage";
+import Cards from "./components/cards/MainProducts";
+import Cart from "./components/Cart";
+import Wishlist from "./components/Wishlist";
 import CustomizeProduct from "./components/customization/CustomizeProduct";
-import CustomizePage from './components/customization/CustomizationPage'
+import CustomizePage from "./components/customization/CustomizationPage";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-
-
-// import ProductCard from './components/ProductCard'
-
-
-function  MainRouter() {
+export default function MainRouter() {
   return (
-    <div>
-        <Routes>
-
-            <Route path='/' element={<Home />} />
-            {/* <Route path="/home" element={<Home />} /> */}
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/wishlist" element={<Wishlist />}/>
-            <Route path="/herosection" element={<HeroSection />} />
-            <Route path='/registration' element={<RegistrationPage />} />
-            <Route path='/login' element={<Login />} />
-            <Route path="/menu" element={<Cards />} />
-            <Route path="/menu/:category" element={<Cards />} />
-             <Route path="/customize/:id" element={<CustomizeProduct />}/>
-            <Route path="/customize" element={<CustomizePage />} />
-            {/* <Route path='/product' element={<ProductCard />}/> */}
-
-      
-        </Routes>
-    </div>
-  )
+    <Routes>
+      {/* PUBLIC */}
+      <Route path="/" element={<Home />} />
+      <Route path="/menu" element={<Cards />} />
+      <Route path="/menu/:category" element={<Cards />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/registration" element={<RegistrationPage />} />
+      <Route path="/profile" element={<Profile />} />
+      {/* PROTECTED */}
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/wishlist"
+        element={
+          <ProtectedRoute>
+            <Wishlist />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customize/:id"
+        element={
+          <ProtectedRoute>
+            <CustomizeProduct />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customize"
+        element={
+          <ProtectedRoute>
+            <CustomizePage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
 }
-
-export default MainRouter

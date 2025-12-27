@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import Pagination from "./Pagination";
 import RecommendationCarousel from "./RecommendationCarousel";
@@ -65,6 +65,11 @@ function Cards() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Café Menu</h1>
+        <Link to="/">
+                  <button className="text-[#9c7635] hover:underline">
+                    Continue Shopping
+                  </button>
+                </Link>
 
         <div className="flex gap-8">
           {/* ===== LEFT SIDEBAR ===== */}
