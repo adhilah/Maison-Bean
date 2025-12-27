@@ -41,24 +41,6 @@ const HeroSection = () => {
           Create your perfect drink with our interactive builder. 
           Customize every detail to match your taste and preferences.
         </p>
-
-    
-
-        {/* Stats */}
-        {/* <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-300">150+</div>
-            <div className="text-amber-100 text-sm">Combinations</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-300">4.8★</div>
-            <div className="text-amber-100 text-sm">Rating</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-300">Fresh</div>
-            <div className="text-amber-100 text-sm">Daily</div>
-          </div> */}
-        {/* </div> */}
       </div>
     </div>
   );
@@ -67,49 +49,3 @@ const HeroSection = () => {
 export default HeroSection;
 
 
-
-// import React from 'react';
-
-// const HeroSection = () => {
-//   return (
-//     <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
-//       {/* Video Background */}
-//       <div className="absolute inset-0 z-0">
-//         <video
-//           autoPlay
-//           loop
-//           muted
-//           playsInline
-//           className="w-full h-full object-cover"
-//         >
-//           <source src="https://player.vimeo.com/external/2853793.sd.mp4?s=7d0f3b0ec51b34b3b7c67a6b0dbf3b67f2e3d329&profile_id=164&oauth2_token_id=57447761" type="video/mp4" />
-//         </video>
-//         <div className="absolute inset-0 bg-black/50"></div>
-//       </div>
-
-//       {/* Content */}
-//       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-//         {/* Logo/Brand */}
-//         <div className="mb-8">
-//           <h1 className="text-5xl md:text-6xl font-bold text-white mb-2">
-//             Maison <span className="text-[#6c5225]">Bean</span>
-//           </h1>
-//           <p className="text-xl text-amber-100">Artisanal Coffee Experience</p>
-//         </div>
-
-//         {/* Main Message */}
-//         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-//           Premium Custom Creations
-//         </h2>
-
-//         {/* Description */}
-//         <p className="text-lg text-amber-100 mb-10 max-w-2xl mx-auto">
-//           Create your perfect drink with our interactive builder. 
-//           Customize every detail to match your taste and preferences.
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default HeroSection;

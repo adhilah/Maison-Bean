@@ -247,15 +247,6 @@ navigate("/cart");
   </p>
 )}
 
-              {/* </div>
-            </div>
-          </>
-        ) : (
-          <p className="text-center text-gray-500 py-12 text-lg">
-            No customization options available for {product.category} items.
-          </p>
-        )} */}
-
         {/* Order Summary */}
         <div className="bg-gradient-to-r from-[#9c7635]/5 to-[#d4a574]/5 backdrop-blur-sm p-8 rounded-3xl border border-[#9c7635]/20">
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Order Summary</h2>

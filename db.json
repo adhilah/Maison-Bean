@@ -609,6 +609,29 @@
           "isCustomized": false,
           "beanId": null,
           "milkId": null
+        },
+        {
+          "id": "1766867737933",
+          "productId": "17668677379320.3503604007132747",
+          "product": {
+            "id": "17668677379320.3503604007132747",
+            "productId": "1",
+            "name": "Custom Cappuccino (Robusta + Oat Milk)",
+            "category": "Hot Coffee",
+            "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+            "basePrice": 7.69,
+            "quantity": 1,
+            "beanId": "2",
+            "milkId": "3",
+            "bean": "Robusta",
+            "milk": "Oat Milk",
+            "description": "Customized with Robusta beans and Oat Milk",
+            "isCustomized": true
+          },
+          "quantity": 1,
+          "isCustomized": true,
+          "beanId": "2",
+          "milkId": "3"
         }
       ]
     },
