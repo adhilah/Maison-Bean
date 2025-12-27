@@ -11,6 +11,7 @@ import CustomizePage from "./components/customization/CustomizationPage";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckoutPage from "./pages/CheckoutPage";
+import PaymentPage from "./pages/PaymentPage";
 
 export default function MainRouter() {
   return (
@@ -23,6 +24,7 @@ export default function MainRouter() {
       <Route path="/registration" element={<RegistrationPage />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/payment" element={<PaymentPage />} />
       {/* PROTECTED */}
       <Route
         path="/cart"

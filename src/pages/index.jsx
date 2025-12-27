@@ -28,15 +28,15 @@ function Home() {
       <Link to="/menu">
       <button
         onClick={scrollToMenu}
-        className="fixed bottom-6 right-6 z-50 
-             bg-orange-700/60 backdrop-blur-lg text-white 
+        className="fixed bottom-6
+             bg-[#7a5c2a]/85 backdrop-blur-lg text-white 
              px-8 py-2
             //  rounded-3xl 
              shadow-xl 
              ring-1 ring-gray/70
              flex items-center gap-4 
              text-xl font-medium 
-             hover:bg-amber-800/70 
+             hover:bg-[#7a5c2a]/70
              hover:backdrop-blur-xl 
              hover:shadow-2xl 
              hover:ring-white/60

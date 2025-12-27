@@ -164,7 +164,7 @@ export default function ProductModal({ product, onClose }) {
       isCustomized: false,
     });
 
-    toast.success(`${product.name} added to cart`);
+    // toast.success(`${product.name} added to cart`);
     onClose();
   };
 

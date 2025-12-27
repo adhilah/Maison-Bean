@@ -517,6 +517,54 @@
             "rating": 4.8,
             "reviewsCount": 356
           }
+        },
+        {
+          "id": "3",
+          "name": "Americano",
+          "category": "Cold Coffee",
+          "basePrice": 3.99,
+          "baseCalories": 10,
+          "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+          "description": "Espresso diluted with hot water",
+          "healthBenefits": "Low calorie, high caffeine kick",
+          "rating": 4.5,
+          "reviewsCount": 180
+        },
+        {
+          "id": "4",
+          "name": "Iced Mocha",
+          "category": "Cold Coffee",
+          "basePrice": 6.49,
+          "baseCalories": 280,
+          "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+          "description": "Cold espresso with chocolate and milk",
+          "healthBenefits": "Chocolate antioxidants + caffeine boost",
+          "rating": 4.7,
+          "reviewsCount": 198
+        },
+        {
+          "id": "7",
+          "name": "Affogato",
+          "category": "Cold Coffee",
+          "basePrice": 6,
+          "baseCalories": 250,
+          "image": "https://i.pinimg.com/736x/74/99/f7/7499f70c3c2cc42bf98c1231ca4465dd.jpg",
+          "description": "Espresso poured over a scoop of vanilla ice cream",
+          "healthBenefits": "Boosts energy, dessert-like treat",
+          "rating": 4.9,
+          "reviewsCount": 80
+        },
+        {
+          "id": "8",
+          "name": "Espresso",
+          "category": "Hot Coffee",
+          "basePrice": 3.49,
+          "baseCalories": 5,
+          "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
+          "description": "Pure, intense shot of concentrated coffee",
+          "healthBenefits": "High antioxidants, improves focus and metabolism",
+          "rating": 4.7,
+          "reviewsCount": 289
         }
       ],
       "cart": [
@@ -542,27 +590,25 @@
           "milkId": null
         },
         {
-          "id": "1766857488665",
-          "productId": "17668574886650.7378264792830252",
+          "id": "1766865555016",
+          "productId": "1",
           "product": {
-            "id": "17668574886650.7378264792830252",
-            "productId": "4",
-            "name": "Custom Iced Mocha (Robusta + Coconut Milk)",
-            "category": "Cold Coffee",
-            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-            "basePrice": 9.49,
-            "quantity": 1,
-            "beanId": "2",
-            "milkId": "5",
-            "bean": "Robusta",
-            "milk": "Coconut Milk",
-            "description": "Customized with Robusta beans and Coconut Milk",
-            "isCustomized": true
+            "id": "1",
+            "name": "Cappuccino",
+            "category": "Hot Coffee",
+            "basePrice": 4.99,
+            "baseCalories": 120,
+            "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+            "description": "Classic espresso with steamed milk and foam",
+            "healthBenefits": "Rich in antioxidants, boosts energy",
+            "rating": 4.8,
+            "reviewsCount": 245,
+            "isCustomized": false
           },
           "quantity": 1,
-          "isCustomized": true,
-          "beanId": "2",
-          "milkId": "5"
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
         }
       ]
     },

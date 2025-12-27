@@ -17,11 +17,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
+  localStorage.removeItem("user");
+  window.location.reload();
+};
 
-  // ✅ Add this function
+  // Add this function
   const updateUser = (updatedData) => {
     const newUser = { ...user, ...updatedData };
     setUser(newUser);

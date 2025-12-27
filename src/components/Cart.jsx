@@ -21,14 +21,14 @@ const CartPage = () => {
       }
 
       const [beans, milks] = await Promise.all([
-        fetch(API_BEANS).then(res => res.json()),
-        fetch(API_MILKS).then(res => res.json()),
+        fetch(API_BEANS).then((res) => res.json()),
+        fetch(API_MILKS).then((res) => res.json()),
       ]);
 
-      const beanMap = Object.fromEntries(beans.map(b => [b.id, b]));
-      const milkMap = Object.fromEntries(milks.map(m => [m.id, m]));
+      const beanMap = Object.fromEntries(beans.map((b) => [b.id, b]));
+      const milkMap = Object.fromEntries(milks.map((m) => [m.id, m]));
 
-      const enriched = cart.map(item => {
+      const enriched = cart.map((item) => {
         const product = item.product || {};
 
         //  normalize price
@@ -93,7 +93,6 @@ const CartPage = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <Navbar />
       <div className="max-w-6xl mx-auto">
-
         <div className="flex justify-between mb-8">
           <h1 className="text-3xl font-bold">My Cart</h1>
           <button onClick={() => navigate("/")} className="text-[#9c7635]">
@@ -101,9 +100,8 @@ const CartPage = () => {
           </button>
         </div>
 
-
         <div className="space-y-6">
-          {enrichedCart.map(item => (
+          {enrichedCart.map((item) => (
             <div
               key={item.cartId}
               className="bg-white rounded-xl p-6 shadow grid grid-cols-12 gap-4 items-center"
@@ -116,7 +114,9 @@ const CartPage = () => {
                 />
                 <div>
                   <h3 className="font-bold text-lg">{item.product.name}</h3>
-                  <p className="text-sm text-gray-500">{item.product.category}</p>
+                  <p className="text-sm text-gray-500">
+                    {item.product.category}
+                  </p>
 
                   {item.isCustomized && (
                     <div className="text-sm mt-2 text-gray-600">
@@ -164,7 +164,7 @@ const CartPage = () => {
           ))}
         </div>
 
-         {/* Order Summary */}
+        {/* Order Summary */}
         <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-8 ml-auto shadow-lg">
           <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
           <div className="space-y-4 text-lg">
@@ -183,9 +183,9 @@ const CartPage = () => {
               </div>
             </div>
           </div>
-          <button className="w-full mt-8 py-5 bg-[#9c7635] hover:bg-[#7a5c2a] text-white text-xl font-bold rounded-2xl transition transform hover:scale-105">
-            Proceed to Checkout
-          </button>
+          <Link to="/payment">
+            <button className="w-full mt-8 bg-[#9c7635] hover:bg-[#7a5c2a] text-white py-5 rounded-2xl font-bold text-xl transition transform hover:scale-105">Proceed to Checkout</button>
+          </Link>
         </div>
       </div>
     </div>
