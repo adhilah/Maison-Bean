@@ -10,8 +10,6 @@ export default function MenuPage() {
       <h1 className="text-3xl font-bold capitalize mb-6">
         {formattedCategory}
       </h1>
-
-      {/* Render products filtered by category */}
     </div>
   );
 }

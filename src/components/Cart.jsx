@@ -66,12 +66,13 @@ const CartPage = () => {
     enrichCart();
   }, [cart]);
 
-  const total = subtotal;
-
   const subtotal = enrichedCart.reduce(
     (sum, item) => sum + (Number.isFinite(item.lineTotal) ? item.lineTotal : 0),
     0
   );
+
+  const shipping = 9.9;
+  const total = subtotal + shipping;
 
   if (loading) return <p className="text-center mt-20">Loading cart...</p>;
 
@@ -88,8 +89,6 @@ const CartPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 relative pb-32">
-      {" "}
-      {/* Added padding for sticky button */}
       <Navbar />
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="flex justify-between mb-8">
@@ -163,15 +162,15 @@ const CartPage = () => {
           ))}
         </div>
 
-        {/* Sticky Checkout Button - Fixed at bottom */}
+        {/* Sticky Checkout Button - Shows SUBTOTAL only */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg p-4">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             <div className="text-xl font-bold text-[#9c7635]">
-              Total: ${total.toFixed(2)}
+              Total: ${subtotal.toFixed(2)}
             </div>
             <Link to="/delivery-details">
               <button className="bg-[#9c7635] hover:bg-[#7a5c2a] text-white px-10 py-4 rounded-2xl font-bold text-xl">
-                Proceed to Checkout – ${total.toFixed(2)}
+                Proceed to Checkout – ${subtotal.toFixed(2)}
               </button>
             </Link>
           </div>
