@@ -90,14 +90,14 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 ">
       <Navbar />
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-bold">My Cart</h1>
-          <button onClick={() => navigate("/")} className="text-[#9c7635]">
-            ← Continue shopping
-          </button>
+           <h1 className="text-3xl font-bold">Cart</h1>
+          <Link to="/" className="text-[#9c7635] hover:underline">
+          ← Continue Shopping
+        </Link>
         </div>
 
         <div className="space-y-6">

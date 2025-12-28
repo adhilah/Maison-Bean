@@ -8,20 +8,20 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [userId, setUserId] = useState(null);
 
-  // Load userId once on mount
+  // Load user from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("user");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setUserId(parsed.id || null);
-      } catch (e) {
-        setUserId(null);
-      }
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored);
+      setUserId(parsed.id);
+    } catch {
+      setUserId(null);
     }
   }, []);
 
-  // Load wishlist when userId changes
+  // Load wishlist
   useEffect(() => {
     if (!userId) {
       setWishlist([]);
@@ -30,54 +30,45 @@ export const WishlistProvider = ({ children }) => {
 
     axios
       .get(`http://localhost:3000/users/${userId}`)
-      .then((res) => {
-        setWishlist(res.data.wishlist || []);
-      })
-      .catch((err) => {
-        console.error("Failed to load wishlist:", err);
-        toast.error("Failed to load wishlist");
-        setWishlist([]);
-      });
+      .then((res) => setWishlist(res.data.wishlist || []))
+      .catch(() => toast.error("Failed to load wishlist"));
   }, [userId]);
 
+  // Toggle wishlist
   const toggleWishlist = async (product) => {
     if (!userId) {
       toast.error("Please login to manage wishlist");
       return;
     }
 
-    const exists = wishlist.some((item) => item.id === product.id);
-    let updatedWishlist;
-
-    if (exists) {
-      updatedWishlist = wishlist.filter((item) => item.id !== product.id);
-      toast.success(`${product.name} removed from wishlist`);
-    } else {
-      updatedWishlist = [...wishlist, product];
-      toast.success(`${product.name} added to wishlist`);
-    }
+    const exists = wishlist.some((item) => String(item.id) === String(product.id));
+    const updatedWishlist = exists
+      ? wishlist.filter((item) => String(item.id) !== String(product.id))
+      : [...wishlist, product];
 
     try {
       await axios.patch(`http://localhost:3000/users/${userId}`, {
         wishlist: updatedWishlist,
       });
       setWishlist(updatedWishlist);
-    } catch (err) {
+      toast.success(
+        exists
+          ? `${product.name} removed from wishlist`
+          : `${product.name} added to wishlist`
+      );
+    } catch {
       toast.error("Failed to update wishlist");
     }
   };
 
-  const isWishlisted = (product) => {
-    return wishlist.some((item) => item.id === product.id);
-  };
-
-  const wishlistCount = wishlist.length;
+  const isWishlisted = (product) =>
+    wishlist.some((item) => String(item.id) === String(product.id));
 
   return (
     <WishlistContext.Provider
       value={{
         wishlist,
-        wishlistCount,
+        wishlistCount: wishlist.length,
         toggleWishlist,
         isWishlisted,
       }}
@@ -87,10 +78,4 @@ export const WishlistProvider = ({ children }) => {
   );
 };
 
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (!context) {
-    throw new Error("useWishlist must be used within WishlistProvider");
-  }
-  return context;
-};
+export const useWishlist = () => useContext(WishlistContext);

@@ -10,7 +10,7 @@ import CustomizeProduct from "./components/customization/CustomizeProduct";
 import CustomizePage from "./components/customization/CustomizationPage";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CheckoutPage from "./pages/CheckoutPage";
+import CheckoutPage from "./components/CheckoutPage";
 import PaymentPage from "./pages/PaymentPage";
 
 export default function MainRouter() {

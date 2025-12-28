@@ -1,6 +1,3 @@
-import cappuccino from "../assets/cappuccino.jpg";
-import coldCoffee from "../assets/cup-three-layered-coffee-dark.jpg";
-import dessert from "../assets/croissant.jpg";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,9 +6,9 @@ function ProductCategories() {
   const navigate = useNavigate();
 
   const categories = [
-    { id: 1, title: "Hot Coffee", image: cappuccino },
-    { id: 2, title: "Cold Coffee", image: coldCoffee },
-    { id: 3, title: "Croissant", image: dessert },
+    { id: 1, title: "Hot Coffee", image: "https://i.pinimg.com/736x/1d/75/4c/1d754c43819beac616d01e936d40f146.jpg" },
+    { id: 2, title: "Cold Coffee", image: "https://i.pinimg.com/1200x/1b/33/ce/1b33ce30267c9ea5851f391e32f75926.jpg" },
+    { id: 3, title: "Croissant", image: "https://i.pinimg.com/1200x/b3/62/f3/b362f30f8faba86e7f3050d6595ea41d.jpg" },
   ];
 
   return (

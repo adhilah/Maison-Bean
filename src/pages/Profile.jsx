@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Profile = () => {
@@ -50,18 +51,19 @@ const Profile = () => {
   };
 
   if (!userData) {
-    return <p className="text-center py-20 text-gray-500">Loading profile...</p>;
+    return (
+      <p className="text-center py-20 text-gray-500">Loading profile...</p>
+    );
   }
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-6">
       <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-bold">Profile</h1>
-          <button onClick={() => navigate("/")} className="text-[#9c7635]">
-            ← Continue shopping
-          </button>
-        </div>
-
+        <h1 className="text-3xl font-bold">Profile</h1>
+        <Link to="/" className="text-[#9c7635] hover:underline">
+          ← Continue Shopping
+        </Link>
+      </div>
 
       {/* ================= USER INFO ================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
@@ -113,7 +115,9 @@ const Profile = () => {
 
         {/* Confirm Password */}
         <div className="flex flex-col">
-          <label className="text-sm text-gray-500 mb-1">Confirm New Password</label>
+          <label className="text-sm text-gray-500 mb-1">
+            Confirm New Password
+          </label>
           <input
             type="password"
             placeholder="Confirm new password"
