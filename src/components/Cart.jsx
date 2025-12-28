@@ -31,7 +31,6 @@ const CartPage = () => {
       const enriched = cart.map((item) => {
         const product = item.product || {};
 
-        //  normalize price
         const basePrice = Number(product.basePrice ?? product.price ?? 0);
 
         const bean = item.beanId ? beanMap[item.beanId] : null;
@@ -67,14 +66,12 @@ const CartPage = () => {
     enrichCart();
   }, [cart]);
 
-  const shippingCost = 9.9;
+  const total = subtotal;
 
   const subtotal = enrichedCart.reduce(
     (sum, item) => sum + (Number.isFinite(item.lineTotal) ? item.lineTotal : 0),
     0
   );
-
-  const total = subtotal + shippingCost;
 
   if (loading) return <p className="text-center mt-20">Loading cart...</p>;
 
@@ -90,14 +87,16 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-gray-50 relative pb-32">
+      {" "}
+      {/* Added padding for sticky button */}
       <Navbar />
       <div className="max-w-6xl mx-auto py-8 px-4">
         <div className="flex justify-between mb-8">
-           <h1 className="text-3xl font-bold">Cart</h1>
+          <h1 className="text-3xl font-bold">Cart</h1>
           <Link to="/" className="text-[#9c7635] hover:underline">
-          ← Continue Shopping
-        </Link>
+            ← Continue Shopping
+          </Link>
         </div>
 
         <div className="space-y-6">
@@ -164,28 +163,18 @@ const CartPage = () => {
           ))}
         </div>
 
-        {/* Order Summary */}
-        <div className="bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl p-8 ml-auto shadow-lg">
-          <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-          <div className="space-y-4 text-lg">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+        {/* Sticky Checkout Button - Fixed at bottom */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg p-4">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="text-xl font-bold text-[#9c7635]">
+              Total: ${total.toFixed(2)}
             </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Shipping</span>
-              <span>${shippingCost.toFixed(2)}</span>
-            </div>
-            <div className="border-t-2 border-dashed pt-4">
-              <div className="flex justify-between text-2xl font-bold text-[#9c7635]">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
+            <Link to="/delivery-details">
+              <button className="bg-[#9c7635] hover:bg-[#7a5c2a] text-white px-10 py-4 rounded-2xl font-bold text-xl">
+                Proceed to Checkout – ${total.toFixed(2)}
+              </button>
+            </Link>
           </div>
-          <Link to="/payment">
-            <button className="w-full mt-8 bg-[#9c7635] hover:bg-[#7a5c2a] text-white py-5 rounded-2xl font-bold text-xl transition transform hover:scale-105">Proceed to Checkout</button>
-          </Link>
         </div>
       </div>
     </div>

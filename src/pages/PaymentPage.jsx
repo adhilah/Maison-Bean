@@ -1,14 +1,14 @@
-// src/pages/PaymentPage.jsx or src/components/PaymentPage.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const PaymentPage = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
 
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState("cod"); // default to COD for simplicity
   const [cardDetails, setCardDetails] = useState({
     number: "",
     name: "",
@@ -16,6 +16,7 @@ const PaymentPage = () => {
     cvv: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // Calculate totals
   const subtotal = cart.reduce((sum, item) => {
@@ -47,27 +48,85 @@ const PaymentPage = () => {
     setCardDetails({ ...cardDetails, [name]: formattedValue });
   };
 
-  const validatePayment = () => {
+  const validateCard = () => {
     const newErrors = {};
 
-    if (paymentMethod === "card") {
-      if (!cardDetails.number.replace(/\s/g, "").length === 16)
-        newErrors.number = "Card number must be 16 digits";
-      if (!cardDetails.name.trim()) newErrors.name = "Cardholder name required";
-      if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiry)) newErrors.expiry = "Valid expiry required (MM/YY)";
-      if (cardDetails.cvv.length < 3) newErrors.cvv = "CVV must be 3 digits";
-    }
+    if (cardDetails.number.replace(/\s/g, "").length !== 16)
+      newErrors.number = "Card number must be 16 digits";
+    if (!cardDetails.name.trim()) newErrors.name = "Cardholder name required";
+    if (!/^\d{2}\/\d{2}$/.test(cardDetails.expiry))
+      newErrors.expiry = "Valid expiry required (MM/YY)";
+    if (cardDetails.cvv.length < 3) newErrors.cvv = "CVV must be 3 digits";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePayment = () => {
-    if (!validatePayment()) return;
+  const handlePayment = async () => {
+    setLoading(true);
 
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user) {
+      toast.error("Please login to place order");
+      setLoading(false);
+      return;
+    }
 
-    toast.success("Payment successful! Order placed.");
-    navigate("/"); 
+    // Validate only if card is selected
+    if (paymentMethod === "card" && !validateCard()) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const order = {
+        id: Date.now().toString(),
+        userId: user.id,
+        userEmail: user.email,
+        items: cart.map((item) => ({
+          productId: item.productId,
+          product: item.product,
+          quantity: item.quantity,
+          isCustomized: item.isCustomized,
+          beanId: item.beanId,
+          milkId: item.milkId,
+          unitPrice:
+            (item.product.basePrice || 0) +
+            (item.bean?.priceAdd || 0) +
+            (item.milk?.priceAdd || 0),
+        })),
+        subtotal,
+        shipping,
+        total,
+        paymentMethod, // ← Save which method was used
+        status: "confirmed",
+        date: new Date().toISOString(),
+      };
+
+      // Save order
+      await axios.post("http://localhost:3000/orders", order);
+
+      // Clear cart
+      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+        cart: [],
+      });
+
+      // Success message based on method
+      if (paymentMethod === "cod") {
+        toast.success("Order placed! Pay when delivered.");
+      } else if (paymentMethod === "upi") {
+        toast.success("Order placed! Complete UPI payment.");
+      } else {
+        toast.success("Payment successful! Order confirmed.");
+      }
+
+      navigate("/orders");
+    } catch (err) {
+      console.error("Order failed:", err);
+      toast.error("Order failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (cart.length === 0) {
@@ -89,53 +148,63 @@ const PaymentPage = () => {
         <h1 className="text-4xl font-bold text-center mb-10">Checkout</h1>
 
         <div className="grid lg:grid-cols-3 gap-10">
-          {/* Left: Payment Form */}
+          {/* Left: Payment Method */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Payment Method */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold mb-6">Payment Method</h2>
+              <h2 className="text-2xl font-bold mb-6">Select Payment Method</h2>
 
               <div className="space-y-4">
-                <label className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="card"
-                    checked={paymentMethod === "card"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mr-4"
-                  />
-                  <span className="font-medium">Credit / Debit Card</span>
-                </label>
-
-                <label className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value="upi"
-                    checked={paymentMethod === "upi"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mr-4"
-                  />
-                  <span className="font-medium">UPI</span>
-                </label>
-
-                <label className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                <label className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition hover:border-[#9c7635]">
                   <input
                     type="radio"
                     name="payment"
                     value="cod"
                     checked={paymentMethod === "cod"}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="mr-4"
+                    className="mr-4 text-[#9c7635] focus:ring-[#9c7635]"
                   />
-                  <span className="font-medium">Cash on Delivery</span>
+                  <div>
+                    <span className="font-semibold text-lg">Cash on Delivery</span>
+                    <p className="text-sm text-gray-600">Pay when you receive your order</p>
+                  </div>
+                </label>
+
+                <label className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition hover:border-[#9c7635]">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="upi"
+                    checked={paymentMethod === "upi"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="mr-4 text-[#9c7635] focus:ring-[#9c7635]"
+                  />
+                  <div>
+                    <span className="font-semibold text-lg">UPI</span>
+                    <p className="text-sm text-gray-600">Pay via Google Pay, PhonePe, etc.</p>
+                  </div>
+                </label>
+
+                <label className="flex items-center p-5 border-2 rounded-xl cursor-pointer transition hover:border-[#9c7635]">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="card"
+                    checked={paymentMethod === "card"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="mr-4 text-[#9c7635] focus:ring-[#9c7635]"
+                  />
+                  <div>
+                    <span className="font-semibold text-lg">Credit / Debit Card</span>
+                    <p className="text-sm text-gray-600">Secure card payment</p>
+                  </div>
                 </label>
               </div>
 
-              {/* Card Details */}
+              {/* Card Form - Only show when card selected */}
               {paymentMethod === "card" && (
-                <div className="mt-8 space-y-5">
+                <div className="mt-10 p-6 bg-gray-50 rounded-xl space-y-5">
+                  <h3 className="text-xl font-semibold mb-4">Card Details</h3>
+
                   <div>
                     <label className="block text-sm font-medium mb-2">Card Number</label>
                     <input
@@ -145,7 +214,7 @@ const PaymentPage = () => {
                       onChange={handleCardChange}
                       placeholder="1234 5678 9012 3456"
                       maxLength="19"
-                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#9c7635] focus:border-transparent"
+                      className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#9c7635]"
                     />
                     {errors.number && <p className="text-rose-600 text-sm mt-1">{errors.number}</p>}
                   </div>
@@ -195,20 +264,24 @@ const PaymentPage = () => {
                 </div>
               )}
 
+              {/* Info for UPI/COD */}
               {paymentMethod === "upi" && (
-                <div className="mt-8 text-center py-8 text-gray-600">
-                  <p className="text-lg">Scan QR or enter UPI ID on next screen</p>
+                <div className="mt-8 p-6 bg-blue-50 rounded-xl text-center">
+                  <p className="text-lg font-medium text-blue-900">
+                    You will be redirected to your UPI app after placing order
+                  </p>
                 </div>
               )}
 
               {paymentMethod === "cod" && (
-                <div className="mt-8 text-center py-8 text-gray-600">
-                  <p className="text-lg">Pay with cash when your order arrives</p>
+                <div className="mt-8 p-6 bg-green-50 rounded-xl text-center">
+                  <p className="text-lg font-medium text-green-900">
+                    Cash will be collected at the time of delivery
+                  </p>
                 </div>
               )}
             </div>
 
-            {/* Secure Payment Badge */}
             <div className="flex items-center justify-center gap-3 text-gray-600">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
@@ -241,9 +314,16 @@ const PaymentPage = () => {
 
               <button
                 onClick={handlePayment}
-                className="w-full mt-8 bg-[#9c7635] hover:bg-[#7a5c2a] text-white py-5 rounded-2xl font-bold text-xl transition transform hover:scale-105"
+                disabled={loading}
+                className="w-full mt-8 bg-[#9c7635] hover:bg-[#7a5c2a] disabled:opacity-70 text-white py-5 rounded-2xl font-bold text-xl transition transform hover:scale-105"
               >
-                Complete Payment
+                {loading
+                  ? "Processing..."
+                  : paymentMethod === "cod"
+                  ? "Place Order (Cash on Delivery)"
+                  : paymentMethod === "upi"
+                  ? "Proceed to UPI Payment"
+                  : "Pay with Card"}
               </button>
 
               <p className="text-center text-sm text-gray-500 mt-4">

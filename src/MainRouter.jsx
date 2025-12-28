@@ -10,8 +10,10 @@ import CustomizeProduct from "./components/customization/CustomizeProduct";
 import CustomizePage from "./components/customization/CustomizationPage";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
-import CheckoutPage from "./components/CheckoutPage";
 import PaymentPage from "./pages/PaymentPage";
+import OrderList from "./components/OrderList";
+import DeliveryDetails from "./pages/DeliveryDetails";
+
 
 export default function MainRouter() {
   return (
@@ -23,8 +25,8 @@ export default function MainRouter() {
       <Route path="/login" element={<Login />} />
       <Route path="/registration" element={<RegistrationPage />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/payment" element={<PaymentPage />} />
+      {/* <Route path="/order" element={<OrderList />} /> */}
       {/* PROTECTED */}
       <Route
         path="/cart"
@@ -55,6 +57,22 @@ export default function MainRouter() {
         element={
           <ProtectedRoute>
             <CustomizePage />
+          </ProtectedRoute>
+        }
+      />
+     <Route
+        path="/orders"
+        element={
+          <ProtectedRoute>
+            <OrderList />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/delivery-details"
+        element={
+          <ProtectedRoute>
+            <DeliveryDetails />
           </ProtectedRoute>
         }
       />

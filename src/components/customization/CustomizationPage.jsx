@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import toast from "react-hot-toast";
 
 const API = "http://localhost:3000";
 
@@ -51,7 +52,7 @@ export default function CustomizeProduct({ product, onClose }) {
   // ================= ADD TO CART =================
   const handleAddToCart = () => {
     if (!selectedBean || !selectedMilk) {
-      alert("Please select both bean and milk type");
+      toast.success("Please select both bean and milk type");
       return;
     }
 

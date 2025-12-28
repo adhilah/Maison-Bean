@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const RegistrationPage = () => {
         userData
       );
 
-      alert(`Registered Successfully! Welcome ${formData.fname}`);
+      toast.success(`Registered Successfully! Welcome ${formData.fname}`);
       console.log("User added:", response.data);
 
       setFormData({
@@ -92,7 +93,7 @@ const RegistrationPage = () => {
       navigate("/login");
     } catch (err) {
       console.error("Registration failed:", err);
-      alert("Registration failed.");
+      toast.success("Registration failed.");
     }
   };
 
