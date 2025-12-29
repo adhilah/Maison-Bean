@@ -8,6 +8,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [userId, setUserId] = useState(null);
 
+  
   // Load user from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -51,8 +52,7 @@ export const WishlistProvider = ({ children }) => {
         wishlist: updatedWishlist,
       });
       setWishlist(updatedWishlist);
-      toast.success(
-        exists
+      toast.success(exists
           ? `${product.name} removed from wishlist`
           : `${product.name} added to wishlist`
       );

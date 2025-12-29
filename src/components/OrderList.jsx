@@ -99,9 +99,12 @@ const OrderList = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">
-          My Orders
-        </h1>
+        <div className="flex justify-between mb-8">
+          <h1 className="text-3xl font-bold">My Order</h1>
+          <Link to="/" className="text-[#9c7635] hover:underline">
+            ← Continue Shopping
+          </Link>
+        </div>
 
         <div className="space-y-8">
           {orders.map((order) => (

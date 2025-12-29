@@ -64,7 +64,7 @@ const RegistrationPage = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    // 🔥 IMPORTANT FIX (for Profile page)
+    
     const userData = {
       firstName: formData.fname.trim(),
       lastName: formData.lname.trim(),

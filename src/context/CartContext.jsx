@@ -8,7 +8,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [userId, setUserId] = useState(null);
 
-  // Read user from localStorage only once on mount
+  
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
     }
   }, []);
 
-  // Load cart when userId changes (login/logout)
+
   useEffect(() => {
     if (!userId) {
       setCart([]);

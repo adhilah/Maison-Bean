@@ -125,7 +125,7 @@ export default function CustomizeProduct() {
 
     console.log("Adding to cart:", customizedItem);
     addToCart(customizedItem);
-   toast.success(`Added customized ${product.name} to cart! Total: ₹${totalPrice.toFixed(2)}`);
+  //  toast.success(`Added customized ${product.name} to cart! Total: ₹${totalPrice.toFixed(2)}`);
 
 navigate("/cart");
   };
@@ -159,7 +159,7 @@ navigate("/cart");
 {isCoffee ? (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
     
-    {/* ================= BEAN TYPES ================= */}
+    {/* =========================================== BEAN TYPES ======================================================== */}
     <div className="bg-white rounded-2xl border shadow-sm p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
         Bean Type
@@ -198,8 +198,7 @@ navigate("/cart");
         ))}
       </div>
     </div>
-
-    {/* ================= MILK TYPES ================= */}
+    {/* ================================================== MILK TYPES ================================================ */}
     <div className="bg-white rounded-2xl border shadow-sm p-6">
       <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
         Milk Type
