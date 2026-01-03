@@ -19,6 +19,8 @@ export default function CustomizeProduct() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
+  // Prevents invalid API calls
   useEffect(() => {
     if (!id) {
       setError("No product ID provided.");

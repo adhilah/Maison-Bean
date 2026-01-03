@@ -8,13 +8,14 @@ function Cards() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // Mobile collapsible
 
   const { category } = useParams();
   const navigate = useNavigate();
 
   const categories = ["All", "Hot Coffee", "Cold Coffee", "Croissant"];
 
- 
+  // Capitalize words from URL
   useEffect(() => {
     if (category) {
       const formatted = category
@@ -27,7 +28,7 @@ function Cards() {
     }
   }, [category]);
 
-  // Fetch ALL products once
+  // Fetch products
   useEffect(() => {
     setLoading(true);
     fetch("http://localhost:3000/products")
@@ -43,7 +44,7 @@ function Cards() {
       });
   }, []);
 
-  // Filter products when category changes
+  // Filter products
   useEffect(() => {
     if (selectedCategory === "All") {
       setFilteredProducts(products);
@@ -57,7 +58,6 @@ function Cards() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -71,9 +71,51 @@ function Cards() {
           </Link>
         </div>
 
-        <div className="flex gap-8">
-          {/* Sidebar Categories */}
-          <aside className="w-64 sticky top-24 h-fit">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Mobile Collapsible Categories */}
+          <div className="lg:hidden mb-4">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-full bg-[#9c7635] text-white p-3 rounded-lg font-medium flex justify-between items-center"
+            >
+              {selectedCategory}
+              <span className={`transform transition-transform duration-300 ${mobileMenuOpen ? "rotate-180" : ""}`}>
+                ▼
+              </span>
+            </button>
+            {mobileMenuOpen && (
+              <ul className="mt-2 bg-white border rounded-lg shadow overflow-hidden">
+                {categories.map((cat) => (
+                  <li key={cat}>
+                    <button
+                      onClick={() => {
+                        setSelectedCategory(cat);
+                        navigate(
+                          cat === "All"
+                            ? "/menu"
+                            : `/menu/${cat.toLowerCase().replace(" ", "-")}`
+                        );
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 transition-all duration-200 ${
+                        selectedCategory === cat
+                          ? "bg-[#9c7635] text-white font-semibold"
+                          : "hover:bg-[#efe6d6] text-gray-800"
+                      }`}
+                    >
+                      {cat}
+                      {selectedCategory === cat && (
+                        <span className="ml-2 text-sm">✓</span>
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64 sticky top-24 h-fit">
             <div className="bg-white rounded-2xl shadow-md p-5">
               <h3 className="text-lg font-semibold text-gray-800 mb-5">
                 Categories
@@ -90,16 +132,14 @@ function Cards() {
                             : `/menu/${cat.toLowerCase().replace(" ", "-")}`
                         );
                       }}
-                      className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 ${
+                      className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex justify-between items-center ${
                         selectedCategory === cat
-                          ? "bg-[#9c7635] text-white shadow"
+                          ? "bg-[#9c7635] text-white shadow font-semibold"
                           : "bg-gray-50 hover:bg-[#efe6d6] text-gray-800"
                       }`}
                     >
-                      <span className="font-medium">{cat}</span>
-                      {selectedCategory === cat && (
-                        <span className="ml-2 text-sm">✓</span>
-                      )}
+                      {cat}
+                      {selectedCategory === cat && <span>✓</span>}
                     </button>
                   </li>
                 ))}
@@ -107,7 +147,7 @@ function Cards() {
             </div>
           </aside>
 
-          {/* Products Grid - ALL PRODUCTS */}
+          {/* Products Grid */}
           <main className="flex-1">
             {loading ? (
               <p className="text-center py-20 text-xl text-gray-600">
@@ -118,7 +158,7 @@ function Cards() {
                 No products found in this category.
               </p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -126,9 +166,6 @@ function Cards() {
             )}
           </main>
         </div>
-
-        {/* Optional: Recommendation Carousel */}
-        {/* <RecommendationCarousel recommendations={products.slice(0, 6)} /> */}
       </div>
     </div>
   );

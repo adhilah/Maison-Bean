@@ -52,7 +52,7 @@ export default function CustomizeProduct({ product, onClose }) {
   // ================= ADD TO CART =================
   const handleAddToCart = () => {
     if (!selectedBean || !selectedMilk) {
-      toast.success("Please select both bean and milk type");
+      toast.error("Please select both bean and milk type");
       return;
     }
 
