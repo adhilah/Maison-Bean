@@ -1,156 +1,105 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const API = "http://localhost:3000";
+import { useAuth } from "../../context/AuthContext";
 
 export default function UserOrders() {
-  // Store user orders
+  const { user } = useAuth();        // Logged-in user
   const [orders, setOrders] = useState([]);
-
-  // Loading state
   const [loading, setLoading] = useState(true);
 
-  // Get logged-in user from localStorage
-  
-
-  // Fetch orders when page loads
+  // 🔹 Fetch orders when page loads
   useEffect(() => {
-    if (user) {
-      fetchOrders();
-    }
-  }, []);
+    axios.get("http://localhost:3000/orders")
+      .then(res => {
+        // 🔹 SIMPLE FILTER:
+        // Show only orders created by this user
+        const userOrders = res.data.filter(
+          order => order.userId === user.id
+        );
 
-  // 1️⃣ Fetch all orders and keep only this user's orders
-  const fetchOrders = async () => {
-    try {
-      const res = await axios.get(`${API}/orders`);
-
-      // Filter orders by userId
-      const userOrders = res.data.filter(
-        (order) => String(order.userId) === String(user.id)
-      );
-
-      setOrders(userOrders.reverse()); // latest first
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      setLoading(false);
-    }
-  };
-
-  // 2️⃣ User confirms order is received
-  const markAsReceived = async (orderId) => {
-    try {
-      await axios.patch(`${API}/orders/${orderId}`, {
-        status: "completed",
-        receivedByUser: true
+        setOrders(userOrders);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
       });
+  }, [user]);
 
-      // Reload orders after update
-      fetchOrders();
-    } catch (error) {
-      console.error("Error updating order:", error);
-    }
-  };
-
-  // If user is not logged in
-  if (!user) {
-    return (
-      <div className="text-center py-20">
-        <p>Please login to view your orders</p>
-        <Link to="/login" className="text-[#9c7635] underline">
-          Login
-        </Link>
-      </div>
-    );
-  }
-
-  // Loading message
+  // 🔹 Loading state
   if (loading) {
-    return <div className="text-center py-20">Loading orders...</div>;
-  }
-
-  // No orders found
-  if (orders.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p>No orders found</p>
-        <Link to="/menu" className="text-[#9c7635] underline">
-          Order something
-        </Link>
-      </div>
-    );
+    return <p className="p-6">Loading orders...</p>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow">
-        <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+    // 🔹 Enables scrolling (important!)
+    <main className="p-6 overflow-y-auto">
+      <h2 className="text-2xl font-bold mb-6">My Orders</h2>
 
-        {/* Orders Table */}
-        <table className="w-full border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3 border">Order ID</th>
-              <th className="p-3 border">Total</th>
-              <th className="p-3 border">Status</th>
-              <th className="p-3 border">Track</th>
-              <th className="p-3 border">Action</th>
-            </tr>
-          </thead>
+      {/* 🔹 No orders */}
+      {orders.length === 0 && (
+        <p className="text-gray-500">You have no orders yet.</p>
+      )}
 
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.id}>
-                {/* Order ID */}
-                <td className="p-3 border font-medium">
-                  #{order.id}
-                </td>
-
-                {/* Total Price */}
-                <td className="p-3 border">
-                  ${order.total.toFixed(2)}
-                </td>
-
-                {/* Order Status */}
-                <td className="p-3 border capitalize">
-                  {order.status.replaceAll("_", " ")}
-                </td>
-
-                {/* Track Order */}
-                <td className="p-3 border">
-                  <Link
-                    to={`/track-order/${order.id}`}
-                    className="text-[#9c7635] underline"
-                  >
-                    Track
-                  </Link>
-                </td>
-
-                {/* Mark as Received */}
-                <td className="p-3 border">
-                  {order.status === "delivered" &&
-                  !order.receivedByUser ? (
-                    <button
-                      onClick={() => markAsReceived(order.id)}
-                      className="px-3 py-1 bg-green-600 text-white rounded"
-                    >
-                      Mark as Received
-                    </button>
-                  ) : order.receivedByUser ? (
-                    <span className="text-green-600 font-semibold">
-                      Received
-                    </span>
-                  ) : (
-                    "-"
-                  )}
-                </td>
+      {/* 🔹 Orders Table */}
+      {orders.length > 0 && (
+        <div className="bg-white rounded-xl shadow overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 text-left">Order ID</th>
+                <th className="px-6 py-3 text-left">Items</th>
+                <th className="px-6 py-3 text-left">Total</th>
+                <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+
+            <tbody className="divide-y">
+              {orders.map(order => (
+                <tr key={order.id}>
+                  
+                  {/* Order ID */}
+                  <td className="px-6 py-4 font-medium">
+                    #{order.id.slice(-6)}
+                  </td>
+
+                  {/* Ordered Items */}
+                  <td className="px-6 py-4 text-sm">
+                    {order.items.map(item => (
+                      <div key={item.id}>
+                        {item.product.name} × {item.quantity}
+                      </div>
+                    ))}
+                  </td>
+
+                  {/* Total */}
+                  <td className="px-6 py-4 font-semibold">
+                    ₹{order.total}
+                  </td>
+
+                  {/* Status */}
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold
+                      ${order.status === "delivered"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"}
+                    `}>
+                      {order.status}
+                    </span>
+                  </td>
+
+                  {/* Date */}
+                  <td className="px-6 py-4 text-gray-600">
+                    {new Date(order.tracking.confirmed).toLocaleDateString()}
+                  </td>
+
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </main>
   );
 }

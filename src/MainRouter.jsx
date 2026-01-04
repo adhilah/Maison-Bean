@@ -100,7 +100,7 @@ import PublicRoute from "./components/PublicRoute";
 import PaymentPage from "./pages/PaymentPage";
 import OrderList from "./pages/OrderList";
 import DeliveryDetails from "./pages/DeliveryDetails";
-import Dashboard from "./admin/pages/Dashboard";
+import Dashboard from "./admin/pages/dashboard/Dashboard";
 import TrackOrder from "./pages/TrackOrder";
 import UserOrders from "./admin/pages/Orders";
 

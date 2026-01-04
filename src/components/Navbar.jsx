@@ -298,16 +298,20 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
   return (
     <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border z-50">
       <div className="py-2">
-        <button
-          onClick={() => {
-            navigate("/orders");
-            onClose();
-          }}
-          className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-100"
-        >
-          <span className="material-symbols-outlined">receipt_long</span>
-          My Orders
-        </button>
+
+        {/* ✅ SHOW ONLY WHEN USER IS LOGGED IN */}
+        {user && (
+          <button
+            onClick={() => {
+              navigate("/orders");
+              onClose();
+            }}
+            className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-100"
+          >
+            <span className="material-symbols-outlined">receipt_long</span>
+            My Orders
+          </button>
+        )}
 
         {user && (
           <button
@@ -317,9 +321,7 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
             }}
             className="w-full flex items-center gap-3 px-5 py-3 hover:bg-gray-100"
           >
-            <span className="material-symbols-outlined">
-              account_circle
-            </span>
+            <span className="material-symbols-outlined">account_circle</span>
             Profile
           </button>
         )}
