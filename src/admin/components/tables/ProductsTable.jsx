@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Package, Edit, Trash2 } from "lucide-react";
+import { Package, Edit, Trash2, ArrowLeft } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function ProductList() {
@@ -31,7 +31,7 @@ export default function ProductList() {
     try {
       await axios.delete(`http://localhost:3000/products/${id}`);
       setProducts(products.filter((p) => p.id !== id));
-      toast.success("Product deleted");
+      toast.success("Product deleted successfully");
     } catch (err) {
       toast.error("Failed to delete product");
     }
@@ -40,22 +40,33 @@ export default function ProductList() {
   return (
     <div className="p-6">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        {/* Header with Manage Button */}
+        {/* Header with Buttons */}
         <div className="px-8 py-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-              <p className="text-gray-600 mt-1">View and manage all products</p>
+              <p className="text-gray-600 mt-1">View and manage all products in the store</p>
             </div>
 
-            {/* Navigate to Management Page */}
-            <Link
-              to="/admin/products/manage"
-              className="flex items-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-xl font-medium hover:bg-amber-700 transition shadow-md"
-            >
-              <Package size={20} />
-              Manage Products
-            </Link>
+            <div className="flex items-center gap-4">
+              {/* Back to Dashboard Button */}
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center  text-[#9c7635] font-medium hover:underline"
+              >
+                <ArrowLeft size={20} />
+                Back to Dashboard
+              </Link>
+
+              {/* Add Product Button */}
+              <Link
+                to="/admin/products/manage"
+                className="flex items-center gap-2 px-6 py-3 bg-[#9c7635] text-white rounded-xl font-medium hover:bg-[#7a5d2c] transition shadow-md"
+              >
+                <Package size={20} />
+                Add Product
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -67,6 +78,7 @@ export default function ProductList() {
                 <th className="px-8 py-4">Product</th>
                 <th className="px-8 py-4">Category</th>
                 <th className="px-8 py-4">Price</th>
+                <th className="px-8 py-4">Description</th>
                 <th className="px-8 py-4">Status</th>
                 <th className="px-8 py-4 text-right">Actions</th>
               </tr>
@@ -79,18 +91,22 @@ export default function ProductList() {
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
                         <div className="h-16 w-16 bg-gray-200 rounded-lg"></div>
-                        <div className="h-4 bg-gray-200 rounded w-40"></div>
+                        <div>
+                          <div className="h-5 bg-gray-200 rounded w-48 mb-2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-64"></div>
+                        </div>
                       </div>
                     </td>
                     <td className="px-8 py-6"><div className="h-4 bg-gray-200 rounded w-24"></div></td>
                     <td className="px-8 py-6"><div className="h-4 bg-gray-200 rounded w-20"></div></td>
+                    <td className="px-8 py-6"><div className="h-4 bg-gray-200 rounded w-96"></div></td>
                     <td className="px-8 py-6"><div className="h-6 bg-gray-200 rounded-full w-20"></div></td>
-                    <td className="px-8 py-6 text-right"><div className="h-8 bg-gray-200 rounded w-20 inline-block"></div></td>
+                    <td className="px-8 py-6 text-right"><div className="h-8 bg-gray-200 rounded w-24 inline-block"></div></td>
                   </tr>
                 ))
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-16 text-center text-gray-500">
+                  <td colSpan={6} className="px-8 py-16 text-center text-gray-500">
                     <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
                     <p>No products found</p>
                   </td>
@@ -108,7 +124,6 @@ export default function ProductList() {
                         />
                         <div>
                           <p className="font-medium text-gray-900">{product.name}</p>
-                          <p className="text-sm text-gray-500">{product.description?.slice(0, 50)}...</p>
                         </div>
                       </div>
                     </td>
@@ -123,7 +138,14 @@ export default function ProductList() {
                       ${parseFloat(product.basePrice).toFixed(2)}
                     </td>
 
-                    {/* Status (Simple Active) */}
+                    {/* Full Description */}
+                    <td className="px-8 py-6 text-gray-700 max-w-md">
+                      <p className="text-sm leading-relaxed">
+                        {product.description || "No description available"}
+                      </p>
+                    </td>
+
+                    {/* Status */}
                     <td className="px-8 py-6">
                       <span className="inline-flex px-3 py-1.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         Active
@@ -136,7 +158,7 @@ export default function ProductList() {
                         <Link
                           to={`/admin/products/manage?edit=${product.id}`}
                           className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition"
-                          title="Edit"
+                          title="Edit product"
                         >
                           <Edit size={18} />
                         </Link>
@@ -144,7 +166,7 @@ export default function ProductList() {
                         <button
                           onClick={() => handleDelete(product.id)}
                           className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
-                          title="Delete"
+                          title="Delete product"
                         >
                           <Trash2 size={18} />
                         </button>

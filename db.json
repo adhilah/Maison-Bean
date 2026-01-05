@@ -681,7 +681,7 @@
       "total": 44.54,
       "paymentMethod": "cod",
       "upiId": null,
-      "status": "cancelled",
+      "status": "pending",
       "date": "2026-01-05T05:28:57.222Z"
     },
     {
@@ -823,7 +823,7 @@
       "total": 44.54,
       "paymentMethod": "cod",
       "upiId": null,
-      "status": "cancelled",
+      "status": "processing",
       "date": "2026-01-05T05:29:36.688Z"
     },
     {
@@ -963,7 +963,7 @@
       "total": 42.86,
       "paymentMethod": "upi",
       "upiId": "qwertyuio",
-      "status": "confirmed",
+      "status": "delivered",
       "date": "2026-01-05T09:51:38.097Z"
     }
   ],

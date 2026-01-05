@@ -26,49 +26,72 @@ export default function AdminSidebar() {
         </div>
       </div>
 
-      {/* Menu Items - Simple Links */}
+      {/* Menu Items - Fixed Links */}
       <nav className="p-4 space-y-2">
-
-        <Link to="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/dashboard"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
         </Link>
 
-        <Link to="/admin/analytics" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/analytics"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <BarChart3 size={20} />
           <span>Analytics</span>
         </Link>
 
-        <Link to="/user-management" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        {/* FIXED: Full absolute path */}
+        <Link
+          to="/admin/users-management"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <Users size={20} />
           <span>User Management</span>
         </Link>
 
-        <Link to="/products-list" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/products-management"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <Package size={20} />
           <span>Product Management</span>
         </Link>
 
-        <Link to="/order-management" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/orders-management"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <ShoppingBag size={20} />
           <span>Order Management</span>
         </Link>
 
-        <Link to="/admin/cart" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/cart"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <ShoppingCart size={20} />
           <span>Cart Overview</span>
         </Link>
 
-        <Link to="/admin/reports" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/reports"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <FileText size={20} />
           <span>Reports</span>
         </Link>
 
-        <Link to="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+        <Link
+          to="/admin/settings"
+          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+        >
           <Settings size={20} />
           <span>Settings</span>
         </Link>
-
       </nav>
     </aside>
   );

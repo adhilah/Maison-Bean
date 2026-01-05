@@ -1,86 +1,4 @@
-// // // MainRouter.jsx
-// // import { Routes, Route } from "react-router-dom";
-// // import Home from "./pages";
-// // import Login from "./pages/Login";
-// // import RegistrationPage from "./pages/RegistrationPage";
-// // import Cards from "./components/cards/MainProducts";
-// // import Cart from "./components/Cart";
-// // import Wishlist from "./components/cards/Wishlist";
-// // import CustomizeProduct from "./components/customization/CustomizeProduct";
-// // import CustomizePage from "./components/customization/CustomizationPage";
-// // import Profile from "./pages/Profile";
-// // import ProtectedRoute from "./components/ProtectedRoute";
-// // import PaymentPage from "./pages/PaymentPage";
-// // import OrderList from "./components/OrderList";
-// // import DeliveryDetails from "./pages/DeliveryDetails";
 
-// // export default function MainRouter() {
-// //   return (
-// //     <Routes>
-// //       {/* PUBLIC */}
-// //       <Route path="/" element={<Home />} />
-// //       <Route path="/menu" element={<Cards />} />
-// //       <Route path="/menu/:category" element={<Cards />} />
-// //       <Route path="/login" element={<Login />} />
-// //       <Route path="/registration" element={<RegistrationPage />} />
-// //       <Route path="/profile" element={<Profile />} />
-// //       <Route path="/payment" element={<PaymentPage />} />
-// //       {/* <Route path="/order" element={<OrderList />} /> */}
-
-// //       {/* PROTECTED */}
-// //       <Route
-// //         path="/cart"
-// //         element={
-// //           <ProtectedRoute>
-// //             <Cart />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //       <Route
-// //         path="/wishlist"
-// //         element={
-// //           <ProtectedRoute>
-// //             <Wishlist />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //       <Route
-// //         path="/customize/:id"
-// //         element={
-// //           <ProtectedRoute>
-// //             <CustomizeProduct />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //       <Route
-// //         path="/customize"
-// //         element={
-// //           <ProtectedRoute>
-// //             <CustomizePage />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //      <Route
-// //         path="/orders"
-// //         element={
-// //           <ProtectedRoute>
-// //             <OrderList />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //        <Route
-// //         path="/delivery-details"
-// //         element={
-// //           <ProtectedRoute>
-// //             <DeliveryDetails />
-// //           </ProtectedRoute>
-// //         }
-// //       />
-// //     </Routes>
-// //   );
-// // }
-
-// // =========================================================================================================
 
 // import React from "react";
 // import { Routes, Route, Navigate } from "react-router-dom";
@@ -103,12 +21,21 @@
 // import Dashboard from "./admin/pages/dashboard/Dashboard";
 // import TrackOrder from "./pages/TrackOrder";
 // import UserOrders from "./admin/pages/Orders";
+// import UserManagement from "./admin/components/tables/UsersTable";
+// import ProductList from "./admin/components/tables/ProductsTable";
+// import OrderManagement from "./admin/components/tables/OrdersTable";
 
-// // New: Home with role-based redirect
+// // Role-based home redirect
 // const HomeWithRedirect = () => {
 //   const { user, isLoading } = useAuth();
 
-//   if (isLoading) return <div className="min-h-screen bg-amber-50 flex items-center justify-center"><p>Loading...</p></div>;
+//   if (isLoading) {
+//     return (
+//       <div className="min-h-screen bg-amber-50 flex items-center justify-center">
+//         <p className="text-amber-900 text-xl">Loading...</p>
+//       </div>
+//     );
+//   }
 
 //   if (user?.role === "admin") {
 //     return <Navigate to="/admin/dashboard" replace />;
@@ -120,7 +47,6 @@
 // export default function MainRouter() {
 //   const { isLoading } = useAuth();
 
-//   // Show nothing or loader until auth is ready
 //   if (isLoading) {
 //     return (
 //       <div className="min-h-screen bg-amber-50 flex items-center justify-center">
@@ -131,7 +57,7 @@
 
 //   return (
 //     <Routes>
-//       {/* PUBLIC - Only when NOT logged in */}
+//       {/* Public - Only when NOT logged in */}
 //       <Route
 //         path="/login"
 //         element={
@@ -149,15 +75,16 @@
 //         }
 //       />
 
-//       {/* PUBLIC - All users */}
+//       {/* Public Routes */}
 //       <Route path="/" element={<HomeWithRedirect />} />
 //       <Route path="/menu" element={<Cards />} />
 //       <Route path="/menu/:category" element={<Cards />} />
 //       <Route path="/track-order/:orderId" element={<TrackOrder />} />
-//       <Route path="/userorders" element={<UserOrders />} />
+//       <Route path="/user-management" element={<UserManagement />} />
+//       <Route path="/products-list" element={<ProductList />} />
+//       <Route path="/order-management" element={<OrderManagement />} /
 
-
-//       {/* PROTECTED - General */}
+//       {/* Protected - Logged in users */}
 //       <Route
 //         path="/payment"
 //         element={
@@ -199,7 +126,7 @@
 //         }
 //       />
 
-//       {/* Customer Only */}
+//       {/* Customer Only Routes */}
 //       <Route
 //         path="/cart"
 //         element={
@@ -225,12 +152,17 @@
 //         }
 //       />
 
-//       {/* Admin Only */}
+//       {/* ADMIN ROUTES - All protected under /admin/* */}
 //       <Route
-//         path="/admin/dashboard"
+//         path="/admin/*"
 //         element={
 //           <ProtectedRoute allowedRoles={["admin"]}>
-//             <Dashboard />
+//             <Routes>
+//               <Route path="dashboard" element={<Dashboard />} />
+//               <Route path="orders" element={<UserOrders />} />
+//               {/* Add more admin pages here */}
+//               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+//             </Routes>
 //           </ProtectedRoute>
 //         }
 //       />
@@ -240,7 +172,6 @@
 //     </Routes>
 //   );
 // }
-
 
 
 
@@ -302,7 +233,7 @@ export default function MainRouter() {
 
   return (
     <Routes>
-      {/* Public - Only when NOT logged in */}
+      {/* PUBLIC - Only when NOT logged in */}
       <Route
         path="/login"
         element={
@@ -320,16 +251,13 @@ export default function MainRouter() {
         }
       />
 
-      {/* Public Routes */}
+      {/* PUBLIC - Everyone */}
       <Route path="/" element={<HomeWithRedirect />} />
       <Route path="/menu" element={<Cards />} />
       <Route path="/menu/:category" element={<Cards />} />
       <Route path="/track-order/:orderId" element={<TrackOrder />} />
-      <Route path="/user-management" element={<UserManagement />} />
-      <Route path="/products-list" element={<ProductList />} />
-      <Route path="/order-management" element={<OrderManagement />} />
 
-      {/* Protected - Logged in users */}
+      {/* PROTECTED - Any logged-in user */}
       <Route
         path="/payment"
         element={
@@ -371,7 +299,7 @@ export default function MainRouter() {
         }
       />
 
-      {/* Customer Only Routes */}
+      {/* CUSTOMER ONLY */}
       <Route
         path="/cart"
         element={
@@ -397,22 +325,25 @@ export default function MainRouter() {
         }
       />
 
-      {/* ADMIN ROUTES - All protected under /admin/* */}
+      {/* ADMIN ONLY - All admin pages protected under /admin/* */}
       <Route
         path="/admin/*"
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <Routes>
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="orders" element={<UserOrders />} />
-              {/* Add more admin pages here */}
+              <Route path="users-management" element={<UserManagement />} />
+              <Route path="products-management" element={<ProductList />} />
+              <Route path="orders-management" element={<OrderManagement />} />
+              
+              {/* Fallback for unknown admin routes */}
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
             </Routes>
           </ProtectedRoute>
         }
       />
 
-      {/* Fallback */}
+      {/* Global 404 */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

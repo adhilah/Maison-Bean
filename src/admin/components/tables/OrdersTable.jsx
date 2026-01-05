@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Package, Clock, Truck, CheckCircle, XCircle, ChevronDown } from "lucide-react";
+import { Package, Clock, Truck, CheckCircle, XCircle, ChevronDown, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const STATUS_OPTIONS = [
   { value: "pending", label: "Pending", color: "bg-amber-100 text-amber-800", icon: <Clock size={16} /> },
@@ -23,7 +24,6 @@ export default function OrderManagement() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get("http://localhost:3000/orders");
-      // Sort by newest first
       const sorted = res.data.sort((a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt));
       setOrders(sorted);
     } catch (err) {
@@ -62,10 +62,23 @@ export default function OrderManagement() {
   return (
     <div className="p-6">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        {/* Header */}
+        {/* Header with Back Button */}
         <div className="px-8 py-6 border-b border-gray-100">
-          <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
-          <p className="text-gray-600 mt-1">Track and update order statuses</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Order Management</h1>
+              <p className="text-gray-600 mt-1">Track and update order statuses</p>
+            </div>
+
+            {/* Back to Dashboard Button */}
+            <Link
+              to="/admin/dashboard"
+              className="flex items-center  text-amber-800 font-medium hover:underline"
+            >
+              <ArrowLeft size={20} />
+              Back to Dashboard
+            </Link>
+          </div>
         </div>
 
         {/* Table */}
