@@ -41,31 +41,25 @@
 
 
 
-
+// context/AuthContext.jsx - MUST HAVE localStorage!
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ✅ RESTORE USER ON PAGE REFRESH
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem("user");
-      if (storedUser) {
-        const parsed = JSON.parse(storedUser);
-        // Basic validation: must have id and email
-        if (parsed && parsed.id && parsed.email) {
-          setUser(parsed);
-        } else {
-          // Invalid data → clean it up
-          localStorage.removeItem("user");
-        }
+      const savedUser = localStorage.getItem("authUser");
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
       }
-    } catch (error) {
-      console.error("Failed to parse stored user:", error);
-      localStorage.removeItem("user"); // Corrupted → remove
+    } catch (err) {
+      console.error("Failed to load user:", err);
+      localStorage.removeItem("authUser");
     } finally {
       setIsLoading(false);
     }
@@ -73,32 +67,20 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userData) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    // ✅ SAVE TO localStorage - SURVIVES REFRESH!
+    localStorage.setItem("authUser", JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
-  };
-
-  const updateUser = (updatedData) => {
-    if (!user) return;
-    const newUser = { ...user, ...updatedData };
-    setUser(newUser);
-    localStorage.setItem("user", JSON.stringify(newUser));
+    localStorage.removeItem("authUser");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
-  }
-  return context;
-};
+export const useAuth = () => useContext(AuthContext);

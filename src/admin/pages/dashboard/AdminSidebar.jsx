@@ -1,104 +1,75 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   LayoutDashboard,
   BarChart3,
   Users,
   Package,
-  ShoppingCart,
   ShoppingBag,
+  ShoppingCart,
   FileText,
   Settings,
 } from "lucide-react";
 
 export default function AdminSidebar() {
   return (
-    <aside className="w-64 min-h-screen bg-white border-r">
-
-      {/* ================= ADMIN INFO ================= */}
-      <div className="p-6 border-b">
+    <aside className="w-64 min-h-screen bg-white border-r border-gray-200">
+      {/* Top - Admin Info */}
+      <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center">
-            <Users className="text-yellow-600" />
+          <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
+            <Users className="h-6 w-6 text-amber-700" />
           </div>
           <div>
-            <h3 className="font-semibold">Admin Panel</h3>
+            <h3 className="font-bold text-gray-900">Admin Panel</h3>
             <p className="text-sm text-gray-500">Full Access</p>
           </div>
         </div>
       </div>
 
-      {/* ================= MENU ================= */}
-      <nav className="p-4 space-y-1">
+      {/* Menu Items - Simple Links */}
+      <nav className="p-4 space-y-2">
 
-        <SidebarItem
-          to="/admin/dashboard"
-          icon={<LayoutDashboard />}
-          label="Dashboard"
-        />
+        <Link to="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <LayoutDashboard size={20} />
+          <span>Dashboard</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/analytics"
-          icon={<BarChart3 />}
-          label="Analytics"
-        />
+        <Link to="/admin/analytics" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <BarChart3 size={20} />
+          <span>Analytics</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/users"
-          icon={<Users />}
-          label="User Management"
-        />
+        <Link to="/user-management" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <Users size={20} />
+          <span>User Management</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/products"
-          icon={<Package />}
-          label="Product Management"
-        />
+        <Link to="/products-list" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <Package size={20} />
+          <span>Product Management</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/orders"
-          icon={<ShoppingBag />}
-          label="Order Management"
-        />
+        <Link to="/order-management" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <ShoppingBag size={20} />
+          <span>Order Management</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/cart"
-          icon={<ShoppingCart />}
-          label="Cart Overview"
-        />
+        <Link to="/admin/cart" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <ShoppingCart size={20} />
+          <span>Cart Overview</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/reports"
-          icon={<FileText />}
-          label="Reports"
-        />
+        <Link to="/admin/reports" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <FileText size={20} />
+          <span>Reports</span>
+        </Link>
 
-        <SidebarItem
-          to="/admin/settings"
-          icon={<Settings />}
-          label="Settings"
-        />
+        <Link to="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition">
+          <Settings size={20} />
+          <span>Settings</span>
+        </Link>
 
       </nav>
     </aside>
-  );
-}
-
-/* ================= SINGLE MENU ITEM ================= */
-function SidebarItem({ to, icon, label }) {
-  return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        `flex items-center gap-3 px-4 py-3 rounded-lg transition
-        ${
-          isActive
-            ? "bg-yellow-100 text-yellow-700 font-semibold"
-            : "text-gray-700 hover:bg-gray-100"
-        }`
-      }
-    >
-      <span className="text-lg">{icon}</span>
-      <span>{label}</span>
-    </NavLink>
   );
 }

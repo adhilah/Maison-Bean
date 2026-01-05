@@ -1,6 +1,14 @@
 import { Bell, LogOut } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext"
+import { useNavigate } from "react-router-dom";
 
 export default function AdminNavbar({ onMenuClick }) {
+  const { user, logout } = useAuth();
+    const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   return (
     <header className="h-16 bg-[#a77c3b] text-white flex items-center justify-between px-6">
 
@@ -34,10 +42,10 @@ export default function AdminNavbar({ onMenuClick }) {
         </p>
 
         {/* Logout */}
-        <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg">
-          <LogOut size={18} />
-          Logout
-        </button>
+       <button onClick={handleLogout} className="bg-rose-600 hover:bg-rose-700 px-6 py-2 rounded-lg font-medium transition flex items-center gap-2">
+                <span className="material-symbols-outlined text-lg">logout</span>
+                Logout
+              </button>
       </div>
     </header>
   );

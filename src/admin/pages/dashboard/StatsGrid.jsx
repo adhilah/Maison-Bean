@@ -97,9 +97,9 @@ export default function UserDashboard() {
   <div>
             <p className="text-gray-500">Total Revenue</p>
             <h2 className="text-2xl font-bold">
-              ₹{stats.revenue.toFixed(2)}
+              ${stats.revenue.toFixed(2)}
             </h2>
-            <p className="text-[#a77c3b] text-sm">+12.5% from last month</p>
+            {/* <p className="text-[#a77c3b] text-sm">+12.5% from last month</p> */}
           </div>
           <div className="
     bg-[#a77c3b] p-3 rounded-full text-white
@@ -120,7 +120,7 @@ export default function UserDashboard() {
           <div>
             <p className="text-gray-500">Total Orders</p>
             <h2 className="text-2xl font-bold">{stats.orders}</h2>
-            <p className="text-[#a77c3b] text-sm">+8.2% from last month</p>
+            {/* <p className="text-[#a77c3b] text-sm">+8.2% from last month</p> */}
           </div>
           <div className="
     bg-[#a77c3b] p-3 rounded-full text-white
@@ -141,7 +141,7 @@ export default function UserDashboard() {
           <div>
             <p className="text-gray-500">Total Products</p>
             <h2 className="text-2xl font-bold">{stats.products}</h2>
-            <p className="text-[#a77c3b] text-sm">+5.7% from last month</p>
+            {/* <p className="text-[#a77c3b] text-sm">+5.7% from last month</p> */}
           </div>
           <div className="
     bg-[#a77c3b] p-3 rounded-full text-white
@@ -162,7 +162,7 @@ export default function UserDashboard() {
   <div>
     <p className="text-gray-500">Total Users</p>
     <h2 className="text-2xl font-bold">{stats.users}</h2>
-    <p className="text-[#a77c3b] text-sm">+3.2% from last month</p>
+    {/* <p className="text-[#a77c3b] text-sm">+3.2% from last month</p> */}
   </div>
 
   <div className="

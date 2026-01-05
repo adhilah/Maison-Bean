@@ -1,3 +1,11 @@
+
+
+// // ==============================admin and user=============================================
+
+
+
+
+
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { Link, useNavigate } from "react-router-dom";
@@ -12,9 +20,9 @@
 //   const navigate = useNavigate();
 //   const { login } = useAuth();
 
+//   // Simple form validation
 //   const validateForm = () => {
 //     const newErrors = {};
-
 //     if (!formData.email) {
 //       newErrors.email = "Email required";
 //     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
@@ -31,6 +39,7 @@
 //     return Object.keys(newErrors).length === 0;
 //   };
 
+//   // Handle form submission
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 
@@ -39,24 +48,48 @@
 //     setLoading(true);
 
 //     try {
-//       const res = await axios.get("http://localhost:3000/users");
-//       const userFound = res.data.find((u) => u.email === formData.email);
+//       // fetch users and admin
+//       const usersRes = await axios.get("http://localhost:3000/users");
+//       const adminRes = await axios.get("http://localhost:3000/admin");
 
-//       if (!userFound) {
+//       // Find matching account
+//       const userFound = usersRes.data.find(
+//         (u) => u.email === formData.email
+//       );
+
+//       const adminFound =
+//         adminRes.data.email === formData.email ? adminRes.data : null;
+
+//       const account = userFound || adminFound;
+
+//       if (!account) {
 //         setErrors({ email: "Email not registered" });
 //         setLoading(false);
 //         return;
 //       }
 
-//       if (userFound.password !== formData.password) {
+//       if (account.password !== formData.password) {
 //         setErrors({ password: "Wrong password" });
 //         setLoading(false);
 //         return;
 //       }
 
-//       login({ id: userFound.id, email: userFound.email });
+//       // Login with role
+//       login({
+//         id: account.id,
+//         email: account.email,
+//         role: account.role || "user",
+//       });
+
 //       toast.success("Login successful!");
-//       navigate("/");
+
+//       // Redirect based on role
+//      if (account.role === "admin") {
+//   navigate("/admin/dashboard");
+// } else {
+//   navigate("/");
+// }
+
 //       setFormData({ email: "", password: "" });
 //       setErrors({});
 //     } catch (err) {
@@ -142,7 +175,7 @@
 //           </div>
 //         </div>
 
-//         {/* Continue Shopping Link - Properly Aligned at Bottom */}
+//         {/* Continue Shopping Link */}
 //         <div className="mt-12 text-center">
 //           <Link
 //             to="/"
@@ -161,9 +194,8 @@
 
 
 
-// ==============================admin and user=============================================
 
-
+// ==========================================================================================================================================
 
 
 
@@ -179,7 +211,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth(); // This will handle localStorage automatically
 
   // Simple form validation
   const validateForm = () => {
@@ -209,17 +241,13 @@ function Login() {
     setLoading(true);
 
     try {
-      // fetch users and admin
+      // Fetch users and admin from json-server
       const usersRes = await axios.get("http://localhost:3000/users");
       const adminRes = await axios.get("http://localhost:3000/admin");
 
       // Find matching account
-      const userFound = usersRes.data.find(
-        (u) => u.email === formData.email
-      );
-
-      const adminFound =
-        adminRes.data.email === formData.email ? adminRes.data : null;
+      const userFound = usersRes.data.find((u) => u.email === formData.email);
+      const adminFound = adminRes.data.email === formData.email ? adminRes.data : null;
 
       const account = userFound || adminFound;
 
@@ -235,27 +263,31 @@ function Login() {
         return;
       }
 
-      // Login with role
+      // ✅ FIXED: Save COMPLETE user data to localStorage via AuthContext
       login({
-        id: account.id,
+        id: account.id || account.userId || "1",
         email: account.email,
-        role: account.role || "user",
+        role: account.role || "customer", // admin from /admin, customer from /users
+        firstName: account.firstName || "",
+        lastName: account.lastName || "",
+        fullName: `${account.firstName || ""} ${account.lastName || account.email.split("@")[0]}`.trim(),
       });
 
       toast.success("Login successful!");
 
-      // Redirect based on role
-     if (account.role === "admin") {
-  navigate("/admin/dashboard");
-} else {
-  navigate("/");
-}
+      // Redirect based on role (already perfect!)
+      if (account.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
 
+      // Reset form
       setFormData({ email: "", password: "" });
       setErrors({});
     } catch (err) {
       toast.error("Login failed. Try again later.");
-      console.error(err);
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
@@ -289,7 +321,7 @@ function Login() {
                 value={formData.email}
                 onChange={handleChange("email")}
                 className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7635] transition"
-                placeholder="you@example.com"
+                placeholder="admin@gmail.com or customer@gmail.com"
                 disabled={loading}
               />
               {errors.email && (

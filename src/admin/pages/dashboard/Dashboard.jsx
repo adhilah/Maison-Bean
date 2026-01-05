@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from "react";
-// import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../../context/AuthContext"
 // import { useNavigate } from "react-router-dom";
 // import {
 //   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
@@ -467,29 +467,45 @@
 
 
 // ===================================================================================================
+
 import React from "react";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import UserDashboard from "./StatsGrid";
+import RevenueChart from "../../components/Charts/RevenueChart";
+import CategoryChart from "../../components/Charts/CategoryChart";
+import TopProductsCard from "../../components/Charts/TopProductsChart";
+import OrdersChart from "../../components/Charts/OrdersChart";
+import RecentOrders from "../../components/tables/RecentOrders";
 
 function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Top Navbar */}
       <AdminNavbar />
 
-      {/* Sidebar + Content */}
       <div className="flex">
-        {/* Sidebar */}
         <AdminSidebar />
 
-        {/* Main Content */}
-        <div className="flex-1 ml-20 mr-20">
+        <div className="flex-1 p-6 lg:p-10">
           <UserDashboard />
+
+          {/* 2x2 Grid for Charts */}
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-2 gap-6 mt-6">
+            {/* Charts without background */}
+              <RevenueChart />
+              <CategoryChart />
+              <OrdersChart />
+              <TopProductsCard />
+            </div>
+            <div className="mt-6">
+            <RecentOrders />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 }
 
 export default Dashboard;
+

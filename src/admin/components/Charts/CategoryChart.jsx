@@ -1,63 +1,97 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
+
+const CATEGORY_COLORS = {
+  "Hot Coffee": "#EF4444",
+  "Cold Coffee": "#3B82F6",
+  "Croissant": "#F59E0B",
+};
 
 export default function CategoryChart() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/orders")
-      .then((res) => res.json())
-      .then((orders) => {
-        const categorySales = {};
+    axios.get("http://localhost:3000/orders").then((res) => {
+      const categoryMap = {};
 
-        orders.forEach((order) => {
-          order.items.forEach((item) => {
-            const category = item.product.category;
-            const price = item.product.basePrice * item.quantity;
+      res.data.forEach((order) => {
+        order.items.forEach((item) => {
+          const category = item.product?.category;
+          const price = item.unitPrice || item.product?.basePrice || 0;
+          const qty = item.quantity || 1;
 
-            if (!categorySales[category]) {
-              categorySales[category] = 0;
-            }
+          if (!category) return;
 
-            categorySales[category] += price;
-          });
+          categoryMap[category] =
+            (categoryMap[category] || 0) + price * qty;
         });
-
-        const formattedData = Object.keys(categorySales).map((cat) => ({
-          name: cat,
-          sales: categorySales[cat],
-        }));
-
-        setData(formattedData);
       });
+
+      setData(
+        Object.entries(categoryMap).map(([name, value]) => ({
+          name,
+          value: Number(value.toFixed(2)),
+        }))
+      );
+    });
   }, []);
 
+  const renderLabel = ({ cx, cy, midAngle, outerRadius, value }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = outerRadius * 0.6;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="#111827"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize={12}
+        fontWeight={500}
+      >
+        {value}
+      </text>
+    );
+  };
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h2 className="font-semibold text-lg mb-4">Category Performance</h2>
+    <div className="bg-white rounded-2xl shadow p-6 h-full">
+      <h3 className="text-lg font-semibold mb-4">
+        Category Performance
+      </h3>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
+      <ResponsiveContainer width="100%" height="85%">
+        <PieChart>
+          <Pie
+  data={data}
+  dataKey="value"
+  nameKey="name"
+  cx="50%"
+  cy="45%"          
+  outerRadius={95} 
+  label={renderLabel}
+  labelLine={false}
+>
+            {data.map((entry, index) => (
+              <Cell
+                key={index}
+                fill={CATEGORY_COLORS[entry.name] || "#9CA3AF"}
+              />
+            ))}
+          </Pie>
 
-          <Bar
-            dataKey="sales"
-            fill="#a77c3b"
-            radius={[6, 6, 0, 0]}
-            name="Sales ($)"
-          />
-        </BarChart>
+          <Legend />
+        </PieChart>
       </ResponsiveContainer>
     </div>
   );

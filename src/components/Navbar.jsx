@@ -299,7 +299,7 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
     <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl shadow-lg border z-50">
       <div className="py-2">
 
-        {/* ✅ SHOW ONLY WHEN USER IS LOGGED IN */}
+        {/* SHOW ONLY WHEN USER IS LOGGED IN */}
         {user && (
           <button
             onClick={() => {
