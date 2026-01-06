@@ -480,32 +480,38 @@ import RecentOrders from "../../components/tables/RecentOrders";
 
 function Dashboard() {
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Fixed Navbar */}
       <AdminNavbar />
 
-      <div className="flex">
-        <AdminSidebar />
+      <div className="flex flex-1">
+        {/* Sticky Sidebar - Full height, always visible on scroll */}
+        <aside className="hidden lg:block w-64 bg-white shadow-md">
+          <div className="h-screen sticky top-0 overflow-y-auto">
+            <AdminSidebar />
+          </div>
+        </aside>
 
-        <div className="flex-1 p-6 lg:p-10">
+        {/* Scrollable Main Content */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto">
           <UserDashboard />
 
-          {/* 2x2 Grid for Charts */}
-          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-2 gap-6 mt-6">
-            {/* Charts without background */}
-              <RevenueChart />
-              <CategoryChart />
-              <OrdersChart />
-              <TopProductsCard />
-            </div>
-            <div className="mt-6">
-            <RecentOrders />
-            </div>
+          {/* Charts Grid - Responsive */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <RevenueChart />
+            <CategoryChart />
+            <OrdersChart />
+            <TopProductsCard />
           </div>
-        </div>
+
+          {/* Recent Orders */}
+          <div className="mt-8">
+            <RecentOrders />
+          </div>
+        </main>
       </div>
-    // </div>
+    </div>
   );
 }
 
 export default Dashboard;
-

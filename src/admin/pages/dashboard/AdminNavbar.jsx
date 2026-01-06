@@ -23,7 +23,7 @@ export default function AdminNavbar({ onMenuClick }) {
         </button> */}
 
         <h1 className="text-lg font-semibold">
-          Maison Bean – Admin Dashboard
+          Maison Bean – Dashboard
         </h1>
       </div>
 
@@ -31,18 +31,18 @@ export default function AdminNavbar({ onMenuClick }) {
       <div className="flex items-center gap-5">
 
         {/* Notification */}
-        <button className="relative p-2 rounded-md hover:bg-white/20">
+        {/* <button className="relative p-2 rounded-md hover:bg-white/20">
           <Bell />
           <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </button>
+        </button> */}
 
         {/* Admin Email */}
-        <p className="hidden sm:block text-sm">
+        {/* <p className="hidden sm:block text-sm">
           Welcome, <span className="font-semibold">admin@gmail.com</span>
-        </p>
+        </p> */}
 
         {/* Logout */}
-       <button onClick={handleLogout} className="bg-rose-600 hover:bg-rose-700 px-6 py-2 rounded-lg font-medium transition flex items-center gap-2">
+       <button onClick={handleLogout} className="bg-[#a77c3b] border-amber-50 hover:bg-[#8e6a33] text-amber-50 px-6 py-2 rounded-lg font-medium transition flex items-center gap-2">
                 <span className="material-symbols-outlined text-lg">logout</span>
                 Logout
               </button>

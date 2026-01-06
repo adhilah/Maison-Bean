@@ -55,7 +55,7 @@ export default function TopProductsCard() {
     <div className="bg-white p-6 rounded-2xl shadow h-[420px] flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-semibold text-gray-900">Top Products</h2>
-        <span className="text-sm text-amber-700">Last 30 days</span>
+        <span className="text-sm text-[#a77c3b]">Last 30 days</span>
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-4">
@@ -75,7 +75,7 @@ export default function TopProductsCard() {
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-amber-100 rounded-lg">
-                  <Coffee className="h-6 w-6 text-amber-700" />
+                  <Coffee className="h-6 w-6 text-[#a77c3b]" />
                 </div>
                 <div>
                   <p className="font-medium text-gray-900 truncate max-w-[180px]">

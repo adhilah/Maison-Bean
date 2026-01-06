@@ -6,46 +6,36 @@ import {
   Cell,
   Legend,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
 
 const CATEGORY_COLORS = {
   "Hot Coffee": "#EF4444",
   "Cold Coffee": "#3B82F6",
   "Croissant": "#F59E0B",
+  "Iced Tea": "#10B981",
+  "Pastries": "#8B5CF6",
+  "Sandwiches": "#EC4899",
 };
+
+const DEFAULT_COLOR = "#9CA3AF";
 
 export default function CategoryChart() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    axios.get("http://localhost:3000/orders").then((res) => {
-      const categoryMap = {};
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value);
 
-      res.data.forEach((order) => {
-        order.items.forEach((item) => {
-          const category = item.product?.category;
-          const price = item.unitPrice || item.product?.basePrice || 0;
-          const qty = item.quantity || 1;
-
-          if (!category) return;
-
-          categoryMap[category] =
-            (categoryMap[category] || 0) + price * qty;
-        });
-      });
-
-      setData(
-        Object.entries(categoryMap).map(([name, value]) => ({
-          name,
-          value: Number(value.toFixed(2)),
-        }))
-      );
-    });
-  }, []);
-
-  const renderLabel = ({ cx, cy, midAngle, outerRadius, value }) => {
+  // Inner label: shows currency value in white
+  const renderInnerLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
     const RADIAN = Math.PI / 180;
-    const radius = outerRadius * 0.6;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
@@ -53,46 +43,115 @@ export default function CategoryChart() {
       <text
         x={x}
         y={y}
-        fill="#111827"
+        fill="white"
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={12}
-        fontWeight={500}
+        className="text-xs sm:text-sm font-bold"
       >
-        {value}
+        {formatCurrency(value)}
       </text>
     );
   };
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { name, value } = payload[0].payload;
+      return (
+        <div className="bg-white p-4 rounded-xl shadow-xl border border-gray-200">
+          <p className="font-bold text-gray-800">{name}</p>
+          <p className="text-sm text-gray-700 mt-1">
+            Revenue: <span className="font-semibold">{formatCurrency(value)}</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/orders")
+      .then((res) => {
+        const categoryMap = {};
+
+        res.data.forEach((order) => {
+          order.items?.forEach((item) => {
+            const category = item.product?.category;
+            const price = item.unitPrice || item.product?.basePrice || 0;
+            const qty = item.quantity || 1;
+
+            if (category) {
+              categoryMap[category] = (categoryMap[category] || 0) + price * qty;
+            }
+          });
+        });
+
+        const chartData = Object.entries(categoryMap)
+          .map(([name, value]) => ({
+            name,
+            value: Number(value.toFixed(2)),
+          }))
+          .sort((a, b) => b.value - a.value);
+
+        setData(chartData);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  if (loading || data.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg p-6 h-64 flex items-center justify-center">
+        <p className="text-gray-500">{loading ? "Loading..." : "No data available"}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-2xl shadow p-6 h-full">
-      <h3 className="text-lg font-semibold mb-4">
+    <div className="bg-white rounded-2xl shadow-lg p-6 h-64 sm:h-72 md:h-full flex flex-col">
+      {/* Title */}
+      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">
         Category Performance
       </h3>
 
-      <ResponsiveContainer width="100%" height="85%">
-        <PieChart>
-          <Pie
-  data={data}
-  dataKey="value"
-  nameKey="name"
-  cx="50%"
-  cy="45%"          
-  outerRadius={95} 
-  label={renderLabel}
-  labelLine={false}
->
-            {data.map((entry, index) => (
-              <Cell
-                key={index}
-                fill={CATEGORY_COLORS[entry.name] || "#9CA3AF"}
-              />
-            ))}
-          </Pie>
-
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+      {/* Full Circular Pie Chart */}
+      <div className="flex-1 min-h-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="80%"   // Full circle (no innerRadius = no hole)
+              paddingAngle={3}
+              labelLine={false}
+              label={renderInnerLabel}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={CATEGORY_COLORS[entry.name] || DEFAULT_COLOR}
+                  stroke="#fff"
+                  strokeWidth={3}
+                />
+              ))}
+            </Pie>
+            <Tooltip content={<CustomTooltip />} />
+            <Legend
+              verticalAlign="bottom"
+              align="center"
+              iconType="circle"
+              formatter={(value, entry) => (
+                <span className="text-xs sm:text-sm text-gray-700">
+                  {value} — {formatCurrency(entry.payload.value)}
+                </span>
+              )}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

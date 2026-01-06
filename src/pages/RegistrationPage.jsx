@@ -101,10 +101,10 @@ const RegistrationPage = () => {
     <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-amber-900 mb-2">
+          <h1 className="text-3xl font-bold text-[#7a5c2a] mb-2">
             Maison Bean
           </h1>
-          <p className="text-amber-700">Join our coffee community</p>
+          <p className="text-[#aa8950]">Join our coffee community</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 border border-amber-200">
@@ -157,7 +157,7 @@ const RegistrationPage = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-amber-900 mb-2">
+              <label className="block text-sm font-medium text-[#7a5c2a] mb-2">
                 Email
               </label>
               <input
@@ -179,7 +179,7 @@ const RegistrationPage = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-amber-900 mb-2">
+              <label className="block text-sm font-medium text-[#7a5c2a] mb-2">
                 Password
               </label>
               <input
@@ -223,18 +223,18 @@ const RegistrationPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-amber-800 hover:bg-amber-900 text-white py-3 rounded-lg font-semibold"
+              className="w-full bg-[#af8741] hover:bg-[#7a5c2a] text-white py-3 rounded-lg font-semibold"
             >
               Register
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-amber-700">
+            <p className="text-[#7a5c2a]">
               Already have an account?{" "}
               <a
                 href="/login"
-                className="text-amber-800 font-medium border-b border-amber-800"
+                className="text-[#7a5c2a] font-medium border-b border-[#7a5c2a]"
               >
                 LogIn
               </a>

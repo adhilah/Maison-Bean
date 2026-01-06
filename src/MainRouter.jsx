@@ -200,8 +200,10 @@ import UserOrders from "./admin/pages/Orders";
 import UserManagement from "./admin/components/tables/UsersTable";
 import ProductList from "./admin/components/tables/ProductsTable";
 import OrderManagement from "./admin/components/tables/OrdersTable";
+import CartOverview from "./admin/pages/CartOverview";
+import AddToCart from "./admin/pages/AddToCart";
 
-// Role-based home redirect
+
 const HomeWithRedirect = () => {
   const { user, isLoading } = useAuth();
 
@@ -335,6 +337,8 @@ export default function MainRouter() {
               <Route path="users-management" element={<UserManagement />} />
               <Route path="products-management" element={<ProductList />} />
               <Route path="orders-management" element={<OrderManagement />} />
+              <Route path="cart-overview" element={<CartOverview />} />
+              <Route path="add-to-cart" element={<AddToCart />} />
               
               {/* Fallback for unknown admin routes */}
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />

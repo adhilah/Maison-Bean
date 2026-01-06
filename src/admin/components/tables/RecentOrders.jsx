@@ -75,10 +75,6 @@ export default function RecentOrders() {
       {/* Header */}
       <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-gray-100">
         <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-        <button className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-xl hover:bg-amber-100 transition">
-          <Plus size={16} />
-          New Order
-        </button>
       </div>
 
       {/* Table */}
@@ -91,7 +87,7 @@ export default function RecentOrders() {
               <th className="px-6 py-3">Date</th>
               <th className="px-6 py-3">Amount</th>
               <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3 text-right">Actions</th>
+              {/* <th className="px-6 py-3 text-right">Actions</th> */}
             </tr>
           </thead>
 
@@ -119,8 +115,8 @@ export default function RecentOrders() {
                   {/* Order ID */}
                   <td className="px-6 py-5">
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-lg bg-blue-100 flex items-center justify-center">
-                        <svg className="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="h-9 w-9 rounded-lg bg-[#e3ccaa] flex items-center justify-center">
+                        <svg className="h-5 w-5 text-[#a77c3b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
                           />
@@ -164,11 +160,11 @@ export default function RecentOrders() {
                   </td>
 
                   {/* Actions */}
-                  <td className="px-6 py-5 text-right">
+                  {/* <td className="px-6 py-5 text-right">
                     <button className="text-gray-400 hover:text-gray-600">
                       <MoreVertical size={20} />
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             )}

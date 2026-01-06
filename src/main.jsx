@@ -20,7 +20,6 @@ createRoot(document.getElementById("root")).render(
               {/* Move Toaster inside providers - optional but cleaner */}
               <Toaster
                 position="top-center"
-                reverseOrder={false}
                 gutter={8}
                 toastOptions={{
                   duration: 2000,
@@ -32,10 +31,14 @@ createRoot(document.getElementById("root")).render(
                     borderRadius: "12px",
                   },
                   success: {
+                    duration: 2000,
                     icon: "",
                     style: {
                       background: "#756523",
                     },
+                  },
+                  error: {
+                    duration: 2000,
                   },
                 }}
               />

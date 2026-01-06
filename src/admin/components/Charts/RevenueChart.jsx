@@ -20,7 +20,7 @@ export default function RevenueChart() {
         const monthlyData = {};
 
         orders.forEach((order) => {
-          // ✅ SAFETY CHECK
+          // SAFETY CHECK
           if (!order.tracking?.confirmed) return;
 
           const date = new Date(order.tracking.confirmed);
@@ -41,7 +41,6 @@ export default function RevenueChart() {
           monthlyData[month].revenue += Number(order.total || 0);
           monthlyData[month].orders += 1;
         });
-
         setData(Object.values(monthlyData));
       });
   }, []);

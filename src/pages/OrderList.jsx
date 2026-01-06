@@ -1,222 +1,8 @@
-
-
-// // ==============================================================================
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import axios from "axios";
-
-// const API = "http://localhost:3000";
-
-// export default function OrderList() {
-//   const [orders, setOrders] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [cancelingId, setCancelingId] = useState(null);
-
-//   const navigate = useNavigate();
-
-//   // Logged-in user
-//   const storedUser = localStorage.getItem("user");
-//   const user = storedUser ? JSON.parse(storedUser) : null;
-
-//   useEffect(() => {
-//     if (!user) {
-//       setLoading(false);
-//       return;
-//     }
-//     fetchOrders();
-//   }, []);
-
-//   const fetchOrders = async () => {
-//     try {
-//       const res = await axios.get(`${API}/orders`);
-//       const userOrders = res.data
-//         .filter((o) => String(o.userId) === String(user.id))
-//         .reverse();
-
-//       setOrders(userOrders);
-//     } catch (err) {
-//       console.error("Failed to fetch orders", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const cancelOrder = async (orderId) => {
-//     if (!window.confirm("Are you sure you want to cancel this order?")) return;
-
-//     try {
-//       setCancelingId(orderId);
-
-//       await axios.patch(`${API}/orders/${orderId}`, {
-//         status: "cancelled",
-//       });
-
-//       fetchOrders();
-//     } catch (err) {
-//       console.error("Cancel failed", err);
-//     } finally {
-//       setCancelingId(null);
-//     }
-//   };
-
-//   const formatDate = (date) =>
-//     new Date(date).toLocaleDateString("en-US", {
-//       year: "numeric",
-//       month: "long",
-//       day: "numeric",
-//       hour: "2-digit",
-//       minute: "2-digit",
-//     });
-
-//   const statusBadge = (status) => {
-//     switch (status) {
-//       case "confirmed":
-//         return "bg-green-100 text-green-700";
-//       case "cancelled":
-//         return "bg-red-100 text-red-700";
-//       default:
-//         return "bg-gray-100 text-gray-700";
-//     }
-//   };
-
-//   if (!user) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center">
-//         <Link to="/login" className="text-xl text-[#9c7635] underline">
-//           Please login
-//         </Link>
-//       </div>
-//     );
-//   }
-
-//   if (loading) {
-//     return <div className="text-center py-20 text-xl">Loading orders...</div>;
-//   }
-
-//   if (orders.length === 0) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center">
-//         <p className="text-xl">No orders found</p>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 py-10 px-4">
-//       <div className="max-w-6xl mx-auto">
-//         <div className="flex justify-between mb-8">
-//           <h1 className="text-3xl font-bold">My Orders</h1>
-//           <Link to="/" className="text-[#9c7635] hover:underline">
-//             ← Continue Shopping
-//           </Link>
-//         </div>
-
-//         <div className="space-y-8">
-//           {orders.map((order) => {
-//             const canCancel =
-//               order.status !== "cancelled" &&
-//               order.status !== "delivered";
-
-//             return (
-//               <div
-//                 key={order.id}
-//                 className="bg-white rounded-2xl shadow-lg overflow-hidden border"
-//               >
-//                 {/* Header */}
-//                 <div className="bg-gradient-to-r from-[#9c7635] to-[#7a5c2a] text-white p-6 flex justify-between items-center">
-//                   <div>
-//                     <p className="text-sm opacity-80">Order ID</p>
-//                     <p className="text-xl font-bold">#{order.id}</p>
-//                     <p className="text-sm mt-1">
-//                       {formatDate(order.date)}
-//                     </p>
-//                   </div>
-
-//                   <div className="text-right">
-//                     <p className="text-3xl font-bold">
-//                       ${order.total.toFixed(2)}
-//                     </p>
-//                     <span
-//                       className={`inline-block mt-2 px-4 py-1 rounded-full text-sm font-medium ${statusBadge(
-//                         order.status
-//                       )}`}
-//                     >
-//                       {order.status}
-//                     </span>
-//                   </div>
-//                 </div>
-
-//                 {/* Items */}
-//                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//                   {order.items.map((item, i) => (
-//                     <div
-//                       key={i}
-//                       className="flex gap-4 bg-gray-50 p-4 rounded-xl"
-//                     >
-//                       <img
-//                         src={item.product.image}
-//                         alt={item.product.name}
-//                         className="w-20 h-20 rounded-lg object-cover"
-//                       />
-//                       <div>
-//                         <h4 className="font-semibold">
-//                           {item.product.name}
-//                         </h4>
-//                         <p className="text-sm text-gray-500">
-//                           Qty: {item.quantity}
-//                         </p>
-//                         <p className="font-bold mt-1">
-//                           ${item.unitPrice}
-//                         </p>
-//                       </div>
-//                     </div>
-//                   ))}
-//                 </div>
-
-//                 {/* Actions */}
-//                 <div className="border-t p-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
-//                   <Link
-//                     to={`/track-order/${order.id}`}
-//                     className="px-5 py-2 rounded-md bg-[#9c7635] text-white hover:bg-[#7a5c2a]"
-//                   >
-//                     Track Order
-//                   </Link>
-
-//                   {canCancel && (
-//                     <button
-//                       onClick={() => cancelOrder(order.id)}
-//                       disabled={cancelingId === order.id}
-//                       className="px-5 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
-//                     >
-//                       {cancelingId === order.id
-//                         ? "Cancelling..."
-//                         : "Cancel Order"}
-//                     </button>
-//                   )}
-
-//                   {order.status === "cancelled" && (
-//                     <span className="text-red-600 font-medium">
-//                       Order Cancelled
-//                     </span>
-//                   )}
-//                 </div>
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast"; // for toast messages
+import toast, { Toaster } from "react-hot-toast";
+import { Package } from "lucide-react"; 
 
 const API = "http://localhost:3000";
 
@@ -227,8 +13,6 @@ export default function OrderList() {
   const [deletingId, setDeletingId] = useState(null);
 
   const navigate = useNavigate();
-
-  // Logged-in user
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
@@ -240,7 +24,6 @@ export default function OrderList() {
     fetchOrders();
   }, []);
 
-  // Fetch user orders
   const fetchOrders = async () => {
     try {
       const res = await axios.get(`${API}/orders`);
@@ -256,15 +39,10 @@ export default function OrderList() {
     }
   };
 
-  // Cancel order
   const cancelOrder = async (orderId) => {
     try {
       setCancelingId(orderId);
-
-      await axios.patch(`${API}/orders/${orderId}`, {
-        status: "cancelled",
-      });
-
+      await axios.patch(`${API}/orders/${orderId}`, { status: "cancelled" });
       fetchOrders();
       toast.success("Order cancelled successfully");
     } catch (err) {
@@ -275,7 +53,6 @@ export default function OrderList() {
     }
   };
 
-  // Toast confirmation for deleting canceled orders
   const confirmDeleteOrder = (orderId) => {
     toast(
       (t) => (
@@ -304,7 +81,6 @@ export default function OrderList() {
     );
   };
 
-  // Actual deletion
   const handleDelete = async (orderId) => {
     try {
       setDeletingId(orderId);
@@ -355,15 +131,17 @@ export default function OrderList() {
 
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl">No orders found</p>
+      <div className="text-center mt-20">
+        <h1 className="text-3xl font-bold mb-4">Your order is empty</h1>
+        <Link to="/" className="text-[#9c7635] underline text-lg hover:text-[#7a5d2c]">
+          Continue Shopping
+        </Link>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
-      {/* Toaster container with custom colors */}
       <Toaster
         position="top-center"
         reverseOrder={false}
@@ -389,108 +167,100 @@ export default function OrderList() {
       />
 
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between mb-8">
-          <h1 className="text-3xl font-bold">My Orders</h1>
-          <Link to="/" className="text-[#9c7635] hover:underline">
-            ← Continue Shopping
-          </Link>
+        {/* Header with Continue Shopping at top-right (before Track button) */}
+        <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <h1 className="text-4xl font-bold text-gray-900">My Orders</h1>
+
+          <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4">
+            {/* Continue Shopping - now top-right aligned */}
+            <Link
+              to="/"
+              className="text-[#9c7635] hover:text-[#7a5d2c] font-medium flex items-center gap-2 transition-colors order-2 sm:order-1"
+            >
+              ← Continue Shopping
+            </Link>
+
+            {/* Enhanced Track Products Button with Cardboard Box Icon */}
+            <Link
+              to="/track-order/:orderId"
+              className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-[#9c7635] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#8a6a2f] hover:shadow-xl hover:-translate-y-1 order-1 sm:order-2"
+            >
+              <Package size={18} />
+              <span className="relative z-10">Track Products</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#b8964f] to-[#9c7635] opacity-0 transition-opacity group-hover:opacity-40"></div>
+            </Link>
+          </div>
         </div>
 
+        {/* Orders List */}
         <div className="space-y-8">
           {orders.map((order) => {
-            const canCancel =
-              order.status !== "cancelled" &&
-              order.status !== "delivered";
-
+            const canCancel = order.status !== "cancelled" && order.status !== "delivered";
             const isCancelled = order.status === "cancelled";
 
             return (
               <div
                 key={order.id}
-                className="bg-white rounded-2xl shadow-lg overflow-hidden border relative"
+                className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
               >
-                {/* Header */}
-                <div className="bg-gradient-to-r from-[#9c7635] to-[#7a5c2a] text-white p-6 flex justify-between items-center">
+                {/* Order Header */}
+                <div className="bg-gradient-to-r from-[#9c7635] to-[#7a5c2a] text-white p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
                     <p className="text-sm opacity-80">Order ID</p>
-                    <p className="text-xl font-bold">#{order.id}</p>
-                    <p className="text-sm mt-1">{formatDate(order.date)}</p>
+                    <p className="text-2xl font-bold">#{order.id}</p>
+                    <p className="text-sm mt-1 opacity-90">{formatDate(order.date)}</p>
                   </div>
-
                   <div className="text-right">
-                    <p className="text-3xl font-bold">
-                      ${order.total.toFixed(2)}
-                    </p>
+                    <p className="text-3xl font-bold">${order.total.toFixed(2)}</p>
                     <span
-                      className={`inline-block mt-2 px-4 py-1 rounded-full text-sm font-medium ${statusBadge(
+                      className={`inline-block mt-3 px-5 py-2 rounded-full text-sm font-semibold ${statusBadge(
                         order.status
                       )}`}
                     >
-                      {order.status}
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </span>
                   </div>
                 </div>
 
-                {/* Items */}
+                {/* Order Items */}
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {order.items.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex gap-4 bg-gray-50 p-4 rounded-xl"
-                    >
+                    <div key={i} className="flex gap-4 bg-gray-50 p-5 rounded-xl">
                       <img
                         src={item.product.image}
                         alt={item.product.name}
-                        className="w-20 h-20 rounded-lg object-cover"
+                        className="w-20 h-20 rounded-lg object-cover shadow-md"
                       />
-                      <div>
-                        <h4 className="font-semibold">{item.product.name}</h4>
-                        <p className="text-sm text-gray-500">
-                          Qty: {item.quantity}
-                        </p>
-                        <p className="font-bold mt-1">${item.unitPrice}</p>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-800">{item.product.name}</h4>
+                        <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity}</p>
+                        <p className="font-bold mt-2 text-lg">${item.unitPrice}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Actions */}
-                <div className="border-t p-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
-                  {/* Track button only if not canceled */}
-                  {!isCancelled && (
-                    <Link
-                      to={`/track-order/${order.id}`}
-                      className="px-5 py-2 rounded-md bg-[#9c7635] text-white hover:bg-[#7a5c2a]"
-                    >
-                      Track Order
-                    </Link>
-                  )}
-
-                  {/* Cancel order button */}
+                <div className="border-t border-gray-200 p-6 flex flex-col sm:flex-row gap-4 justify-end items-center">
                   {canCancel && (
                     <button
                       onClick={() => cancelOrder(order.id)}
                       disabled={cancelingId === order.id}
-                      className="px-5 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                      className="px-6 py-3 rounded-xl bg-[#f2e8d5] text-[#9c7635] font-medium hover:bg-[#8a6a2f] disabled:opacity-60 disabled:cursor-not-allowed transition"
                     >
                       {cancelingId === order.id ? "Cancelling..." : "Cancel Order"}
                     </button>
                   )}
-
-                  {/* Canceled order label + X button */}
                   {isCancelled && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-red-600 font-medium">
-                        Order Cancelled
-                      </span>
-
+                    <div className="flex items-center gap-3">
+                      <span className="text-red-600 font-medium">Order Cancelled</span>
                       <button
                         onClick={() => confirmDeleteOrder(order.id)}
                         disabled={deletingId === order.id}
-                        className="px-3 py-1 rounded-full bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50"
+                        className="w-10 h-10 rounded-full bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50 transition flex items-center justify-center text-2xl"
                         title="Delete Order"
                       >
-                        {deletingId === order.id ? "Deleting..." : "✕"}
+                        {deletingId === order.id ? "..." : "✕"}
                       </button>
                     </div>
                   )}
