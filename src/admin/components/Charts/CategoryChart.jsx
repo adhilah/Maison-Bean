@@ -69,35 +69,40 @@ export default function CategoryChart() {
   };
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/orders")
-      .then((res) => {
-        const categoryMap = {};
+  axios
+    .get("http://localhost:3000/orders")
+    .then((res) => {
+      const categoryMap = {
+        "Hot Coffee": 0,
+        "Cold Coffee": 0,
+        "Croissant": 0,
+      };
 
-        res.data.forEach((order) => {
-          order.items?.forEach((item) => {
-            const category = item.product?.category;
-            const price = item.unitPrice || item.product?.basePrice || 0;
-            const qty = item.quantity || 1;
+      res.data.forEach((order) => {
+        order.items?.forEach((item) => {
+          const category = item.product?.category;
+          const price = item.unitPrice || item.product?.basePrice || 0;
+          const qty = item.quantity || 1;
 
-            if (category) {
-              categoryMap[category] = (categoryMap[category] || 0) + price * qty;
-            }
-          });
+          if (categoryMap.hasOwnProperty(category)) {
+            categoryMap[category] += price * qty;
+          }
         });
+      });
 
-        const chartData = Object.entries(categoryMap)
-          .map(([name, value]) => ({
-            name,
-            value: Number(value.toFixed(2)),
-          }))
-          .sort((a, b) => b.value - a.value);
+      const chartData = Object.entries(categoryMap)
+        .map(([name, value]) => ({
+          name,
+          value: Number(value.toFixed(2)),
+        }))
+        .filter((item) => item.value > 0); // remove empty slices
 
-        setData(chartData);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+      setData(chartData);
+      setLoading(false);
+    })
+    .catch(() => setLoading(false));
+}, []);
+
 
   if (loading || data.length === 0) {
     return (

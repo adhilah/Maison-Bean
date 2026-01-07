@@ -13,37 +13,42 @@ import {
 export default function RevenueChart() {
   const [data, setData] = useState([]);
 
+  console.log(data);
+
   useEffect(() => {
-    fetch("http://localhost:3000/orders")
-      .then((res) => res.json())
-      .then((orders) => {
-        const monthlyData = {};
+  fetch("http://localhost:3000/orders")
+    .then((res) => res.json())
+    .then((orders) => {
+      const monthlyData = {};
 
-        orders.forEach((order) => {
-          // SAFETY CHECK
-          if (!order.tracking?.confirmed) return;
+      orders.forEach((order) => {
+        if (!order.date) return;
 
-          const date = new Date(order.tracking.confirmed);
-          if (isNaN(date)) return;
+        const date = new Date(order.date);
+        if (isNaN(date)) return;
 
-          const month = date.toLocaleString("default", {
-            month: "short",
-          });
-
-          if (!monthlyData[month]) {
-            monthlyData[month] = {
-              month,
-              revenue: 0,
-              orders: 0,
-            };
-          }
-
-          monthlyData[month].revenue += Number(order.total || 0);
-          monthlyData[month].orders += 1;
+        const month = date.toLocaleString("default", {
+          month: "short",
+          year: "numeric",
         });
-        setData(Object.values(monthlyData));
+
+        if (!monthlyData[month]) {
+          monthlyData[month] = {
+            month,
+            revenue: 0,
+            orders: 0,
+          };
+        }
+
+        monthlyData[month].revenue += Number(order.total || 0);
+        monthlyData[month].orders += 1;
       });
-  }, []);
+
+      setData(Object.values(monthlyData));
+    })
+    .catch(console.error);
+}, []);
+
 
   return (
     <div className="bg-white p-6 rounded-xl shadow">

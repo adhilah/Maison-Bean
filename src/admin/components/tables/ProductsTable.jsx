@@ -109,8 +109,7 @@ export default function ProductList() {
 
               <Link
                 to="/admin/add-to-cart"
-                className="flex items-center gap-2 px-6 py-3 bg-[#9c7635]
-                   text-white rounded-xl font-medium hover:bg-[#7a5d2c]"
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-[#9c7635] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#8a6a2f] hover:shadow-xl hover:-translate-y-1 order-1 sm:order-2"
               >
                 <Package size={18} />
                 Add Product

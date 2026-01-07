@@ -266,7 +266,7 @@ const SearchBar = () => {
 
         {/* Hide text ONLY on very small screens */}
         <span className="hidden xs:inline sm:inline text-sm sm:text-base truncate">
-          Search coffee, croissant, tea...
+          Search coffee, croissant...
         </span>
       </button>
     </div>

@@ -439,15 +439,17 @@ const PaymentPage = () => {
   const handlePayment = async () => {
     if (!validateForm()) return;
 
-    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const user = JSON.parse(localStorage.getItem("authUser") || "null");
     if (!user) {
-      toast.error("Please login to place order");
+      toast.error("Please login to place order", { duration: 2000 });
       return;
     }
 
     setLoading(true);
 
     try {
+      console.log(user);
+      
       const order = {
         id: Date.now().toString(),
         userId: user.id,
@@ -470,17 +472,17 @@ const PaymentPage = () => {
 
       // Success message based on payment method
       if (paymentMethod === "cod") {
-        toast.success("Order placed! Pay when delivered.");
+        toast.success("Order placed! Pay when delivered.", { duration: 2000 });
       } else if (paymentMethod === "upi") {
-        toast.success(`Order placed! Use UPI ID: ${upiId}`);
+        toast.success(`Order placed! Use UPI ID: ${upiId}`, { duration: 2000 });
       } else {
-        toast.success("Payment successful! Order confirmed.");
+        toast.success("Payment successful! Order confirmed.", { duration: 2000 });
       }
 
       navigate("/orders");
     } catch (err) {
       console.error("Order failed:", err);
-      toast.error("Order failed. Please try again.");
+      toast.error("Order failed. Please try again.", { duration: 2000 });
     } finally {
       setLoading(false);
     }

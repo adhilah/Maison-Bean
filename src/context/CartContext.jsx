@@ -129,7 +129,7 @@
 
 
 
-
+// context/CartContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -138,12 +138,12 @@ import { useAuth } from "./AuthContext";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useAuth(); // ✅ source of truth
+  const { user } = useAuth();
   const [cart, setCart] = useState([]);
 
-  // 🔄 Load cart when user changes
   useEffect(() => {
-    if (!user?.id) {
+    // 🔥 FIX: Do NOT load cart if user is admin
+    if (!user?.id || user.role === "admin") {
       setCart([]);
       return;
     }
@@ -158,13 +158,14 @@ export const CartProvider = ({ children }) => {
   }, [user]);
 
   const syncCart = async (updatedCart) => {
+    if (user?.role === "admin") return; // Don't sync for admin
     await axios.patch(`http://localhost:3000/users/${user.id}`, {
       cart: updatedCart,
     });
   };
 
   const addToCart = async (item) => {
-    if (!user?.id) {
+    if (!user?.id || user.role === "admin") {
       toast.error("Please login to add items");
       return;
     }
@@ -191,7 +192,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = async (cartId, newQty) => {
-    if (!user?.id || newQty < 1) return;
+    if (!user?.id || user.role === "admin" || newQty < 1) return;
 
     const updatedCart = cart.map((item) =>
       item.id === cartId ? { ...item, quantity: newQty } : item
@@ -206,7 +207,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (cartId) => {
-    if (!user?.id) return;
+    if (!user?.id || user.role === "admin") return;
 
     const updatedCart = cart.filter((item) => item.id !== cartId);
 
@@ -219,9 +220,8 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // ⭐ THIS IS THE KEY FUNCTION
   const clearCart = async () => {
-    if (!user?.id) return;
+    if (!user?.id || user.role === "admin") return;
 
     try {
       await syncCart([]);
@@ -241,7 +241,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateQuantity,
         removeFromCart,
-        clearCart, // ✅ exposed
+        clearCart,
       }}
     >
       {children}

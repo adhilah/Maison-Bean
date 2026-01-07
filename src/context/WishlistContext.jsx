@@ -82,7 +82,7 @@
 
 
 
-
+// context/WishlistContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -91,12 +91,12 @@ import { useAuth } from "./AuthContext";
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-  const { user } = useAuth(); // ✅ AUTH SOURCE
+  const { user } = useAuth();
   const [wishlist, setWishlist] = useState([]);
 
-  // 🔄 Load wishlist on user change
   useEffect(() => {
-    if (!user?.id) {
+    // 🔥 FIX: Do NOT load wishlist if user is admin
+    if (!user?.id || user.role === "admin") {
       setWishlist([]);
       return;
     }
@@ -111,7 +111,7 @@ export const WishlistProvider = ({ children }) => {
   }, [user]);
 
   const toggleWishlist = async (product) => {
-    if (!user?.id) {
+    if (!user?.id || user.role === "admin") {
       toast.error("Please login to manage wishlist");
       return;
     }
