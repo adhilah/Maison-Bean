@@ -431,7 +431,7 @@ export default function UserManagement() {
                 <tr className="text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50">
                   <th className="px-8 py-4">User</th>
                   <th className="px-8 py-4">Email</th>
-                  <th className="px-8 py-4">Status</th>
+                  <th className="px-8 py-4">Join</th>
                   <th className="px-8 py-4 text-right">Actions</th>
                 </tr>
               </thead>

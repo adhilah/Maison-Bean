@@ -490,6 +490,249 @@
       "upiId": "rayya@gmail.com",
       "status": "out_for_delivery",
       "date": "2026-01-07T09:50:09.174Z"
+    },
+    {
+      "id": "1767797791335",
+      "userId": "c6c3",
+      "userEmail": "adhilahussainar@gmail.com",
+      "items": [
+        {
+          "id": "1767797769223",
+          "productId": "1",
+          "product": {
+            "id": "1",
+            "name": "Cappuccino",
+            "category": "Hot Coffee",
+            "basePrice": 4.99,
+            "baseCalories": 120,
+            "image": "https://i.pinimg.com/1200x/be/1e/f8/be1ef8eb64e5db54a86184f0c5860cca.jpg",
+            "description": "Classic espresso with steamed milk and foam",
+            "healthBenefits": "Rich in antioxidants, boosts energy",
+            "rating": 4.8,
+            "reviewsCount": 245,
+            "isCustomized": false
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1767797771295",
+          "productId": "5",
+          "product": {
+            "id": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "basePrice": 7.99,
+            "baseCalories": 450,
+            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+            "description": "Flaky croissant filled with spiced butter chicken",
+            "healthBenefits": "Protein-rich, satisfying savory snack",
+            "rating": 4.9,
+            "reviewsCount": 420,
+            "isCustomized": false
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1767797773620",
+          "productId": "2",
+          "product": {
+            "id": "2",
+            "name": "Chocolate Almond Croissant",
+            "category": "Croissant",
+            "basePrice": 6.49,
+            "baseCalories": 480,
+            "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
+            "description": "Classic French croissant with dark chocolate and almonds",
+            "healthBenefits": "Rich in antioxidants and healthy fats",
+            "rating": 4.8,
+            "reviewsCount": 540,
+            "isCustomized": false
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        }
+      ],
+      "subtotal": 19.47,
+      "shipping": 9.9,
+      "total": 29.369999999999997,
+      "paymentMethod": "cod",
+      "upiId": null,
+      "status": "delivered",
+      "date": "2026-01-07T14:56:31.335Z"
+    },
+    {
+      "id": "ord-1001",
+      "userId": "121f",
+      "userEmail": "rayya@gmail.com",
+      "items": [
+        {
+          "id": "itm-1",
+          "productId": "1",
+          "product": {
+            "id": "1",
+            "name": "Cappuccino",
+            "category": "Hot Coffee",
+            "basePrice": 4.99
+          },
+          "quantity": 2
+        }
+      ],
+      "subtotal": 9.98,
+      "shipping": 5,
+      "total": 14.98,
+      "paymentMethod": "upi",
+      "status": "delivered",
+      "date": "2025-10-12T10:30:00.000Z"
+    },
+    {
+      "id": "ord-1002",
+      "userId": "c6c3",
+      "userEmail": "adhilahussainar@gmail.com",
+      "items": [
+        {
+          "id": "itm-2",
+          "productId": "8",
+          "product": {
+            "id": "8",
+            "name": "Espresso",
+            "category": "Hot Coffee",
+            "basePrice": 3.49
+          },
+          "quantity": 2
+        },
+        {
+          "id": "itm-3",
+          "productId": "2",
+          "product": {
+            "id": "2",
+            "name": "Chocolate Almond Croissant",
+            "category": "Croissant",
+            "basePrice": 6.49
+          },
+          "quantity": 1
+        }
+      ],
+      "subtotal": 13.47,
+      "shipping": 6,
+      "total": 19.47,
+      "paymentMethod": "cod",
+      "status": "out_for_delivery",
+      "date": "2025-11-05T15:20:00.000Z"
+    },
+    {
+      "id": "ord-1003",
+      "userId": "121f",
+      "userEmail": "rayya@gmail.com",
+      "items": [
+        {
+          "id": "itm-4",
+          "productId": "4",
+          "product": {
+            "id": "4",
+            "name": "Iced Mocha",
+            "category": "Cold Coffee",
+            "basePrice": 6.49
+          },
+          "quantity": 2
+        }
+      ],
+      "subtotal": 12.98,
+      "shipping": 6,
+      "total": 18.98,
+      "paymentMethod": "upi",
+      "status": "pending",
+      "date": "2025-12-02T09:15:00.000Z"
+    },
+    {
+      "id": "ord-1004",
+      "userId": "c6c3",
+      "userEmail": "adhilahussainar@gmail.com",
+      "items": [
+        {
+          "id": "itm-5",
+          "productId": "5",
+          "product": {
+            "id": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "basePrice": 7.99
+          },
+          "quantity": 2
+        }
+      ],
+      "subtotal": 15.98,
+      "shipping": 7,
+      "total": 22.98,
+      "paymentMethod": "upi",
+      "status": "delivered",
+      "date": "2025-12-18T18:45:00.000Z"
+    },
+    {
+      "id": "ord-1005",
+      "userId": "121f",
+      "userEmail": "rayya@gmail.com",
+      "items": [
+        {
+          "id": "itm-6",
+          "productId": "12",
+          "product": {
+            "id": "12",
+            "name": "Latte",
+            "category": "Hot Coffee",
+            "basePrice": 5.49
+          },
+          "quantity": 2
+        },
+        {
+          "id": "itm-7",
+          "productId": "15",
+          "product": {
+            "id": "15",
+            "name": "Butter Croissant",
+            "category": "Croissant",
+            "basePrice": 4.99
+          },
+          "quantity": 1
+        }
+      ],
+      "subtotal": 15.97,
+      "shipping": 6,
+      "total": 21.97,
+      "paymentMethod": "upi",
+      "status": "processing",
+      "date": "2026-01-07T09:50:09.174Z"
+    },
+    {
+      "id": "ord-1006",
+      "userId": "c6c3",
+      "userEmail": "adhilahussainar@gmail.com",
+      "items": [
+        {
+          "id": "itm-8",
+          "productId": "9981",
+          "product": {
+            "id": "9981",
+            "name": "Honey Cinnamon Ristretto",
+            "category": "Hot Coffee",
+            "basePrice": 3.54
+          },
+          "quantity": 3
+        }
+      ],
+      "subtotal": 10.62,
+      "shipping": 5,
+      "total": 15.62,
+      "paymentMethod": "cod",
+      "status": "delivered",
+      "date": "2026-02-08T11:40:00.000Z"
     }
   ],
   "admin": {
@@ -505,6 +748,15 @@
       "lastName": "thashin",
       "email": "rayya@gmail.com",
       "password": "rayya123",
+      "role": "customer",
+      "cart": []
+    },
+    {
+      "id": "c6c3",
+      "firstName": "adhila",
+      "lastName": "hussainar",
+      "email": "adhilahussainar@gmail.com",
+      "password": "123456",
       "role": "customer",
       "cart": []
     }
