@@ -136,11 +136,15 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("authUser");
-
-    // Optional: Clean up any leftover customer data
-    // Remove if you want to preserve cart/wishlist across sessions
     localStorage.removeItem("cart");
     localStorage.removeItem("wishlist");
+  };
+
+  // Add clearSession function
+  const clearSession = () => {
+    // Only remove authUser, keep cart/wishlist for guest users
+    localStorage.removeItem("authUser");
+    setUser(null);
   };
 
   // Enhanced value with helper to check role
@@ -148,6 +152,7 @@ export function AuthProvider({ children }) {
     user,
     login,
     logout,
+    clearSession, // Added this
     isLoading,
     isAdmin: user?.role === "admin",
     isCustomer: user?.role !== "admin" && user !== null,

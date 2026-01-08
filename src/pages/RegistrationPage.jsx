@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 const RegistrationPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     fname: "",
@@ -59,44 +60,89 @@ const RegistrationPage = () => {
     return isValid;
   };
 
+  // Check if email already exists
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await axios.get("http://localhost:3000/users");
+      const users = response.data || [];
+      return users.some(user => user.email.toLowerCase() === email.toLowerCase());
+    } catch (error) {
+      console.error("Error checking email:", error);
+      return false;
+    }
+  };
+
   // ------------------ SUBMIT ------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    
-    const userData = {
-      firstName: formData.fname.trim(),
-      lastName: formData.lname.trim(),
-      email: formData.email.trim(),
-      password: formData.password,
-      role: "customer",
-    };
+    setLoading(true);
 
     try {
+      // Check if email already exists
+      const emailExists = await checkEmailExists(formData.email);
+      if (emailExists) {
+        setErrors({ email: "Email already registered" });
+        toast.error("Email already exists. Please use a different email.");
+        setLoading(false);
+        return;
+      }
+
+      // Generate a simple ID (like json-server does)
+      const userId = Math.random().toString(36).substring(2, 10);
+      
+      const userData = {
+        id: userId,
+        firstName: formData.fname.trim(),
+        lastName: formData.lname.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        role: "customer",
+        userStatus: "active",
+        cart: [],
+        wishlist: []
+      };
+
       const response = await axios.post(
         "http://localhost:3000/users",
         userData
       );
 
-      toast.success(`Registered Successfully! Welcome ${formData.fname}`);
-      console.log("User added:", response.data);
+      if (response.status === 201 || response.status === 200) {
+        toast.success(`Registered Successfully! Welcome ${formData.fname}`);
+        console.log("User added:", response.data);
 
-      setFormData({
-        fname: "",
-        lname: "",
-        email: "",
-        password: "",
-        cpassword: "",
-      });
+        setFormData({
+          fname: "",
+          lname: "",
+          email: "",
+          password: "",
+          cpassword: "",
+        });
 
-      navigate("/login");
+        // Navigate to login after a short delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500);
+      } else {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
     } catch (err) {
       console.error("Registration failed:", err);
-      toast.success("Registration failed.");
+      if (err.response) {
+        toast.error(`Registration failed: ${err.response.status} ${err.response.statusText}`);
+      } else if (err.request) {
+        toast.error("Registration failed: No response from server");
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
+  // Rest of your JSX remains the same...
   return (
     <div className="min-h-screen bg-amber-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -119,16 +165,15 @@ const RegistrationPage = () => {
                   type="text"
                   className={`w-full px-4 py-3 border rounded-lg bg-amber-50 ${
                     errors.fname ? "border-red-500" : "border-amber-300"
-                  }`}
+                  } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   value={formData.fname}
                   onChange={(e) =>
                     setFormData({ ...formData, fname: e.target.value })
                   }
+                  disabled={loading}
                 />
                 {errors.fname && (
-                  <p className="text-sm text-red-600 mt-1">
-                    {errors.fname}
-                  </p>
+                  <p className="text-sm text-red-600 mt-1">{errors.fname}</p>
                 )}
               </div>
 
@@ -141,16 +186,15 @@ const RegistrationPage = () => {
                   type="text"
                   className={`w-full px-4 py-3 border rounded-lg bg-amber-50 ${
                     errors.lname ? "border-red-500" : "border-amber-300"
-                  }`}
+                  } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                   value={formData.lname}
                   onChange={(e) =>
                     setFormData({ ...formData, lname: e.target.value })
                   }
+                  disabled={loading}
                 />
                 {errors.lname && (
-                  <p className="text-sm text-red-600 mt-1">
-                    {errors.lname}
-                  </p>
+                  <p className="text-sm text-red-600 mt-1">{errors.lname}</p>
                 )}
               </div>
             </div>
@@ -164,16 +208,15 @@ const RegistrationPage = () => {
                 type="email"
                 className={`w-full px-4 py-3 border rounded-lg bg-amber-50 ${
                   errors.email ? "border-red-500" : "border-amber-300"
-                }`}
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
+                disabled={loading}
               />
               {errors.email && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.email}
-                </p>
+                <p className="text-sm text-red-600 mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -186,16 +229,15 @@ const RegistrationPage = () => {
                 type="password"
                 className={`w-full px-4 py-3 border rounded-lg bg-amber-50 ${
                   errors.password ? "border-red-500" : "border-amber-300"
-                }`}
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
+                disabled={loading}
               />
               {errors.password && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.password}
-                </p>
+                <p className="text-sm text-red-600 mt-1">{errors.password}</p>
               )}
             </div>
 
@@ -208,24 +250,24 @@ const RegistrationPage = () => {
                 type="password"
                 className={`w-full px-4 py-3 border rounded-lg bg-amber-50 ${
                   errors.cpassword ? "border-red-500" : "border-amber-300"
-                }`}
+                } ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
                 value={formData.cpassword}
                 onChange={(e) =>
                   setFormData({ ...formData, cpassword: e.target.value })
                 }
+                disabled={loading}
               />
               {errors.cpassword && (
-                <p className="text-sm text-red-600 mt-1">
-                  {errors.cpassword}
-                </p>
+                <p className="text-sm text-red-600 mt-1">{errors.cpassword}</p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#af8741] hover:bg-[#7a5c2a] text-white py-3 rounded-lg font-semibold"
+              disabled={loading}
+              className="w-full bg-[#af8741] hover:bg-[#7a5c2a] disabled:opacity-70 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition"
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 
@@ -234,7 +276,7 @@ const RegistrationPage = () => {
               Already have an account?{" "}
               <a
                 href="/login"
-                className="text-[#7a5c2a] font-medium border-b border-[#7a5c2a]"
+                className="text-[#7a5c2a] font-medium border-b border-[#7a5c2a] hover:underline"
               >
                 LogIn
               </a>

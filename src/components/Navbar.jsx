@@ -451,7 +451,6 @@
 // // ========================================================================================================
 
 
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -514,13 +513,14 @@ function IconWithBadge({ iconName, badgeCount, onClick }) {
 /* ================= USER DROPDOWN ================= */
 function UserDropdown({ isOpen, onClose, user, logout }) {
   const navigate = useNavigate();
+
   if (!isOpen) return null;
 
   return (
-    <div className="absolute right-0 top-full mt-3 w-56 bg-white rounded-xl shadow-xl ring-1 ring-black/10 z-[9999]">
-      <div className="px-4 py-3 border-b">
-        <p className="font-semibold text-gray-800">
-          {user?.name || "Welcome"}
+    <div className="absolute right-0 top-full mt-3 w-56 bg-white rounded-xl shadow-xl ring-1 ring-black/10 z-[9999] overflow-hidden">
+      <div className="px-4 py-3 border-b border-gray-200">
+        <p className="font-semibold text-gray-800 truncate">
+          {user?.name || "Guest"}
         </p>
         {user?.email && (
           <p className="text-sm text-gray-500 truncate">{user.email}</p>
@@ -528,19 +528,20 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
       </div>
 
       <div className="py-2">
-        {user && (
+        {/* Customer-only links */}
+        {user?.role === "customer" && (
           <>
             <button
               onClick={() => {
                 navigate("/orders");
                 onClose();
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition"
             >
-              <span className="material-symbols-outlined">
+              <span className="material-symbols-outlined text-gray-600">
                 receipt_long
               </span>
-              My Orders
+              <span>My Orders</span>
             </button>
 
             <button
@@ -548,16 +549,33 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
                 navigate("/profile");
                 onClose();
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition"
             >
-              <span className="material-symbols-outlined">
+              <span className="material-symbols-outlined text-gray-600">
                 account_circle
               </span>
-              Profile
+              <span>Profile</span>
             </button>
           </>
         )}
 
+        {/* Admin link */}
+        {user?.role === "admin" && (
+          <button
+            onClick={() => {
+              navigate("/admin/dashboard");
+              onClose();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition"
+          >
+            <span className="material-symbols-outlined text-gray-600">
+              admin_panel_settings
+            </span>
+            <span>Admin Dashboard</span>
+          </button>
+        )}
+
+        {/* Logout / Login */}
         {user ? (
           <button
             onClick={() => {
@@ -565,10 +583,10 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
               onClose();
               toast.success("Logged out successfully");
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50"
+            className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 transition"
           >
             <span className="material-symbols-outlined">logout</span>
-            Logout
+            <span>Logout</span>
           </button>
         ) : (
           <button
@@ -576,10 +594,10 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
               navigate("/login");
               onClose();
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100"
+            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-100 transition"
           >
             <span className="material-symbols-outlined">login</span>
-            Login
+            <span>Login</span>
           </button>
         )}
       </div>
@@ -587,10 +605,10 @@ function UserDropdown({ isOpen, onClose, user, logout }) {
   );
 }
 
-/* ================= NAVBAR ================= */
-function Navbar({ query, setQuery }) {
+/* ================= MAIN NAVBAR ================= */
+function Navbar() {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth(); // ← Fully using AuthContext
   const { cartQuantity } = useCart();
   const { wishlistCount } = useWishlist();
   const { isSearchOpen, selectedProduct, setSelectedProduct } = useSearch();
@@ -600,21 +618,20 @@ function Navbar({ query, setQuery }) {
 
   const dropdownRef = useRef(null);
 
+  // Fetch products when search modal opens
   useEffect(() => {
     if (isSearchOpen) {
       fetch("http://localhost:3000/products")
         .then((res) => res.json())
-        .then((data) => setProducts(data));
+        .then((data) => setProducts(data))
+        .catch((err) => console.error("Failed to fetch products for search:", err));
     }
   }, [isSearchOpen]);
 
-  // ✅ Close dropdown on outside click
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -623,50 +640,92 @@ function Navbar({ query, setQuery }) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isDropdownOpen]);
 
+  // Handle cart click
   const handleCartClick = () => {
-    if (!user) return toast.error("You need to log in for access");
+    if (!user) {
+      toast.error("Please log in to view your cart");
+      navigate("/login");
+      return;
+    }
+    if (user.role !== "customer") {
+      toast.error("Access denied");
+      return;
+    }
     navigate("/cart");
   };
 
+  // Handle wishlist click
   const handleWishlistClick = () => {
-    if (!user) return toast.error("You need to log in for access");
+    if (!user) {
+      toast.error("Please log in to view your wishlist");
+      navigate("/login");
+      return;
+    }
+    if (user.role !== "customer") {
+      toast.error("Access denied");
+      return;
+    }
     navigate("/wishlist");
   };
 
+  // Show loading skeleton if auth is loading
+  if (isLoading) {
+    return (
+      <>
+        <nav className="fixed top-0 left-0 right-0 z-[9999] bg-white/70 backdrop-blur-md shadow">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <div className="flex items-center justify-between h-16">
+              <Logo />
+              <div className="w-32 h-10 bg-gray-200 rounded-full animate-pulse" />
+              <div className="flex items-center gap-6">
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div className="h-16" />
+      </>
+    );
+  }
+
   return (
     <>
-      {/* ✅ FIXED NAVBAR (NOT STICKY) */}
+      {/* Fixed Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-[9999] bg-white/70 backdrop-blur-md shadow">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between h-16">
             <Logo />
 
-            <SearchBar query={query} setQuery={setQuery} />
+            <SearchBar />
 
             <div className="flex items-center gap-4 md:gap-6">
+              {/* Cart Icon */}
               <IconWithBadge
                 iconName="shopping_cart"
-                badgeCount={user ? cartQuantity : 0}
+                badgeCount={user?.role === "customer" ? cartQuantity : 0}
                 onClick={handleCartClick}
               />
 
+              {/* Wishlist Icon */}
               <IconWithBadge
                 iconName="favorite"
-                badgeCount={user ? wishlistCount : 0}
+                badgeCount={user?.role === "customer" ? wishlistCount : 0}
                 onClick={handleWishlistClick}
               />
 
+              {/* User Menu */}
               <div className="relative" ref={dropdownRef}>
                 <button
-                  onClick={() => setIsDropdownOpen((p) => !p)}
-                  className="p-1 rounded-lg hover:bg-gray-100"
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  className="p-1 rounded-lg hover:bg-gray-100 transition"
                 >
-                  <span className="material-symbols-outlined text-2xl md:text-3xl">
-                    more_vert
+                  <span className="material-symbols-outlined text-2xl md:text-3xl text-gray-700">
+                    {user ? "account_circle" : "more_vert"}
                   </span>
                 </button>
 
@@ -682,11 +741,13 @@ function Navbar({ query, setQuery }) {
         </div>
       </nav>
 
-      {/* ✅ IMPORTANT: Spacer so content doesn't hide under fixed navbar */}
+      {/* Spacer for fixed navbar */}
       <div className="h-16" />
 
+      {/* Search Modal */}
       {isSearchOpen && <SearchModal products={products} />}
 
+      {/* Product Detail Modal */}
       {selectedProduct && (
         <ProductModal
           product={selectedProduct}
