@@ -18,13 +18,11 @@ export default function ProductModal({ product, onClose }) {
       return;
     }
 
-    // CRITICAL FIX: Pass full product data
     addToCart({
       ...product,
       isCustomized: false,
     });
 
-    // toast.success(`${product.name} added to cart`);
     onClose();
   };
 

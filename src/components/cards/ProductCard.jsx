@@ -18,7 +18,7 @@ const ProductCard = ({ product }) => {
         {/* Wishlist Icon */}
         <button
           onClick={(e) => {
-            e.stopPropagation(); // Prevent opening modal
+            e.stopPropagation();
             toggleWishlist(product);
           }}
           className="absolute top-3 right-3 p-1 z-10"

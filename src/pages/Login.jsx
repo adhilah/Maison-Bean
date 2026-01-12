@@ -477,7 +477,7 @@ function Login() {
     }
 
     const loggedInUser = {
-      id: String(account.id || ""), // Handle missing id
+      id: String(account.id || ""),
       email: account.email,
       role: adminFound ? "admin" : "customer",
       firstName: account.firstName || account.fname || "",

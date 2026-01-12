@@ -205,6 +205,7 @@ import ProductList from "./admin/components/tables/ProductsTable";
 import OrderManagement from "./admin/components/tables/OrdersTable";
 import CartOverview from "./admin/pages/CartOverview";
 import AddToCart from "./admin/pages/AddToCart";
+import EditProduct from "./admin/pages/EditProduct";
 
 const HomeWithRedirect = () => {
   const { user, isLoading } = useAuth();
@@ -339,6 +340,7 @@ export default function MainRouter() {
               <Route path="orders-management" element={<OrderManagement />} />
               <Route path="cart-overview" element={<CartOverview />} />
               <Route path="add-to-cart" element={<AddToCart />} />
+              <Route path="edit-product" element={<EditProduct />} />
 
               {/* Fallback for unknown admin routes */}
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
