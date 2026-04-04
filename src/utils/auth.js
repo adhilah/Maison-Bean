@@ -10,7 +10,7 @@
 
 
 export const getLoggedInUser = () => {
-  const user = localStorage.getItem("user");
+  const user = localStorage.getItem("authUser");
 
   if (!user) return null;
 

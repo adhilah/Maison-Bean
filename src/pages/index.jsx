@@ -61,7 +61,7 @@
 
 import React from "react";
 import Navbar from "../components/Navbar";
-import HeroSection from "../components/heroSection";
+import HeroSection from "../components/HeroSection";
 import ProductCategories from "../components/ProductCategories";
 import Footer from "../components/Footer";
 import Card from "../components/FeaturedProducts";

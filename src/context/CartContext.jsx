@@ -10,7 +10,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    // 🔥 FIX: Do NOT load cart if user is admin
+    // FIX: Do NOT load cart if user is admin
     if (!user?.id || user.role === "admin") {
       setCart([]);
       return;
