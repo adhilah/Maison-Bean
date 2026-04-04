@@ -1304,6 +1304,16 @@
           "image": "https://i.pinimg.com/1200x/e7/55/81/e75581acb56f4024dba98e67d0db9a2e.jpg",
           "description": "A rich, short espresso with warm cinnamon spice and a touch of natural honey sweetness, smooth and comforting in every sip",
           "createdAt": "2026-01-06T07:29:43.014Z"
+        },
+        {
+          "id": "d942",
+          "name": "Caramel Frappuccino",
+          "category": "Cold Coffee",
+          "basePrice": 9.87,
+          "image": "https://i.pinimg.com/1200x/fb/19/08/fb1908b420eee76ec0d36ef3ce999e31.jpg",
+          "description": "Blended coffee drink with caramel syrup, milk, and whipped cream",
+          "healthBenefits": "Energy boost with sweet caramel flavor, perfect summer treat",
+          "createdAt": "2026-01-08T13:35:30.239Z"
         }
       ]
     },

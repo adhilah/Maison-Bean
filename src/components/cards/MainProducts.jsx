@@ -187,10 +187,8 @@ const CATEGORY_META = {
   "Croissant":   { sub: "Flaky, buttery, golden",  line: "Freshly Baked"     },
 };
 
-// ── adjust this to match your actual Navbar height ──────────────────────────
-const NAVBAR_HEIGHT = 72; // px  ← change if your Navbar is taller/shorter
+const NAVBAR_HEIGHT = 72; // px — adjust if your Navbar is taller/shorter
 const CATBAR_HEIGHT = 52; // px
-// ────────────────────────────────────────────────────────────────────────────
 
 const SkeletonCard = () => (
   <div style={{ background: "#13100a", border: "1px solid rgba(196,169,106,0.08)", borderRadius: "2px", overflow: "hidden" }}>
@@ -225,40 +223,17 @@ export default function Cards() {
   const [error,            setError]            = useState(false);
   const [mobileOpen,       setMobileOpen]       = useState(false);
   const [navH,             setNavH]             = useState(NAVBAR_HEIGHT);
-  const [scrolledDown,     setScrolledDown]     = useState(false);
-
-  const lastScrollY = useRef(0);
-  const ticking     = useRef(false);
-  const navRef      = useRef(null);
+  const navRef = useRef(null);
 
   const { category } = useParams();
   const navigate      = useNavigate();
 
-  // Measure real Navbar height
+  // Measure real Navbar height after mount
   useEffect(() => {
     if (navRef.current) {
       const h = navRef.current.getBoundingClientRect().height;
       if (h > 0) setNavH(h);
     }
-  }, []);
-
-  // Hide-on-scroll
-  useEffect(() => {
-    const onScroll = () => {
-      if (ticking.current) return;
-      ticking.current = true;
-      window.requestAnimationFrame(() => {
-        const y     = window.scrollY;
-        const delta = y - lastScrollY.current;
-        if      (delta > 10  && y > 100) setScrolledDown(true);
-        else if (delta < -5)              setScrolledDown(false);
-        if      (y < 50)                  setScrolledDown(false);
-        lastScrollY.current = y;
-        ticking.current     = false;
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Sync category from URL
@@ -297,8 +272,7 @@ export default function Cards() {
     navigate(cat === "All" ? "/menu" : `/menu/${cat.toLowerCase().replace(/ /g, "-")}`);
   };
 
-  const meta   = CATEGORY_META[selectedCategory] ?? { sub: "", line: "" };
-  const slideY = scrolledDown ? `${-(navH + CATBAR_HEIGHT + 20)}px` : "0px";
+  const meta = CATEGORY_META[selectedCategory] ?? { sub: "", line: "" };
 
   return (
     <>
@@ -307,23 +281,19 @@ export default function Cards() {
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         @keyframes fadeUp  { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-        /* Navbar wrapper */
+        /* Always-visible sticky Navbar */
         .mb-nav {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 300;
-          transform: translateY(${slideY});
-          transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
         }
 
-        /* Category bar — positioned directly under navbar via top */
+        /* Always-visible sticky category bar, sits right below Navbar */
         .mb-cat {
           position: fixed;
           left: 0; right: 0;
           top: ${navH}px;
           z-index: 299;
-          transform: translateY(${slideY});
-          transition: transform 0.45s cubic-bezier(0.22,1,0.36,1);
           background: rgba(7,5,3,0.96);
           backdrop-filter: blur(20px) saturate(160%);
           border-bottom: 1px solid rgba(196,169,106,0.09);
@@ -333,7 +303,6 @@ export default function Cards() {
           justify-content: center;
         }
 
-        /* Desktop pills row */
         .mb-pills {
           display: flex;
           align-items: center;
@@ -380,12 +349,12 @@ export default function Cards() {
         .product-appear { animation:fadeUp 0.55s cubic-bezier(0.22,1,0.36,1) both; }
       `}</style>
 
-      {/* 1 — Navbar */}
+      {/* 1 — Navbar (always visible) */}
       <div className="mb-nav" ref={navRef}>
         <Navbar />
       </div>
 
-      {/* 2 — Category bar (completely separate fixed element) */}
+      {/* 2 — Category bar (always visible, below Navbar) */}
       <div className="mb-cat">
         <div className="mb-pills">
           {categories.map(cat => (
@@ -428,7 +397,7 @@ export default function Cards() {
         ))}
       </div>
 
-      {/* 3 — Page */}
+      {/* 3 — Page content */}
       <div style={{ minHeight:"100vh", background:"#0a0805", fontFamily:"'Inter',sans-serif", paddingTop:`${navH + CATBAR_HEIGHT + 16}px` }}>
 
         {/* Hero */}

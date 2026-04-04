@@ -508,20 +508,17 @@ const Navbar = () => {
           font-weight: 300;
           letter-spacing: 0.28em;
           text-transform: uppercase;
-          color: #c9a96e;
-          background: transparent;
-          border: 1px solid rgba(201,169,110,0.5);
+          color: #0d0a05;
+          background: #c9a96e;
           padding: 0.65rem 1.6rem;
           text-decoration: none;
           margin-left: 0.75rem;
-          transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, letter-spacing 0.3s ease;
+          transition: background 0.3s ease, letter-spacing 0.3s ease;
           white-space: nowrap;
           display: inline-block;
         }
         .mb-cta:hover {
-          background: #c9a96e;
-          color: #0d0a05;
-          border-color: #c9a96e;
+          background: #d4b87a;
           letter-spacing: 0.36em;
         }
 
