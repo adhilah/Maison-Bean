@@ -78,160 +78,124 @@
 
 
 //=================================================================================================================
+import { Link } from "react-router-dom";
 
-
-import React from "react";
-
-const FOOTER_LINKS = {
-  Explore:  ["Menu", "Our Story", "Sourcing", "Reservations"],
-  Order:    ["Build Your Cup", "Catering", "Gift Cards", "Subscriptions"],
-  Connect:  ["Instagram", "Pinterest", "Press", "Careers"],
+const LINKS = {
+  Explore: [
+    { label: "Menu",     to: "/menu"     },
+    { label: "Story",    to: "/story"    },
+    { label: "Sourcing", to: "/sourcing" },
+    { label: "Visit",    to: "/visit"    },
+  ],
+  Order: [
+    { label: "Build Your Cup", to: "/customize" },
+    { label: "Cart",           to: "/cart"      },
+    { label: "My Orders",      to: "/orders"    },
+    { label: "Track Order",    to: "/orders"    },
+  ],
 };
 
-const Footer = () => {
-  return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@200;300&display=swap');
+const Footer = () => (
+  <>
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Jost:wght@200;300&display=swap');
+      .ft-link { transition: color 0.25s ease, letter-spacing 0.25s ease; }
+      .ft-link:hover { color: #c9a96e; letter-spacing: 0.22em; }
+      .ft-legal:hover { color: rgba(201,169,110,0.55); }
+    `}</style>
 
-        .mb-footer-link {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.65rem; font-weight: 200;
-          letter-spacing: 0.12em;
-          color: rgba(250,248,245,0.4);
-          text-decoration: none;
-          display: block; margin-bottom: 0.8rem;
-          transition: color 0.3s, letter-spacing 0.3s;
-        }
-        .mb-footer-link:hover { color: #c4a96a; letter-spacing: 0.2em; }
+    <footer
+      className="bg-[#080602] border-t border-[#c9a96e]/12"
+      style={{ fontFamily: "'Jost', sans-serif" }}
+    >
+      {/* ── Main grid ── */}
+      <div className="max-w-screen-xl mx-auto px-6 lg:px-14 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12">
 
-        .mb-footer-social {
-          display: inline-flex; align-items: center; justify-content: center;
-          width: 34px; height: 34px;
-          border: 1px solid rgba(108,82,37,0.3);
-          color: rgba(250,248,245,0.4);
-          text-decoration: none;
-          font-family: 'Jost', sans-serif;
-          font-size: 0.6rem; font-weight: 200;
-          transition: border-color 0.3s, color 0.3s, background 0.3s;
-        }
-        .mb-footer-social:hover {
-          border-color: #c4a96a;
-          color: #c4a96a;
-          background: rgba(108,82,37,0.08);
-        }
-
-        @keyframes mb-lineExpand {
-          from { width: 0; }
-          to   { width: 100%; }
-        }
-      `}</style>
-
-      <footer style={{
-        background: "#0a0804",
-        borderTop: "1px solid rgba(108,82,37,0.2)",
-        fontFamily: "'Jost', sans-serif",
-        padding: "5rem 5rem 2.5rem",
-      }}>
-
-        {/* Top row */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "2fr 1fr 1fr 1fr",
-          gap: "4rem",
-          marginBottom: "4rem",
-        }}>
-
-          {/* Brand column */}
+          {/* Brand */}
           <div>
-            <h2 style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "2rem", fontWeight: 300,
-              letterSpacing: "0.3em", textTransform: "uppercase",
-              color: "#faf8f5", marginBottom: "0.5rem",
-            }}>
-              Maison <em style={{ fontStyle: "italic", color: "#c4a96a" }}>Bean</em>
+            <h2
+              className="text-[#f5f0e8] font-light tracking-[0.3em] uppercase leading-none mb-1"
+              style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.8rem" }}
+            >
+              Maison <em className="italic text-[#c9a96e] not-italic" style={{ fontStyle: "italic" }}>Bean</em>
             </h2>
-            <p style={{
-              fontSize: "0.58rem", fontWeight: 200,
-              letterSpacing: "0.35em", textTransform: "uppercase",
-              color: "rgba(196,169,106,0.5)", marginBottom: "1.75rem",
-            }}>Specialty Coffee Atelier</p>
-            <p style={{
-              fontSize: "0.72rem", fontWeight: 200,
-              lineHeight: 2, color: "rgba(250,248,245,0.35)",
-              maxWidth: "280px", marginBottom: "2rem",
-            }}>
+            <p className="text-[#c9a96e]/40 text-[9px] tracking-[0.45em] uppercase mb-6">
+              Specialty Coffee Atelier
+            </p>
+            <p className="text-[#f5f0e8]/28 text-[12px] font-light leading-relaxed max-w-[260px] mb-8">
               Sourced from the world's finest micro-lots. Roasted in small batches, served with precision.
             </p>
 
-            {/* Social icons */}
-            <div style={{ display: "flex", gap: "0.6rem" }}>
+            {/* Socials */}
+            <div className="flex gap-2">
               {["IG", "PT", "TW", "YT"].map((s) => (
-                <a key={s} href="#" className="mb-footer-social">{s}</a>
+                <a
+                  key={s}
+                  href="#"
+                  className="w-8 h-8 border border-[#c9a96e]/20 flex items-center justify-center text-[#f5f0e8]/30 text-[9px] tracking-wider hover:border-[#c9a96e]/50 hover:text-[#c9a96e] transition-all duration-200"
+                >
+                  {s}
+                </a>
               ))}
             </div>
           </div>
 
           {/* Link columns */}
-          {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
+          {Object.entries(LINKS).map(([heading, links]) => (
             <div key={heading}>
-              <p style={{
-                fontSize: "0.55rem", fontWeight: 300,
-                letterSpacing: "0.4em", textTransform: "uppercase",
-                color: "#6c5225", marginBottom: "1.5rem",
-              }}>{heading}</p>
-              {links.map((link) => (
-                <a key={link} href="#" className="mb-footer-link">{link}</a>
-              ))}
+              <p className="text-[#c9a96e]/45 text-[9px] tracking-[0.45em] uppercase mb-5 font-light">
+                {heading}
+              </p>
+              <ul className="space-y-3">
+                {links.map(({ label, to }) => (
+                  <li key={label}>
+                    <Link
+                      to={to}
+                      className="ft-link text-[#f5f0e8]/35 text-[11px] font-light tracking-[0.15em]"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
+      </div>
 
-        {/* Divider */}
-        <div style={{
-          height: "1px",
-          background: "linear-gradient(to right, transparent, rgba(108,82,37,0.4), transparent)",
-          marginBottom: "2rem",
-        }} />
+      {/* ── Divider ── */}
+      <div className="max-w-screen-xl mx-auto px-6 lg:px-14">
+        <div className="h-px bg-gradient-to-r from-transparent via-[#c9a96e]/20 to-transparent" />
+      </div>
 
-        {/* Bottom row */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-          <p style={{
-            fontSize: "0.55rem", fontWeight: 200,
-            letterSpacing: "0.15em", color: "rgba(250,248,245,0.2)",
-          }}>
-            © {new Date().getFullYear()} Maison Bean. All rights reserved.
-          </p>
+      {/* ── Bottom bar ── */}
+      <div className="max-w-screen-xl mx-auto px-6 lg:px-14 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <p className="text-[#f5f0e8]/18 text-[10px] tracking-[0.15em] font-light">
+          © {new Date().getFullYear()} Maison Bean. All rights reserved.
+        </p>
 
-          <div style={{ display: "flex", gap: "2rem" }}>
-            {["Privacy Policy", "Terms of Use", "Accessibility"].map((item) => (
-              <a key={item} href="#" style={{
-                fontFamily: "'Jost', sans-serif",
-                fontSize: "0.55rem", fontWeight: 200,
-                letterSpacing: "0.12em",
-                color: "rgba(250,248,245,0.2)", textDecoration: "none",
-                transition: "color 0.3s",
-              }}
-              onMouseOver={e => e.currentTarget.style.color = "rgba(196,169,106,0.6)"}
-              onMouseOut={e => e.currentTarget.style.color = "rgba(250,248,245,0.2)"}
-              >{item}</a>
-            ))}
-          </div>
-
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontStyle: "italic", fontSize: "0.85rem", fontWeight: 300,
-            color: "rgba(108,82,37,0.4)", letterSpacing: "0.1em",
-          }}>
-            Est. Paris, 2019
-          </p>
+        <div className="flex items-center gap-6">
+          {["Privacy", "Terms", "Accessibility"].map((item) => (
+            <a
+              key={item}
+              href="#"
+              className="ft-legal text-[#f5f0e8]/18 text-[10px] tracking-[0.12em] font-light transition-colors duration-200"
+            >
+              {item}
+            </a>
+          ))}
         </div>
-      </footer>
-    </>
-  );
-};
+
+        <p
+          className="text-[#c9a96e]/25 text-[11px] font-light tracking-[0.1em] italic"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}
+        >
+          Est. Paris, 2019
+        </p>
+      </div>
+    </footer>
+  </>
+);
 
 export default Footer;

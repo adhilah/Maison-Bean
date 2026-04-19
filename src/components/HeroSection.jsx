@@ -378,17 +378,12 @@ const HeroSection = () => {
         </div>
 
         {/* Main content */}
-        <div style={{
-          position: "relative",
-          zIndex: 10,
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          padding: "0 4.5rem",
-          paddingBottom: "6rem",
-        }}>
-          <div style={{ maxWidth: "560px" }}>
-            <p className="mb-h-eyebrow">Specialty Coffee Atelier</p>
+        <div className="relative z-10 h-full flex items-center px-12 md:px-20">
+          <div className="max-w-lg">
+            {/* Eyebrow - Moved slightly down */}
+            <p className="text-[#c9a96e] text-[10px] font-light tracking-[0.55em] uppercase mb-6">
+              Specialty Coffee Atelier
+            </p>
             <h1 className="mb-h-title">
               Premium<br />
               <em>Custom</em><br />

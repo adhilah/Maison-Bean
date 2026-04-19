@@ -179,7 +179,6 @@
 
 
 
-
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
@@ -206,6 +205,11 @@ import OrderManagement from "./admin/components/tables/OrdersTable";
 import CartOverview from "./admin/pages/CartOverview";
 import AddToCart from "./admin/pages/AddToCart";
 import EditProduct from "./admin/pages/EditProduct";
+
+// New pages
+import Story from "./pages/Story";
+import Sourcing from "./pages/Sourcing";
+import Visit from "./pages/Visit";
 
 const HomeWithRedirect = () => {
   const { user, isLoading } = useAuth();
@@ -261,6 +265,9 @@ export default function MainRouter() {
       <Route path="/menu" element={<Cards />} />
       <Route path="/menu/:category" element={<Cards />} />
       <Route path="/track-order/:orderId" element={<TrackOrder />} />
+      <Route path="/story" element={<Story />} />
+      <Route path="/sourcing" element={<Sourcing />} />
+      <Route path="/visit" element={<Visit />} />
 
       {/* PROTECTED - Requires login + customer role */}
       <Route

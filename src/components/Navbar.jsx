@@ -317,398 +317,422 @@ import { useAuth } from "../context/AuthContext";
 import { useSearch } from "../context/SearchContext";
 import toast from "react-hot-toast";
 
+// ─────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────
 const NAV_LINKS = [
-  { label: "MENU", href: "/menu" },
-  { label: "STORY", href: "#story" },
-  { label: "SOURCING", href: "#sourcing" },
-  { label: "VISIT", href: "#visit" },
+  { label: "MENU",     href: "/menu"     },
+  { label: "STORY",    href: "/story"    },
+  { label: "SOURCING", href: "/sourcing" },
+  { label: "VISIT",    href: "/visit"    },
 ];
 
+// ─────────────────────────────────────────────
+// NavLink — single link with animated underline
+// ─────────────────────────────────────────────
+const NavLink = ({ href, label, isActive }) => (
+  <a
+    href={href}
+    className={`
+      relative pb-0.5 group
+      font-light text-[0.6rem] tracking-[0.3em] uppercase
+      transition-colors duration-300
+      ${isActive ? "text-[#c9a96e]" : "text-white/50 hover:text-[#c9a96e]"}
+    `}
+    style={{ fontFamily: "'Jost', sans-serif" }}
+  >
+    {label}
+    {/* Underline */}
+    <span
+      className={`
+        absolute bottom-0 left-0 w-full h-px bg-[#c9a96e]
+        transition-transform duration-300 origin-left
+        ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}
+      `}
+    />
+  </a>
+);
+
+// ─────────────────────────────────────────────
+// IconButton — icon with optional badge count
+// ─────────────────────────────────────────────
+const IconButton = ({ icon, label, badge = 0, onClick }) => (
+  <button
+    onClick={onClick}
+    aria-label={label}
+    className="
+      relative w-10 h-10 flex items-center justify-center rounded
+      text-white/55 hover:text-[#c9a96e]
+      transition-colors duration-200
+      focus:outline-none focus-visible:ring-1 focus-visible:ring-[#c9a96e]/40
+    "
+  >
+    <span className="material-symbols-outlined text-xl">{icon}</span>
+
+    {badge > 0 && (
+      <span className="
+        absolute top-1 right-1
+        min-w-[16px] h-4 px-1 rounded-full
+        bg-[#c9a96e] text-[#0d0a05] text-[0.58rem] font-medium
+        flex items-center justify-center leading-none
+      ">
+        {badge}
+      </span>
+    )}
+  </button>
+);
+
+// ─────────────────────────────────────────────
+// DropdownItem — button or anchor inside menu
+// ─────────────────────────────────────────────
+const DropdownItem = ({ icon, label, onClick, href, danger = false }) => {
+  const baseClass = `
+    w-full flex items-center gap-2.5 px-5 py-3
+    text-left text-[0.78rem] font-light tracking-wide
+    transition-colors duration-200 focus:outline-none
+    ${danger
+      ? "text-red-400/80 hover:bg-red-500/5 hover:text-red-400"
+      : "text-white/70 hover:bg-[#c9a96e]/5 hover:text-white"
+    }
+  `;
+
+  const content = (
+    <>
+      <span className="material-symbols-outlined text-base opacity-70">{icon}</span>
+      {label}
+    </>
+  );
+
+  return href ? (
+    <a href={href} className={baseClass} onClick={onClick}
+      style={{ fontFamily: "'Jost', sans-serif" }}>
+      {content}
+    </a>
+  ) : (
+    <button className={baseClass} onClick={onClick}
+      style={{ fontFamily: "'Jost', sans-serif" }}>
+      {content}
+    </button>
+  );
+};
+
+// ─────────────────────────────────────────────
+// NavSkeleton — loading placeholder
+// ─────────────────────────────────────────────
+const NavSkeleton = () => (
+  <nav className="
+    fixed top-0 inset-x-0 z-[9999] h-[72px]
+    flex items-center justify-between px-14
+    bg-[rgba(8,5,2,0.85)] backdrop-blur-xl
+  ">
+    <div className="w-40 h-5 bg-white/8 rounded animate-pulse" />
+    <div className="flex gap-10">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="w-12 h-2.5 bg-white/6 rounded animate-pulse" />
+      ))}
+    </div>
+    <div className="w-28 h-2.5 bg-white/6 rounded animate-pulse" />
+  </nav>
+);
+
+// ─────────────────────────────────────────────
+// Navbar — main component
+// ─────────────────────────────────────────────
 const Navbar = () => {
-  const [scrollY, setScrollY] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [scrolled,     setScrolled]     = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen,   setMobileOpen]   = useState(false);
 
-  const { isSearchOpen, openSearch, closeSearch } = useSearch();
-  const { user, logout, isLoading } = useAuth();
-  const { cartQuantity } = useCart();
-  const { wishlistCount } = useWishlist();
+  const { openSearch, closeSearch }   = useSearch();
+  const { user, logout, isLoading }   = useAuth();
+  const { cartQuantity }              = useCart();
+  const { wishlistCount }             = useWishlist();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const dropdownRef = useRef(null);
+  const navigate     = useNavigate();
+  const location     = useLocation();
+  const dropdownRef  = useRef(null);
 
-  const isScrolled = scrollY > 40;
-
+  // scroll detection
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // close dropdown on outside click
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsDropdownOpen(false);
-      }
+    if (!dropdownOpen) return;
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target))
+        setDropdownOpen(false);
     };
-    if (isDropdownOpen) document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isDropdownOpen]);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [dropdownOpen]);
 
-  useEffect(() => { closeSearch(); }, [location.pathname]);
+  // close everything on route change
+  useEffect(() => {
+    closeSearch();
+    setMobileOpen(false);
+    setDropdownOpen(false);
+  }, [location.pathname]);
 
-  const handleCartClick = () => {
-    if (!user) { toast.error("Please log in to view your cart"); navigate("/login"); return; }
-    if (user.role !== "customer") { toast.error("Access denied"); return; }
-    navigate("/cart");
+  // guarded navigation — requires auth + role
+  const guardNav = (path, label) => {
+    if (!user) {
+      toast.error(`Please log in to view your ${label}`);
+      navigate("/login");
+      return;
+    }
+    if (user.role !== "customer") {
+      toast.error("Access denied");
+      return;
+    }
+    navigate(path);
   };
 
-  const handleWishlistClick = () => {
-    if (!user) { toast.error("Please log in to view your wishlist"); navigate("/login"); return; }
-    if (user.role !== "customer") { toast.error("Access denied"); return; }
-    navigate("/wishlist");
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+    toast.success("Logged out successfully");
   };
 
-  if (isLoading) {
-    return (
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 9999,
-        height: "72px", background: "rgba(8,5,2,0.8)", backdropFilter: "blur(20px)",
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "0 3rem",
-      }}>
-        <div style={{ width: 160, height: 20, background: "rgba(255,255,255,0.08)", borderRadius: 2 }} />
-        <div style={{ display: "flex", gap: 40 }}>
-          {[...Array(4)].map((_, i) => (
-            <div key={i} style={{ width: 48, height: 10, background: "rgba(255,255,255,0.06)", borderRadius: 2 }} />
-          ))}
-        </div>
-        <div style={{ width: 120, height: 10, background: "rgba(255,255,255,0.06)", borderRadius: 2 }} />
-      </nav>
-    );
-  }
+  if (isLoading) return <NavSkeleton />;
+
+  const isCustomer = user?.role === "customer";
+  const isAdmin    = user?.role === "admin";
 
   return (
     <>
+      {/* Fonts */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Jost:wght@200;300;400&display=swap');
-
-        .mb-nav-root {
-          position: fixed;
-          top: 0; left: 0; right: 0;
-          z-index: 9999;
-          height: 72px;
-          display: flex;
-          align-items: center;
-          padding: 0 3.5rem;
-          transition: background 0.5s ease, border-color 0.5s ease, backdrop-filter 0.5s ease;
+        @keyframes fadeSlideDown {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0);    }
         }
-
-        .mb-nav-inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          max-width: 1400px;
-          margin: 0 auto;
-        }
-
-        .mb-logo {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 1.25rem;
-          font-weight: 300;
-          letter-spacing: 0.55em;
-          text-transform: uppercase;
-          color: #f5f0e8;
-          text-decoration: none;
-          flex-shrink: 0;
-        }
-        .mb-logo span { color: #c9a96e; }
-
-        .mb-links {
-          display: flex;
-          gap: 3rem;
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-        }
-
-        .mb-link {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.6rem;
-          font-weight: 300;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          color: rgba(245,240,232,0.5);
-          text-decoration: none;
-          transition: color 0.3s ease;
-          position: relative;
-          padding-bottom: 2px;
-        }
-        .mb-link::after {
-          content: '';
-          position: absolute;
-          bottom: -1px;
-          left: 0; right: 0;
-          height: 1px;
-          background: #c9a96e;
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.3s ease;
-        }
-        .mb-link:hover, .mb-link.active { color: #c9a96e; }
-        .mb-link:hover::after, .mb-link.active::after { transform: scaleX(1); }
-
-        .mb-actions {
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
-          flex-shrink: 0;
-        }
-
-        .mb-icon-btn {
-          width: 38px;
-          height: 38px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: rgba(245,240,232,0.55);
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          transition: color 0.25s ease;
-          position: relative;
-          border-radius: 4px;
-        }
-        .mb-icon-btn:hover { color: #c9a96e; }
-
-        .mb-badge {
-          position: absolute;
-          top: 4px; right: 4px;
-          background: #c9a96e;
-          color: #0d0a05;
-          font-family: 'Jost', sans-serif;
-          font-size: 0.6rem;
-          font-weight: 400;
-          min-width: 16px;
-          height: 16px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 4px;
-        }
-
-        .mb-cta {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.58rem;
-          font-weight: 300;
-          letter-spacing: 0.28em;
-          text-transform: uppercase;
-          color: #0d0a05;
-          background: #c9a96e;
-          padding: 0.65rem 1.6rem;
-          text-decoration: none;
-          margin-left: 0.75rem;
-          transition: background 0.3s ease, letter-spacing 0.3s ease;
-          white-space: nowrap;
-          display: inline-block;
-        }
-        .mb-cta:hover {
-          background: #d4b87a;
-          letter-spacing: 0.36em;
-        }
-
-        .mb-dropdown {
-          position: absolute;
-          right: 0;
-          top: calc(100% + 8px);
-          width: 220px;
-          background: #0d0a05;
-          border: 1px solid rgba(201,169,110,0.15);
-          overflow: hidden;
-          z-index: 9999;
-        }
-
-        .mb-dropdown-header {
-          padding: 1rem 1.25rem;
-          border-bottom: 1px solid rgba(201,169,110,0.1);
-        }
-
-        .mb-dropdown-name {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.85rem;
-          font-weight: 300;
-          color: #f5f0e8;
-          margin: 0 0 2px;
-        }
-
-        .mb-dropdown-email {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.72rem;
-          font-weight: 200;
-          color: rgba(201,169,110,0.5);
-          margin: 0;
-        }
-
-        .mb-dropdown-btn {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          padding: 0.75rem 1.25rem;
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          font-family: 'Jost', sans-serif;
-          font-size: 0.78rem;
-          font-weight: 200;
-          letter-spacing: 0.05em;
-          color: rgba(245,240,232,0.7);
-          text-decoration: none;
-          transition: background 0.2s, color 0.2s;
-          text-align: left;
-        }
-        .mb-dropdown-btn:hover {
-          background: rgba(201,169,110,0.06);
-          color: #f5f0e8;
-        }
-        .mb-dropdown-btn.danger { color: rgba(220,80,80,0.75); }
-        .mb-dropdown-btn.danger:hover { background: rgba(220,80,80,0.08); color: #e05555; }
+        .animate-dropdown { animation: fadeSlideDown 0.2s ease forwards; }
       `}</style>
 
-      <nav
-        className="mb-nav-root"
-        style={{
-          background: isScrolled ? "rgba(8,5,2,0.97)" : "rgba(8,5,2,0)",
-          backdropFilter: isScrolled ? "blur(20px)" : "blur(0px)",
-          borderBottom: isScrolled ? "1px solid rgba(201,169,110,0.12)" : "1px solid transparent",
-        }}
-      >
-        <div className="mb-nav-inner">
-          {/* Logo */}
-          <a href="/" className="mb-logo">
-            Maison <span>Bean</span>
+      {/* ── NAVBAR ROOT ── */}
+      <nav className={`
+        fixed top-0 inset-x-0 z-[9999] h-[72px]
+        transition-all duration-500
+        ${scrolled
+          ? "bg-[rgba(8,5,2,0.97)] backdrop-blur-xl border-b border-[#c9a96e]/12"
+          : "bg-transparent border-b border-transparent"
+        }
+      `}>
+        <div className="flex items-center justify-between h-full px-14 max-w-[1400px] mx-auto">
+
+          {/* ── LOGO ── */}
+          <a
+            href="/"
+            className="flex-shrink-0 text-[1.25rem] tracking-[0.55em] uppercase
+              text-[#f5f0e8] no-underline font-light relative z-10 h-full flex items-center px-10"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            Maison <span className="text-[#c9a96e]">Bean</span>
           </a>
 
-          {/* Centered Nav Links */}
-          <ul className="mb-links">
+          {/* ── DESKTOP NAV LINKS (absolute centered) ── */}
+          <ul className="hidden md:flex items-center gap-12 list-none m-0 p-0
+            absolute left-1/2 -translate-x-1/2">
             {NAV_LINKS.map(({ label, href }) => (
               <li key={label}>
-                <a
+                <NavLink
                   href={href}
-                  className={`mb-link ${location.pathname === href ? "active" : ""}`}
-                >
-                  {label}
-                </a>
+                  label={label}
+                  isActive={location.pathname === href}
+                />
               </li>
             ))}
           </ul>
 
-          {/* Right Actions */}
-          <div className="mb-actions">
+          {/* ── RIGHT ACTIONS ── */}
+          <div className="flex items-center gap-0.5 flex-shrink-0">
+
             {/* Search */}
-            <button className="mb-icon-btn" onClick={openSearch} aria-label="Search">
-              <span className="material-symbols-outlined" style={{ fontSize: "1.2rem" }}>search</span>
-            </button>
+            <IconButton icon="search" label="Search" onClick={openSearch} />
 
             {/* Cart */}
-            <button className="mb-icon-btn" onClick={handleCartClick} aria-label="Cart">
-              <span className="material-symbols-outlined" style={{ fontSize: "1.2rem" }}>shopping_bag</span>
-              {user?.role === "customer" && cartQuantity > 0 && (
-                <span className="mb-badge">{cartQuantity}</span>
-              )}
-            </button>
+            <IconButton
+              icon="shopping_bag"
+              label="Cart"
+              badge={isCustomer ? cartQuantity : 0}
+              onClick={() => guardNav("/cart", "cart")}
+            />
 
             {/* Wishlist */}
-            <button className="mb-icon-btn" onClick={handleWishlistClick} aria-label="Wishlist">
-              <span className="material-symbols-outlined" style={{ fontSize: "1.2rem" }}>favorite</span>
-              {user?.role === "customer" && wishlistCount > 0 && (
-                <span className="mb-badge">{wishlistCount}</span>
-              )}
-            </button>
+            <IconButton
+              icon="favorite"
+              label="Wishlist"
+              badge={isCustomer ? wishlistCount : 0}
+              onClick={() => guardNav("/wishlist", "wishlist")}
+            />
 
-            {/* User */}
-            <div style={{ position: "relative" }} ref={dropdownRef}>
-              <button
-                className="mb-icon-btn"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                aria-label="Account"
-              >
-                <span className="material-symbols-outlined" style={{ fontSize: "1.2rem" }}>
-                  {user ? "account_circle" : "person"}
-                </span>
-              </button>
+            {/* ── USER DROPDOWN ── */}
+            <div className="relative" ref={dropdownRef}>
+              <IconButton
+                icon={user ? "account_circle" : "person"}
+                label="Account"
+                onClick={() => setDropdownOpen((v) => !v)}
+              />
 
-              {isDropdownOpen && (
-                <div className="mb-dropdown">
-                  <div className="mb-dropdown-header">
-                    <p className="mb-dropdown-name">{user?.name || "Guest"}</p>
-                    {user?.email && <p className="mb-dropdown-email">{user.email}</p>}
+              {dropdownOpen && (
+                <div className="
+                  animate-dropdown
+                  absolute right-0 top-[calc(100%+8px)] w-56
+                  bg-[#0d0a05] border border-[#c9a96e]/15
+                  shadow-[0_20px_60px_rgba(0,0,0,0.55)]
+                ">
+                  {/* User info */}
+                  <div className="px-5 py-4 border-b border-[#c9a96e]/10">
+                    <p className="text-[0.85rem] font-light text-[#f5f0e8] m-0"
+                      style={{ fontFamily: "'Jost', sans-serif" }}>
+                      {user?.name || "Guest"}
+                    </p>
+                    {user?.email && (
+                      <p className="text-[0.7rem] text-[#c9a96e]/50 mt-0.5 m-0 truncate"
+                        style={{ fontFamily: "'Jost', sans-serif", fontWeight: 200 }}>
+                        {user.email}
+                      </p>
+                    )}
                   </div>
-                  <div style={{ padding: "0.4rem 0" }}>
-                    {user?.role === "customer" && (
+
+                  {/* Menu items */}
+                  <div className="py-1.5">
+                    {isCustomer && (
                       <>
-                        <button
-                          className="mb-dropdown-btn"
-                          onClick={() => { navigate("/orders"); setIsDropdownOpen(false); }}
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>receipt_long</span>
-                          My Orders
-                        </button>
-                        <button
-                          className="mb-dropdown-btn"
-                          onClick={() => { navigate("/profile"); setIsDropdownOpen(false); }}
-                        >
-                          <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>account_circle</span>
-                          Profile
-                        </button>
+                        <DropdownItem
+                          icon="receipt_long"
+                          label="My Orders"
+                          onClick={() => { navigate("/orders");  setDropdownOpen(false); }}
+                        />
+                        <DropdownItem
+                          icon="account_circle"
+                          label="Profile"
+                          onClick={() => { navigate("/profile"); setDropdownOpen(false); }}
+                        />
                       </>
                     )}
-                    {user?.role === "admin" && (
-                      <button
-                        className="mb-dropdown-btn"
-                        onClick={() => { navigate("/admin/dashboard"); setIsDropdownOpen(false); }}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>admin_panel_settings</span>
-                        Admin Dashboard
-                      </button>
+
+                    {isAdmin && (
+                      <DropdownItem
+                        icon="admin_panel_settings"
+                        label="Admin Dashboard"
+                        onClick={() => { navigate("/admin/dashboard"); setDropdownOpen(false); }}
+                      />
                     )}
+
+                    {/* Divider */}
+                    <div className="mx-5 my-1 h-px bg-[#c9a96e]/8" />
+
                     {user ? (
-                      <button
-                        className="mb-dropdown-btn danger"
-                        onClick={() => { logout(); setIsDropdownOpen(false); toast.success("Logged out successfully"); }}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>logout</span>
-                        Logout
-                      </button>
+                      <DropdownItem
+                        icon="logout"
+                        label="Logout"
+                        onClick={handleLogout}
+                        danger
+                      />
                     ) : (
-                      <a
+                      <DropdownItem
+                        icon="login"
+                        label="Login"
                         href="/login"
-                        className="mb-dropdown-btn"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>login</span>
-                        Login
-                      </a>
+                        onClick={() => setDropdownOpen(false)}
+                      />
                     )}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* CTA */}
-            {user?.role !== "admin" && (
-              <a href="/menu" className="mb-cta">Order Now</a>
+            {/* Order Now CTA */}
+            {!isAdmin && (
+              <a
+                href="/menu"
+                className="
+                  hidden sm:inline-block ml-3 px-6 py-2.5
+                  text-[0.58rem] font-light tracking-[0.28em] uppercase
+                  text-[#0d0a05] bg-[#c9a96e]
+                  transition-all duration-300
+                  hover:bg-[#d4b87a] hover:tracking-[0.36em]
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]/40
+                "
+                style={{ fontFamily: "'Jost', sans-serif" }}
+              >
+                Order Now
+              </a>
             )}
+
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden ml-2 w-10 h-10 flex flex-col justify-center
+                items-center gap-[5px] text-white/60 hover:text-[#c9a96e]
+                transition-colors focus:outline-none"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label="Toggle menu"
+            >
+              <span className={`block w-5 h-px bg-current transition-all duration-300
+                origin-center ${mobileOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
+              <span className={`block w-5 h-px bg-current transition-opacity duration-300
+                ${mobileOpen ? "opacity-0" : "opacity-100"}`} />
+              <span className={`block w-5 h-px bg-current transition-all duration-300
+                origin-center ${mobileOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
+            </button>
           </div>
         </div>
+
+        {/* ── MOBILE MENU ── */}
+        <div className={`
+          md:hidden absolute inset-x-0 top-[72px]
+          bg-[rgba(8,5,2,0.98)] backdrop-blur-xl
+          border-b border-[#c9a96e]/10
+          overflow-hidden transition-all duration-300
+          ${mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"}
+        `}>
+          <ul className="flex flex-col list-none m-0 p-0 py-2">
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  className={`
+                    block px-8 py-3.5
+                    text-[0.65rem] font-light tracking-[0.3em] uppercase
+                    transition-colors duration-200
+                    ${location.pathname === href
+                      ? "text-[#c9a96e]"
+                      : "text-white/50 hover:text-[#c9a96e]"
+                    }
+                  `}
+                  style={{ fontFamily: "'Jost', sans-serif" }}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+
+            {!isAdmin && (
+              <li className="px-8 py-3">
+                <a
+                  href="/menu"
+                  className="
+                    block w-full text-center px-6 py-2.5
+                    text-[0.58rem] font-light tracking-[0.28em] uppercase
+                    text-[#0d0a05] bg-[#c9a96e]
+                    hover:bg-[#d4b87a] transition-colors duration-300
+                  "
+                  style={{ fontFamily: "'Jost', sans-serif" }}
+                >
+                  Order Now
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+
       </nav>
-
-
     </>
   );
 };

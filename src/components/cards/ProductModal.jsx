@@ -110,7 +110,6 @@
 // }
 
 
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWishlist } from "../../context/WishlistContext";
@@ -118,27 +117,20 @@ import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
 const CloseIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-    <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
   </svg>
 );
 
 const HeartIcon = ({ filled }) => (
-  <svg width="15" height="15" viewBox="0 0 24 24"
-    style={{
-      fill: filled ? "#c4a96a" : "none",
-      stroke: "#c4a96a",
-      strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round",
-      transition: "all 0.3s",
-    }}>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill={filled ? "#c4a96a" : "none"} stroke="#c4a96a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
   </svg>
 );
 
 const CartIcon = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
     <line x1="3" y1="6" x2="21" y2="6" />
     <path d="M16 10a4 4 0 01-8 0" />
@@ -146,42 +138,45 @@ const CartIcon = () => (
 );
 
 const CustomizeIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-    stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="12" r="3" />
     <path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M12 2v2M12 20v2M4.93 4.93l1.41 1.41M18.66 18.66l1.41 1.41M2 12h2M20 12h2" />
   </svg>
 );
 
 function ProductModal({ product, onClose }) {
-  const [visible, setVisible]       = useState(false);
+  const [visible, setVisible] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
-  const [imgLoaded, setImgLoaded]   = useState(false);
-  const overlayRef                  = useRef(null);
-  const navigate                    = useNavigate();
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  const overlayRef = useRef(null);
+  const navigate = useNavigate();
 
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const { addToCart }                    = useCart();
-  const { user }                         = useAuth();
+  const { addToCart } = useCart();
+  const { user } = useAuth();
 
   const wishlisted = isWishlisted(product);
   const isCustomer = user?.role === "customer";
 
-  // Animate in
+  // Check if it's a coffee product
+  const isCoffee = product?.category?.toLowerCase().includes("coffee");
+
+  // Open animation
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 20);
+    const timer = setTimeout(() => setVisible(true), 10);
     document.body.style.overflow = "hidden";
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
       document.body.style.overflow = "";
     };
   }, []);
 
-  // Escape to close
+  // Escape key
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") handleClose(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const handleEsc = (e) => e.key === "Escape" && handleClose();
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, []);
 
   const handleClose = () => {
@@ -197,316 +192,127 @@ function ProductModal({ product, onClose }) {
 
   const handleCustomize = () => {
     handleClose();
-    setTimeout(() => navigate(`/customize/${product.id}`), 360);
+    setTimeout(() => navigate(`/customize/${product.id}`), 380);
   };
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap');
-
-        @keyframes mb-modalIn {
-          from { opacity: 0; transform: translateY(24px) scale(0.97); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        @keyframes mb-modalOut {
-          from { opacity: 1; transform: translateY(0) scale(1); }
-          to   { opacity: 0; transform: translateY(16px) scale(0.97); }
-        }
-        @keyframes mb-imgReveal {
-          from { clip-path: inset(0 100% 0 0); }
-          to   { clip-path: inset(0 0% 0 0); }
-        }
-
-        .mb-modal-overlay {
-          position: fixed; inset: 0; z-index: 500;
-          background: rgba(5,4,2,0.88);
-          backdrop-filter: blur(18px);
-          display: flex; align-items: center; justify-content: center;
-          padding: 1.5rem;
-          transition: opacity 0.35s ease;
-        }
-        .mb-modal-overlay.visible  { opacity: 1; }
-        .mb-modal-overlay.hidden   { opacity: 0; }
-
-        .mb-modal-panel {
-          position: relative;
-          background: #13100a;
-          border: 1px solid rgba(196,169,106,0.18);
-          width: 100%; max-width: 860px;
-          max-height: 90vh; overflow: hidden;
-          display: grid; grid-template-columns: 1fr 1fr;
-        }
-        .mb-modal-panel.visible {
-          animation: mb-modalIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
-        }
-        .mb-modal-panel.hidden  {
-          animation: mb-modalOut 0.3s ease both;
-        }
-
-        /* Corner brackets */
-        .mb-modal-panel::before, .mb-modal-panel::after {
-          content: ''; position: absolute;
-          width: 18px; height: 18px;
-          border-color: rgba(196,169,106,0.35); border-style: solid;
-          z-index: 2;
-        }
-        .mb-modal-panel::before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
-        .mb-modal-panel::after  { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
-
-        /* Close btn */
-        .mb-modal-close {
-          position: absolute; top: 14px; right: 14px; z-index: 10;
-          width: 32px; height: 32px;
-          background: rgba(10,8,4,0.6);
-          backdrop-filter: blur(6px);
-          border: 1px solid rgba(196,169,106,0.2);
-          border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; color: rgba(250,248,245,0.6);
-          transition: background 0.3s, color 0.3s, transform 0.2s;
-        }
-        .mb-modal-close:hover {
-          background: rgba(108,82,37,0.5);
-          color: #c4a96a; transform: scale(1.08);
-        }
-
-        /* Image side */
-        .mb-modal-img-side {
-          position: relative; overflow: hidden; background: #1e1810;
-          min-height: 420px;
-        }
-        .mb-modal-img-side img {
-          width: 100%; height: 100%; object-fit: cover;
-          filter: brightness(0.85);
-          transition: transform 8s ease;
-        }
-        .mb-modal-img-side img.loaded { transform: scale(1.03); }
-
-        .mb-modal-img-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(135deg, transparent 50%, rgba(10,8,4,0.6) 100%);
-        }
-
-        /* Wishlist btn on image */
-        .mb-modal-wish-btn {
-          position: absolute; bottom: 16px; left: 16px; z-index: 3;
-          display: flex; align-items: center; gap: 0.5rem;
-          background: rgba(10,8,4,0.55);
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(196,169,106,0.2);
-          padding: 0.5rem 0.85rem;
-          cursor: pointer;
-          font-family: 'Jost', sans-serif;
-          font-size: 0.52rem; font-weight: 200;
-          letter-spacing: 0.25em; text-transform: uppercase;
-          color: #c4a96a;
-          transition: background 0.3s, border-color 0.3s;
-        }
-        .mb-modal-wish-btn:hover,
-        .mb-modal-wish-btn.wishlisted {
-          background: rgba(108,82,37,0.35);
-          border-color: #c4a96a;
-        }
-
-        /* Content side */
-        .mb-modal-content {
-          padding: 2.5rem 2rem 2rem;
-          display: flex; flex-direction: column;
-          overflow-y: auto;
-          scrollbar-width: thin;
-          scrollbar-color: rgba(108,82,37,0.3) transparent;
-        }
-
-        .mb-modal-category {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.52rem; font-weight: 300;
-          letter-spacing: 0.4em; text-transform: uppercase;
-          color: rgba(196,169,106,0.55); margin-bottom: 0.6rem;
-        }
-        .mb-modal-name {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 300;
-          color: #faf8f5; line-height: 1.1;
-          margin-bottom: 0.5rem;
-        }
-        .mb-modal-divider {
-          height: 1px; width: 40px;
-          background: linear-gradient(to right, #6c5225, transparent);
-          margin: 1rem 0;
-        }
-        .mb-modal-desc {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.7rem; font-weight: 200;
-          line-height: 1.9; letter-spacing: 0.03em;
-          color: rgba(250,248,245,0.45);
-          margin-bottom: 1.5rem; flex: 1;
-        }
-
-        /* Meta pills */
-        .mb-modal-meta {
-          display: flex; flex-wrap: wrap; gap: 0.5rem;
-          margin-bottom: 1.75rem;
-        }
-        .mb-modal-pill {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.5rem; font-weight: 200;
-          letter-spacing: 0.2em; text-transform: uppercase;
-          color: rgba(196,169,106,0.5);
-          border: 1px solid rgba(196,169,106,0.15);
-          padding: 0.25rem 0.7rem;
-        }
-
-        .mb-modal-price-row {
-          display: flex; align-items: baseline; gap: 0.5rem;
-          margin-bottom: 1.5rem;
-          padding-bottom: 1.5rem;
-          border-bottom: 1px solid rgba(196,169,106,0.1);
-        }
-        .mb-modal-price {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 2rem; font-weight: 300;
-          color: #c4a96a; letter-spacing: 0.03em;
-        }
-        .mb-modal-price-label {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.52rem; font-weight: 200;
-          letter-spacing: 0.25em; text-transform: uppercase;
-          color: rgba(196,169,106,0.4);
-        }
-
-        /* CTA buttons */
-        .mb-modal-btn-primary {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.6rem; font-weight: 300;
-          letter-spacing: 0.28em; text-transform: uppercase;
-          color: #faf8f5; background: #6c5225;
-          border: none; cursor: pointer;
-          padding: 0.9rem 1.5rem;
-          display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-          flex: 1;
-          transition: background 0.3s, letter-spacing 0.3s;
-        }
-        .mb-modal-btn-primary:hover   { background: #8a6a30; letter-spacing: 0.35em; }
-        .mb-modal-btn-primary.added   { background: #2d5a27; }
-
-        .mb-modal-btn-secondary {
-          font-family: 'Jost', sans-serif;
-          font-size: 0.6rem; font-weight: 300;
-          letter-spacing: 0.25em; text-transform: uppercase;
-          color: #c4a96a;
-          background: transparent;
-          border: 1px solid rgba(196,169,106,0.25);
-          cursor: pointer;
-          padding: 0.9rem 1.5rem;
-          display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-          flex: 1;
-          transition: background 0.3s, border-color 0.3s, letter-spacing 0.3s;
-        }
-        .mb-modal-btn-secondary:hover {
-          background: rgba(108,82,37,0.12);
-          border-color: #c4a96a;
-          letter-spacing: 0.32em;
-        }
-
-        @media (max-width: 640px) {
-          .mb-modal-panel { grid-template-columns: 1fr; }
-          .mb-modal-img-side { min-height: 240px; }
-        }
       `}</style>
 
-      {/* Overlay */}
       <div
         ref={overlayRef}
-        className={`mb-modal-overlay ${visible ? "visible" : "hidden"}`}
-        onClick={(e) => { if (e.target === overlayRef.current) handleClose(); }}
+        className={`fixed inset-0 z-[500] bg-[#050402]/95 backdrop-blur-[18px] flex items-center justify-center p-4 md:p-6 transition-opacity duration-300 ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={(e) => e.target === overlayRef.current && handleClose()}
       >
-        <div className={`mb-modal-panel ${visible ? "visible" : "hidden"}`}>
-
-          {/* Close */}
-          <button className="mb-modal-close" onClick={handleClose} aria-label="Close">
+        <div
+          className={`bg-[#13100a] border border-[#c4a96a]/20 w-full max-w-[860px] max-h-[92vh] overflow-hidden grid grid-cols-1 md:grid-cols-2 relative transition-all duration-400 ${
+            visible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-8"
+          }`}
+        >
+          {/* Close Button */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 z-10 w-8 h-8 bg-[#0a0804]/70 backdrop-blur-md border border-[#c4a96a]/30 rounded-full flex items-center justify-center text-[#faf8f5]/70 hover:bg-[#6c5225]/50 hover:text-[#c4a96a] hover:scale-110 transition-all"
+          >
             <CloseIcon />
           </button>
 
-          {/* ── Image side ── */}
-          <div className="mb-modal-img-side">
+          {/* Image Side - FIXED HEIGHT */}
+          <div className="relative overflow-hidden bg-[#1e1810] h-[380px] md:h-[460px]">
             <img
               src={product.image}
               alt={product.name}
-              className={imgLoaded ? "loaded" : ""}
+              className={`w-full h-full object-cover brightness-90 transition-transform duration-[8000ms] ${imgLoaded ? "scale-[1.03]" : ""}`}
               onLoad={() => setImgLoaded(true)}
             />
-            <div className="mb-modal-img-overlay" />
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-[#0a0804]/70" />
 
-            {/* Wishlist pill — customers only */}
             {isCustomer && (
               <button
-                className={`mb-modal-wish-btn${wishlisted ? " wishlisted" : ""}`}
                 onClick={() => toggleWishlist(product)}
+                className={`absolute bottom-4 left-4 flex items-center gap-2 bg-[#0a0804]/70 backdrop-blur-md border px-4 py-2 text-xs font-light tracking-widest uppercase transition-all ${
+                  wishlisted ? "border-[#c4a96a] bg-[#6c5225]/40" : "border-[#c4a96a]/30 hover:border-[#c4a96a]"
+                }`}
               >
                 <HeartIcon filled={wishlisted} />
-                {wishlisted ? "Wishlisted" : "Wishlist"}
+                {wishlisted ? "WISHLISTED" : "WISHLIST"}
               </button>
             )}
           </div>
 
-          {/* ── Content side ── */}
-          <div className="mb-modal-content">
+          {/* Content Side */}
+          <div className="p-8 md:p-10 overflow-y-auto">
             {product.category && (
-              <p className="mb-modal-category">{product.category}</p>
+              <p className="font-['Jost'] text-xs tracking-[0.4em] uppercase text-[#c4a96a]/60 mb-2">
+                {product.category}
+              </p>
             )}
-            <h2 className="mb-modal-name">{product.name}</h2>
-            <div className="mb-modal-divider" />
 
-            <p className="mb-modal-desc">
+            <h2 className="font-['Cormorant_Garamond'] text-[2.1rem] leading-none font-light text-[#faf8f5] mb-4">
+              {product.name}
+            </h2>
+
+            <div className="h-px w-10 bg-gradient-to-r from-[#6c5225] to-transparent mb-6" />
+
+            <p className="font-['Jost'] text-sm leading-relaxed text-[#faf8f5]/50 mb-8 flex-1">
               {product.description || "A carefully crafted specialty item, made with the finest ingredients and served with intention."}
             </p>
 
-            {/* Meta pills */}
-            <div className="mb-modal-meta">
+            {/* Meta Pills */}
+            <div className="flex flex-wrap gap-2 mb-8">
               {product.tags?.map((tag) => (
-                <span key={tag} className="mb-modal-pill">{tag}</span>
-              ))}
-              {!product.tags && (
+                <span key={tag} className="font-['Jost'] text-[10px] tracking-widest uppercase border border-[#c4a96a]/20 px-3 py-1 text-[#c4a96a]/70">
+                  {tag}
+                </span>
+              )) || (
                 <>
-                  <span className="mb-modal-pill">Artisan</span>
-                  <span className="mb-modal-pill">Small Batch</span>
-                  <span className="mb-modal-pill">Fresh Daily</span>
+                  <span className="font-['Jost'] text-[10px] tracking-widest uppercase border border-[#c4a96a]/20 px-3 py-1 text-[#c4a96a]/70">Artisan</span>
+                  <span className="font-['Jost'] text-[10px] tracking-widest uppercase border border-[#c4a96a]/20 px-3 py-1 text-[#c4a96a]/70">Small Batch</span>
+                  <span className="font-['Jost'] text-[10px] tracking-widest uppercase border border-[#c4a96a]/20 px-3 py-1 text-[#c4a96a]/70">Fresh Daily</span>
                 </>
               )}
             </div>
 
             {/* Price */}
-            <div className="mb-modal-price-row">
-              <span className="mb-modal-price">₹{product.basePrice}</span>
-              <span className="mb-modal-price-label">Base price</span>
+            <div className="flex items-baseline gap-3 pb-8 border-b border-[#c4a96a]/10 mb-8">
+              <span className="font-['Cormorant_Garamond'] text-4xl font-light text-[#c4a96a]">₹{product.basePrice}</span>
+              <span className="font-['Jost'] text-xs tracking-widest uppercase text-[#c4a96a]/50">BASE PRICE</span>
             </div>
 
-            {/* CTAs — customers only */}
+            {/* Action Buttons */}
             {isCustomer ? (
-              <div style={{ display: "flex", gap: "0.75rem" }}>
+              <div className="flex gap-3">
                 <button
-                  className={`mb-modal-btn-primary${addedToCart ? " added" : ""}`}
                   onClick={handleAddToCart}
+                  className={`flex-1 flex items-center justify-center gap-2 py-4 text-xs tracking-[0.28em] uppercase font-light transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]/50 ${
+                    addedToCart ? "bg-green-800 text-white" : " bg-[#c9a96e] hover:bg-[#8e7c57] hover:tracking-[0.28em]"
+                  }`}
                 >
                   <CartIcon />
-                  {addedToCart ? "Added ✓" : "Add to Cart"}
+                  {addedToCart ? "ADDED ✓" : "ADD TO CART"}
                 </button>
-                <button
-                  className="mb-modal-btn-secondary"
-                  onClick={handleCustomize}
-                >
-                  <CustomizeIcon />
-                  Customize
-                </button>
+
+                {/* Customize Button - ONLY FOR COFFEE */}
+                {isCoffee && (
+                  <button
+                    onClick={handleCustomize}
+                    className="flex-1 flex items-center justify-center gap-2 py-4 text-xs tracking-[0.25em] uppercase border border-[#c4a96a]/40 hover:border-[#c4a96a] hover:bg-[#c4a96a]/10 transition-all  duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c9a96e]/50 text-white"
+                  >
+                    <CustomizeIcon />
+                    CUSTOMIZE
+                  </button>
+                )}
               </div>
             ) : (
               <button
-                className="mb-modal-btn-primary"
                 onClick={() => navigate("/login")}
-                style={{ width: "100%" }}
+                className="w-full py-4 bg-[#6c5225]  hover:border-[#c9a96e]/30 text-xs tracking-[0.28em] uppercase font-light transition-all"
               >
-                Sign in to Order
+                SIGN IN TO ORDER
               </button>
             )}
           </div>

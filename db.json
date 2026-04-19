@@ -421,361 +421,6 @@
   ],
   "orders": [
     {
-      "id": "1767878143203",
-      "userId": "gk5msqy1",
-      "userEmail": "sali@gmail.com",
-      "items": [
-        {
-          "id": "1767878092015",
-          "productId": "4",
-          "product": {
-            "id": "4",
-            "name": "Iced Mocha",
-            "category": "Cold Coffee",
-            "basePrice": 6.49,
-            "baseCalories": 280,
-            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-            "description": "Cold espresso with chocolate and milk",
-            "healthBenefits": "Chocolate antioxidants + caffeine boost",
-            "rating": 4.7,
-            "reviewsCount": 198
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878093070",
-          "productId": "3",
-          "product": {
-            "id": "3",
-            "name": "Americano",
-            "category": "Cold Coffee",
-            "basePrice": 3.99,
-            "baseCalories": 10,
-            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-            "description": "Espresso diluted with hot water",
-            "healthBenefits": "Low calorie, high caffeine kick",
-            "rating": 4.5,
-            "reviewsCount": 180
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878094176",
-          "productId": "2",
-          "product": {
-            "id": "2",
-            "name": "Chocolate Almond Croissant",
-            "category": "Croissant",
-            "basePrice": 6.49,
-            "baseCalories": 480,
-            "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
-            "description": "Classic French croissant with dark chocolate and almonds",
-            "healthBenefits": "Rich in antioxidants and healthy fats",
-            "rating": 4.8,
-            "reviewsCount": 540
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878098835",
-          "productId": "2",
-          "product": {
-            "id": "2",
-            "name": "Chocolate Almond Croissant",
-            "category": "Croissant",
-            "basePrice": 6.49,
-            "baseCalories": 480,
-            "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
-            "description": "Classic French croissant with dark chocolate and almonds",
-            "healthBenefits": "Rich in antioxidants and healthy fats",
-            "rating": 4.8,
-            "reviewsCount": 540,
-            "isCustomized": false
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878103384",
-          "productId": "6",
-          "product": {
-            "id": "6",
-            "name": "Paneer Tikka Bagel",
-            "category": "Croissant",
-            "basePrice": 6.99,
-            "baseCalories": 380,
-            "image": "https://i.pinimg.com/736x/cc/3e/56/cc3e568171e5545217badc2fb7e17841.jpg",
-            "description": "Toasted bagel with spiced paneer and veggies",
-            "healthBenefits": "High protein from paneer, vegetarian delight",
-            "rating": 4.8,
-            "reviewsCount": 356,
-            "isCustomized": false
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878110002",
-          "productId": "17678781100020.0858850712936553",
-          "product": {
-            "id": "17678781100020.0858850712936553",
-            "productId": "8",
-            "name": "Custom Espresso (Robusta + Oat Milk)",
-            "category": "Hot Coffee",
-            "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
-            "basePrice": 6.19,
-            "quantity": 1,
-            "beanId": "2",
-            "milkId": "3",
-            "bean": "Robusta",
-            "milk": "Oat Milk",
-            "description": "Customized with Robusta beans and Oat Milk",
-            "isCustomized": true
-          },
-          "quantity": 1,
-          "isCustomized": true,
-          "beanId": "2",
-          "milkId": "3"
-        }
-      ],
-      "subtotal": 36.64,
-      "shipping": 9.9,
-      "total": 46.54,
-      "paymentMethod": "cod",
-      "upiId": null,
-      "status": "out_for_delivery",
-      "date": "2026-01-08T13:15:43.203Z"
-    },
-    {
-      "id": "1767878143203",
-      "userId": "gk5msqy1",
-      "userEmail": "sali@gmail.com",
-      "items": [
-        {
-          "id": "1767878092015",
-          "productId": "4",
-          "product": {
-            "id": "4",
-            "name": "Iced Mocha",
-            "category": "Cold Coffee",
-            "basePrice": 6.49,
-            "baseCalories": 280,
-            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-            "description": "Cold espresso with chocolate and milk",
-            "healthBenefits": "Chocolate antioxidants + caffeine boost",
-            "rating": 4.7,
-            "reviewsCount": 198
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878093070",
-          "productId": "3",
-          "product": {
-            "id": "3",
-            "name": "Americano",
-            "category": "Cold Coffee",
-            "basePrice": 3.99,
-            "baseCalories": 10,
-            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-            "description": "Espresso diluted with hot water",
-            "healthBenefits": "Low calorie, high caffeine kick",
-            "rating": 4.5,
-            "reviewsCount": 180
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        }
-      ],
-      "subtotal": 10.48,
-      "shipping": 9.9,
-      "total": 20.38,
-      "paymentMethod": "cod",
-      "upiId": null,
-      "status": "delivered",
-      "date": "2025-12-15T10:30:00.000Z"
-    },
-    {
-      "id": "1767878250001",
-      "userId": "bdbd",
-      "userEmail": "bilal@gmail.com",
-      "items": [
-        {
-          "id": "1767878250002",
-          "productId": "5",
-          "product": {
-            "id": "5",
-            "name": "Butter Chicken Croissant",
-            "category": "Croissant",
-            "basePrice": 7.99,
-            "baseCalories": 450,
-            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
-            "description": "Flaky croissant filled with spiced butter chicken",
-            "healthBenefits": "Protein-rich, satisfying savory snack",
-            "rating": 4.9,
-            "reviewsCount": 420
-          },
-          "quantity": 2,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878250003",
-          "productId": "1",
-          "product": {
-            "id": "1",
-            "name": "Classic Croissant",
-            "category": "Croissant",
-            "basePrice": 4.99,
-            "baseCalories": 280,
-            "image": "https://i.pinimg.com/736x/1e/09/45/1e0945ef1be5c19ea3673e45e2d8bd41.jpg",
-            "description": "Buttery, flaky French pastry",
-            "healthBenefits": "Good source of energy, contains vitamins",
-            "rating": 4.7,
-            "reviewsCount": 350
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        }
-      ],
-      "subtotal": 20.97,
-      "shipping": 9.9,
-      "total": 30.87,
-      "paymentMethod": "card",
-      "upiId": null,
-      "status": "pending",
-      "date": "2025-11-10T14:45:00.000Z"
-    },
-    {
-      "id": "1767881200001",
-      "userId": "bdbd",
-      "userEmail": "bilal@gmail.com",
-      "items": [
-        {
-          "id": "1767881200002",
-          "productId": "2",
-          "product": {
-            "id": "2",
-            "name": "Chocolate Almond Croissant",
-            "category": "Croissant",
-            "basePrice": 6.49,
-            "baseCalories": 480,
-            "image": "https://i.pinimg.com/1200x/cf/9b/af/cf9bafa8f904bb4c2aacf06cebf46331.jpg",
-            "description": "Classic French croissant with dark chocolate and almonds",
-            "healthBenefits": "Rich in antioxidants and healthy fats",
-            "rating": 4.8,
-            "reviewsCount": 540
-          },
-          "quantity": 3,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767881200003",
-          "productId": "8",
-          "product": {
-            "id": "8",
-            "name": "Espresso",
-            "category": "Hot Coffee",
-            "basePrice": 3.49,
-            "baseCalories": 5,
-            "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
-            "description": "Pure, intense shot of concentrated coffee",
-            "healthBenefits": "High antioxidants, improves focus and metabolism",
-            "rating": 4.7,
-            "reviewsCount": 289
-          },
-          "quantity": 2,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        }
-      ],
-      "subtotal": 27.45,
-      "shipping": 9.9,
-      "total": 37.35,
-      "paymentMethod": "upi",
-      "upiId": "bilal@oksbi",
-      "status": "delivered",
-      "date": "2025-10-05T09:15:00.000Z"
-    },
-    {
-      "id": "1767881300001",
-      "userId": "gk5msqy1",
-      "userEmail": "sali@gmail.com",
-      "items": [
-        {
-          "id": "1767881300002",
-          "productId": "4",
-          "product": {
-            "id": "4",
-            "name": "Iced Mocha",
-            "category": "Cold Coffee",
-            "basePrice": 6.49,
-            "baseCalories": 280,
-            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-            "description": "Cold espresso with chocolate and milk",
-            "healthBenefits": "Chocolate antioxidants + caffeine boost",
-            "rating": 4.7,
-            "reviewsCount": 198
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767881300003",
-          "productId": "7",
-          "product": {
-            "id": "7",
-            "name": "Iced Latte",
-            "category": "Cold Coffee",
-            "basePrice": 5.99,
-            "baseCalories": 120,
-            "image": "https://i.pinimg.com/736x/2d/2f/1c/2d2f1c6264e8881611bca5b71458277c.jpg",
-            "description": "Smooth espresso with cold milk over ice",
-            "healthBenefits": "Calcium-rich, refreshing energy",
-            "rating": 4.6,
-            "reviewsCount": 320
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        }
-      ],
-      "subtotal": 12.48,
-      "shipping": 9.9,
-      "total": 22.38,
-      "paymentMethod": "cod",
-      "upiId": null,
-      "status": "delivered",
-      "date": "2025-09-20T16:30:00.000Z"
-    },
-    {
       "id": "1767881400001",
       "userId": "0d7a",
       "userEmail": "adhilahussainar@gmail.com",
@@ -919,133 +564,35 @@
       "date": "2026-01-09T03:26:31.565Z"
     },
     {
-      "id": "1768470562508",
-      "userId": "bdbd",
-      "userEmail": "bilal@gmail.com",
+      "id": "1776017925524",
+      "userId": "gk5msqy1",
+      "userEmail": "sali@gmail.com",
       "items": [
         {
-          "id": "1767868714879",
-          "productId": "3",
+          "id": "1768476144208",
+          "productId": "17684761442080.867433614975203",
           "product": {
-            "id": "3",
-            "name": "Americano",
+            "id": "17684761442080.867433614975203",
+            "productId": "3",
+            "name": "Custom Americano (Arabica (Standard) + Oat Milk)",
             "category": "Cold Coffee",
-            "basePrice": 3.99,
-            "baseCalories": 10,
             "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-            "description": "Espresso diluted with hot water",
-            "healthBenefits": "Low calorie, high caffeine kick",
-            "rating": 4.5,
-            "reviewsCount": 180
+            "basePrice": 7.0600000000000005,
+            "quantity": 1,
+            "beanId": "1",
+            "milkId": "3",
+            "bean": "Arabica (Standard)",
+            "milk": "Oat Milk",
+            "description": "Customized with Arabica (Standard) beans and Oat Milk",
+            "isCustomized": true
           },
           "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
+          "isCustomized": true,
+          "beanId": "1",
+          "milkId": "3"
         },
         {
-          "id": "1767868717968",
-          "productId": "5",
-          "product": {
-            "id": "5",
-            "name": "Butter Chicken Croissant",
-            "category": "Croissant",
-            "basePrice": 7.99,
-            "baseCalories": 450,
-            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
-            "description": "Flaky croissant filled with spiced butter chicken",
-            "healthBenefits": "Protein-rich, satisfying savory snack",
-            "rating": 4.9,
-            "reviewsCount": 420
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1767878455681",
-          "productId": "8",
-          "product": {
-            "id": "8",
-            "name": "Espresso",
-            "category": "Hot Coffee",
-            "basePrice": 3.49,
-            "baseCalories": 5,
-            "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
-            "description": "Pure, intense shot of concentrated coffee",
-            "healthBenefits": "High antioxidants, improves focus and metabolism",
-            "rating": 4.7,
-            "reviewsCount": 289
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1768194779957",
-          "productId": "3",
-          "product": {
-            "id": "3",
-            "name": "Americano",
-            "category": "Cold Coffee",
-            "basePrice": 5.86,
-            "baseCalories": 10,
-            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-            "description": "Espresso diluted with hot water",
-            "healthBenefits": "Low calorie, high caffeine kick",
-            "rating": 4.5,
-            "reviewsCount": 180,
-            "updatedAt": "2026-01-12T04:32:15.063Z"
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1768194781762",
-          "productId": "4",
-          "product": {
-            "id": "4",
-            "name": "Iced Mocha",
-            "category": "Cold Coffee",
-            "basePrice": 6.49,
-            "baseCalories": 280,
-            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
-            "description": "Cold espresso with chocolate and milk",
-            "healthBenefits": "Chocolate antioxidants + caffeine boost",
-            "rating": 4.7,
-            "reviewsCount": 198
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1768194782900",
-          "productId": "5",
-          "product": {
-            "id": "5",
-            "name": "Butter Chicken Croissant",
-            "category": "Croissant",
-            "basePrice": 7.99,
-            "baseCalories": 450,
-            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
-            "description": "Flaky croissant filled with spiced butter chicken",
-            "healthBenefits": "Protein-rich, satisfying savory snack",
-            "rating": 4.9,
-            "reviewsCount": 420
-          },
-          "quantity": 1,
-          "isCustomized": false,
-          "beanId": null,
-          "milkId": null
-        },
-        {
-          "id": "1768470538391",
+          "id": "1776017908609",
           "productId": "5",
           "product": {
             "id": "5",
@@ -1065,31 +612,117 @@
           "milkId": null
         }
       ],
-      "subtotal": 43.800000000000004,
+      "subtotal": 15.05,
       "shipping": 9.9,
-      "total": 53.7,
+      "total": 24.950000000000003,
       "paymentMethod": "cod",
       "upiId": null,
-      "status": "out_for_delivery",
-      "date": "2026-01-15T09:49:22.508Z"
-    }
-  ],
-  "admin": {
-    "id": 1,
-    "email": "admin@gmail.com",
-    "password": "admin123",
-    "role": "admin"
-  },
-  "users": [
+      "status": "confirmed",
+      "date": "2026-04-12T18:18:45.524Z"
+    },
     {
-      "id": "bdbd",
-      "firstName": "bilal",
-      "lastName": "eesa",
-      "email": "bilal@gmail.com",
-      "password": "bilal123",
-      "role": "customer",
-      "userStatus": "active",
-      "cart": [
+      "id": "1776524957360",
+      "userId": "gk5msqy1",
+      "userEmail": "sali@gmail.com",
+      "items": [
+        {
+          "id": "1776509951854",
+          "productId": "4",
+          "product": {
+            "id": "4",
+            "name": "Iced Mocha",
+            "category": "Cold Coffee",
+            "basePrice": 6.49,
+            "baseCalories": 280,
+            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+            "description": "Cold espresso with chocolate and milk",
+            "healthBenefits": "Chocolate antioxidants + caffeine boost",
+            "rating": 4.7,
+            "reviewsCount": 198
+          },
+          "quantity": 5,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "a49ab5af-fe52-4a2c-86c6-d4464c74d91c",
+          "productId": "5",
+          "product": {
+            "id": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "basePrice": 7.99,
+            "baseCalories": 450,
+            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+            "description": "Flaky croissant filled with spiced butter chicken",
+            "healthBenefits": "Protein-rich, satisfying savory snack",
+            "rating": 4.9,
+            "reviewsCount": 420
+          },
+          "quantity": 5,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "6ff68a05-7ec6-4630-8964-f1853e91a6ad",
+          "productId": "3",
+          "product": {
+            "id": "3",
+            "name": "Americano",
+            "category": "Cold Coffee",
+            "basePrice": 5,
+            "baseCalories": 10,
+            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+            "description": "Espresso diluted with hot water",
+            "healthBenefits": "Low calorie, high caffeine kick",
+            "rating": 4.5,
+            "reviewsCount": 180,
+            "updatedAt": "2026-01-23T05:30:01.035Z"
+          },
+          "quantity": 2,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "b0ef4bf2-53ce-47ed-ae97-0a09b54cbb88",
+          "productId": "17765238098390.6880052290668388",
+          "product": {
+            "id": "17765238098390.6880052290668388",
+            "productId": "4",
+            "name": "Custom Iced Mocha (Liberica + Camel Milk)",
+            "category": "Cold Coffee",
+            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+            "basePrice": 11.99,
+            "quantity": 1,
+            "beanId": "3",
+            "milkId": "6",
+            "bean": "Liberica",
+            "milk": "Camel Milk",
+            "description": "Customized with Liberica beans and Camel Milk",
+            "isCustomized": true
+          },
+          "quantity": 1,
+          "isCustomized": true,
+          "beanId": "3",
+          "milkId": "6"
+        }
+      ],
+      "subtotal": 94.39,
+      "shipping": 9.9,
+      "total": 104.29,
+      "paymentMethod": "cod",
+      "upiId": null,
+      "status": "cancelled",
+      "date": "2026-04-18T15:09:17.360Z"
+    },
+    {
+      "id": "1776526930913",
+      "userId": "bdbd",
+      "userEmail": "bilal@gmail.com",
+      "items": [
         {
           "id": "1774859046749",
           "productId": "6",
@@ -1232,21 +865,378 @@
           "isCustomized": false,
           "beanId": null,
           "milkId": null
+        },
+        {
+          "id": "1775840751491",
+          "productId": "20",
+          "product": {
+            "id": "20",
+            "name": "Cinnamon Croissant",
+            "category": "Croissant",
+            "basePrice": 5.49,
+            "baseCalories": 470,
+            "image": "https://i.pinimg.com/1200x/c4/40/ca/c440ca37b25df65448162b21e1ccf334.jpg",
+            "description": "Fluffy croissant with cinnamon sugar filling and glaze",
+            "healthBenefits": "Contains antioxidants from cinnamon",
+            "rating": 4.5,
+            "reviewsCount": 275
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1776012918907",
+          "productId": "19",
+          "product": {
+            "id": "19",
+            "name": "Cheese Croissant",
+            "category": "Croissant",
+            "basePrice": 5.99,
+            "baseCalories": 450,
+            "image": "https://i.pinimg.com/1200x/49/69/fa/4969fa92ec90018369eb1637e7f8eb47.jpg",
+            "description": "Savory croissant stuffed with creamy cheese",
+            "healthBenefits": "High in protein and calcium",
+            "rating": 4.4,
+            "reviewsCount": 310
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1776015501314",
+          "productId": "17760155013130.3275133234940708",
+          "product": {
+            "id": "17760155013130.3275133234940708",
+            "productId": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+            "basePrice": 7.99,
+            "quantity": 1,
+            "description": "Flaky croissant filled with spiced butter chicken",
+            "isCustomized": false
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1776015953709",
+          "productId": "4",
+          "product": {
+            "id": "4",
+            "name": "Iced Mocha",
+            "category": "Cold Coffee",
+            "basePrice": 6.49,
+            "baseCalories": 280,
+            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+            "description": "Cold espresso with chocolate and milk",
+            "healthBenefits": "Chocolate antioxidants + caffeine boost",
+            "rating": 4.7,
+            "reviewsCount": 198
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "1776016144542",
+          "productId": "3",
+          "product": {
+            "id": "3",
+            "name": "Americano",
+            "category": "Cold Coffee",
+            "basePrice": 5,
+            "baseCalories": 10,
+            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+            "description": "Espresso diluted with hot water",
+            "healthBenefits": "Low calorie, high caffeine kick",
+            "rating": 4.5,
+            "reviewsCount": 180,
+            "updatedAt": "2026-01-23T05:30:01.035Z"
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        }
+      ],
+      "subtotal": 83.28,
+      "shipping": 49,
+      "total": 132.28,
+      "paymentMethod": "upi",
+      "upiId": "adhilahussainar@gmail.com",
+      "status": "out_for_delivery",
+      "date": "2026-04-18T15:42:10.913Z"
+    },
+    {
+      "id": "1776527649438",
+      "userId": "bdbd",
+      "userEmail": "bilal@gmail.com",
+      "items": [
+        {
+          "id": "3df542a0-7a1c-42e1-a535-ee143bf2e6c6",
+          "productId": "4",
+          "product": {
+            "id": "4",
+            "name": "Iced Mocha",
+            "category": "Cold Coffee",
+            "basePrice": 6.49,
+            "baseCalories": 280,
+            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+            "description": "Cold espresso with chocolate and milk",
+            "healthBenefits": "Chocolate antioxidants + caffeine boost",
+            "rating": 4.7,
+            "reviewsCount": 198
+          },
+          "quantity": 4,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "86790c55-cff8-4646-917f-14c03f4aed9a",
+          "productId": "17765272750210.29393407106844194",
+          "product": {
+            "id": "17765272750210.29393407106844194",
+            "productId": "3",
+            "name": "Custom Americano (Geisha / Gesha + Soy Milk)",
+            "category": "Cold Coffee",
+            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+            "basePrice": 11.8,
+            "quantity": 1,
+            "beanId": "5",
+            "milkId": "4",
+            "bean": "Geisha / Gesha",
+            "milk": "Soy Milk",
+            "description": "Customized with Geisha / Gesha beans and Soy Milk",
+            "isCustomized": true
+          },
+          "quantity": 1,
+          "isCustomized": true,
+          "beanId": "5",
+          "milkId": "4"
+        },
+        {
+          "id": "89236e9e-1570-4cf1-a831-cd354ad05212",
+          "productId": "3",
+          "product": {
+            "id": "3",
+            "name": "Americano",
+            "category": "Cold Coffee",
+            "basePrice": 5,
+            "baseCalories": 10,
+            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+            "description": "Espresso diluted with hot water",
+            "healthBenefits": "Low calorie, high caffeine kick",
+            "rating": 4.5,
+            "reviewsCount": 180,
+            "updatedAt": "2026-01-23T05:30:01.035Z"
+          },
+          "quantity": 3,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "e3993957-bc1e-4e78-9a95-31746882819f",
+          "productId": "5",
+          "product": {
+            "id": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "basePrice": 7.99,
+            "baseCalories": 450,
+            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+            "description": "Flaky croissant filled with spiced butter chicken",
+            "healthBenefits": "Protein-rich, satisfying savory snack",
+            "rating": 4.9,
+            "reviewsCount": 420
+          },
+          "quantity": 2,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        }
+      ],
+      "subtotal": 68.74000000000001,
+      "shipping": 49,
+      "total": 117.74000000000001,
+      "paymentMethod": "cod",
+      "upiId": null,
+      "status": "out_for_delivery",
+      "date": "2026-04-18T15:54:09.438Z"
+    }
+  ],
+  "admin": {
+    "id": 1,
+    "email": "admin@gmail.com",
+    "password": "admin123",
+    "role": "admin"
+  },
+  "users": [
+    {
+      "id": "bdbd",
+      "firstName": "bilal",
+      "lastName": "eesa",
+      "email": "bilal@gmail.com",
+      "password": "bilal123",
+      "role": "customer",
+      "userStatus": "active",
+      "cart": [
+        {
+          "id": "c1c860a5-8ea4-4dbb-bc6c-be19d78ec4d4",
+          "productId": "4",
+          "product": {
+            "id": "4",
+            "name": "Iced Mocha",
+            "category": "Cold Coffee",
+            "basePrice": 6.49,
+            "baseCalories": 280,
+            "image": "https://i.pinimg.com/736x/4d/e0/68/4de068124212961d6481e6c631774053.jpg",
+            "description": "Cold espresso with chocolate and milk",
+            "healthBenefits": "Chocolate antioxidants + caffeine boost",
+            "rating": 4.7,
+            "reviewsCount": 198
+          },
+          "quantity": 4,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "f8265a1a-117d-4b1f-9d58-c29342d0dba7",
+          "productId": "5",
+          "product": {
+            "id": "5",
+            "name": "Butter Chicken Croissant",
+            "category": "Croissant",
+            "basePrice": 7.99,
+            "baseCalories": 450,
+            "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+            "description": "Flaky croissant filled with spiced butter chicken",
+            "healthBenefits": "Protein-rich, satisfying savory snack",
+            "rating": 4.9,
+            "reviewsCount": 420
+          },
+          "quantity": 2,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "3f7af491-8f31-4fa6-8608-1e738a863faa",
+          "productId": "3",
+          "product": {
+            "id": "3",
+            "name": "Americano",
+            "category": "Cold Coffee",
+            "basePrice": 5,
+            "baseCalories": 10,
+            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
+            "description": "Espresso diluted with hot water",
+            "healthBenefits": "Low calorie, high caffeine kick",
+            "rating": 4.5,
+            "reviewsCount": 180,
+            "updatedAt": "2026-01-23T05:30:01.035Z"
+          },
+          "quantity": 2,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "be9af2fe-6480-4b90-85ac-71a83ab54809",
+          "productId": "8",
+          "product": {
+            "id": "8",
+            "name": "Espresso",
+            "category": "Hot Coffee",
+            "basePrice": 3.49,
+            "baseCalories": 5,
+            "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
+            "description": "Pure, intense shot of concentrated coffee",
+            "healthBenefits": "High antioxidants, improves focus and metabolism",
+            "rating": 4.7,
+            "reviewsCount": 289
+          },
+          "quantity": 2,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
+        },
+        {
+          "id": "320c3572-3ee5-4fc4-ac6b-23f305d597c1",
+          "productId": "9",
+          "product": {
+            "id": "9",
+            "name": "Flat White",
+            "category": "Hot Coffee",
+            "basePrice": 5.29,
+            "baseCalories": 140,
+            "image": "https://i.pinimg.com/1200x/03/4b/1b/034b1b949ecd48ba8e3f8bed4dd6cc83.jpg",
+            "description": "Espresso with velvety microfoam milk, stronger than latte",
+            "healthBenefits": "Balanced caffeine, supports bone health with milk",
+            "rating": 4.8,
+            "reviewsCount": 201
+          },
+          "quantity": 1,
+          "isCustomized": false,
+          "beanId": null,
+          "milkId": null
         }
       ],
       "wishlist": [
         {
-          "id": "3",
-          "name": "Americano",
-          "category": "Cold Coffee",
-          "basePrice": 5,
-          "baseCalories": 10,
-          "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-          "description": "Espresso diluted with hot water",
-          "healthBenefits": "Low calorie, high caffeine kick",
+          "id": "9981",
+          "name": "Honey Cinnamon Ristretto",
+          "category": "Hot Coffee",
+          "basePrice": 3.54,
+          "image": "https://i.pinimg.com/1200x/e7/55/81/e75581acb56f4024dba98e67d0db9a2e.jpg",
+          "description": "A rich, short espresso with warm cinnamon spice and a touch of natural honey sweetness, smooth and comforting in every sip",
+          "createdAt": "2026-01-06T07:29:43.014Z"
+        },
+        {
+          "id": "5",
+          "name": "Butter Chicken Croissant",
+          "category": "Croissant",
+          "basePrice": 7.99,
+          "baseCalories": 450,
+          "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+          "description": "Flaky croissant filled with spiced butter chicken",
+          "healthBenefits": "Protein-rich, satisfying savory snack",
+          "rating": 4.9,
+          "reviewsCount": 420
+        },
+        {
+          "id": "19",
+          "name": "Cheese Croissant",
+          "category": "Croissant",
+          "basePrice": 5.99,
+          "baseCalories": 450,
+          "image": "https://i.pinimg.com/1200x/49/69/fa/4969fa92ec90018369eb1637e7f8eb47.jpg",
+          "description": "Savory croissant stuffed with creamy cheese",
+          "healthBenefits": "High in protein and calcium",
+          "rating": 4.4,
+          "reviewsCount": 310
+        },
+        {
+          "id": "20",
+          "name": "Cinnamon Croissant",
+          "category": "Croissant",
+          "basePrice": 5.49,
+          "baseCalories": 470,
+          "image": "https://i.pinimg.com/1200x/c4/40/ca/c440ca37b25df65448162b21e1ccf334.jpg",
+          "description": "Fluffy croissant with cinnamon sugar filling and glaze",
+          "healthBenefits": "Contains antioxidants from cinnamon",
           "rating": 4.5,
-          "reviewsCount": 180,
-          "updatedAt": "2026-01-23T05:30:01.035Z"
+          "reviewsCount": 275
         },
         {
           "id": "6",
@@ -1259,61 +1249,6 @@
           "healthBenefits": "High protein from paneer, vegetarian delight",
           "rating": 4.8,
           "reviewsCount": 356
-        },
-        {
-          "id": "9",
-          "name": "Flat White",
-          "category": "Hot Coffee",
-          "basePrice": 5.29,
-          "baseCalories": 140,
-          "image": "https://i.pinimg.com/1200x/03/4b/1b/034b1b949ecd48ba8e3f8bed4dd6cc83.jpg",
-          "description": "Espresso with velvety microfoam milk, stronger than latte",
-          "healthBenefits": "Balanced caffeine, supports bone health with milk",
-          "rating": 4.8,
-          "reviewsCount": 201
-        },
-        {
-          "id": "10",
-          "name": "Spinach & Cheese Croissant",
-          "category": "Croissant",
-          "basePrice": 6.29,
-          "baseCalories": 410,
-          "image": "https://i.pinimg.com/1200x/23/cd/35/23cd35a53e1271aea3ac68a12386560b.jpg",
-          "description": "Flaky croissant filled with spinach and melted cheese",
-          "healthBenefits": "Provides iron and calcium",
-          "rating": 4.5,
-          "reviewsCount": 198
-        },
-        {
-          "id": "8",
-          "name": "Espresso",
-          "category": "Hot Coffee",
-          "basePrice": 3.49,
-          "baseCalories": 5,
-          "image": "https://i.pinimg.com/736x/4c/28/e2/4c28e2420bf38c50120dba0cbaf42e8d.jpg",
-          "description": "Pure, intense shot of concentrated coffee",
-          "healthBenefits": "High antioxidants, improves focus and metabolism",
-          "rating": 4.7,
-          "reviewsCount": 289
-        },
-        {
-          "id": "9981",
-          "name": "Honey Cinnamon Ristretto",
-          "category": "Hot Coffee",
-          "basePrice": 3.54,
-          "image": "https://i.pinimg.com/1200x/e7/55/81/e75581acb56f4024dba98e67d0db9a2e.jpg",
-          "description": "A rich, short espresso with warm cinnamon spice and a touch of natural honey sweetness, smooth and comforting in every sip",
-          "createdAt": "2026-01-06T07:29:43.014Z"
-        },
-        {
-          "id": "d942",
-          "name": "Caramel Frappuccino",
-          "category": "Cold Coffee",
-          "basePrice": 9.87,
-          "image": "https://i.pinimg.com/1200x/fb/19/08/fb1908b420eee76ec0d36ef3ce999e31.jpg",
-          "description": "Blended coffee drink with caramel syrup, milk, and whipped cream",
-          "healthBenefits": "Energy boost with sweet caramel flavor, perfect summer treat",
-          "createdAt": "2026-01-08T13:35:30.239Z"
         }
       ]
     },
@@ -1324,7 +1259,7 @@
       "email": "adhilahussainar@gmail.com",
       "password": "123456",
       "role": "customer",
-      "userStatus": "blocked",
+      "userStatus": "active",
       "cart": [
         {
           "id": "1767869966329",
@@ -1357,31 +1292,7 @@
       "password": "sali123",
       "role": "customer",
       "userStatus": "active",
-      "cart": [
-        {
-          "id": "1768476144208",
-          "productId": "17684761442080.867433614975203",
-          "product": {
-            "id": "17684761442080.867433614975203",
-            "productId": "3",
-            "name": "Custom Americano (Arabica (Standard) + Oat Milk)",
-            "category": "Cold Coffee",
-            "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-            "basePrice": 7.0600000000000005,
-            "quantity": 1,
-            "beanId": "1",
-            "milkId": "3",
-            "bean": "Arabica (Standard)",
-            "milk": "Oat Milk",
-            "description": "Customized with Arabica (Standard) beans and Oat Milk",
-            "isCustomized": true
-          },
-          "quantity": 1,
-          "isCustomized": true,
-          "beanId": "1",
-          "milkId": "3"
-        }
-      ],
+      "cart": [],
       "wishlist": [
         {
           "id": "4",
@@ -1396,16 +1307,16 @@
           "reviewsCount": 198
         },
         {
-          "id": "3",
-          "name": "Americano",
-          "category": "Cold Coffee",
-          "basePrice": 3.99,
-          "baseCalories": 10,
-          "image": "https://i.pinimg.com/736x/cf/86/85/cf8685f6b02dea31682f696be282f703.jpg",
-          "description": "Espresso diluted with hot water",
-          "healthBenefits": "Low calorie, high caffeine kick",
-          "rating": 4.5,
-          "reviewsCount": 180
+          "id": "5",
+          "name": "Butter Chicken Croissant",
+          "category": "Croissant",
+          "basePrice": 7.99,
+          "baseCalories": 450,
+          "image": "https://i.pinimg.com/736x/c6/52/29/c652291ba44b0b334733064650712e77.jpg",
+          "description": "Flaky croissant filled with spiced butter chicken",
+          "healthBenefits": "Protein-rich, satisfying savory snack",
+          "rating": 4.9,
+          "reviewsCount": 420
         }
       ]
     },

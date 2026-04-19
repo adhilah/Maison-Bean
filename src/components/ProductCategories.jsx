@@ -97,6 +97,7 @@ const categories = [
   {
     id: 1,
     title: "Hot Coffee",
+    slug: "hot-coffee",
     sub: "Espresso · Latte · Cappuccino",
     image: "https://i.pinimg.com/736x/1d/75/4c/1d754c43819beac616d01e936d40f146.jpg",
     count: "12 items",
@@ -104,6 +105,7 @@ const categories = [
   {
     id: 2,
     title: "Cold Coffee",
+    slug: "cold-coffee",
     sub: "Cold Brew · Iced Latte · Glacé",
     image: "https://i.pinimg.com/1200x/1b/33/ce/1b33ce30267c9ea5851f391e32f75926.jpg",
     count: "9 items",
@@ -111,15 +113,21 @@ const categories = [
   {
     id: 3,
     title: "Croissant",
+    slug: "croissant",
     sub: "Butter · Almond · Chocolate",
     image: "https://i.pinimg.com/1200x/b3/62/f3/b362f30f8faba86e7f3050d6595ea41d.jpg",
     count: "7 items",
   },
 ];
 
+/*
+  Tailwind can't transition child elements on parent hover, so we keep
+  a minimal <style> block only for those 6 parent→child transitions.
+  Everything else — layout, color, spacing, typography — is Tailwind.
+*/
+
 function ProductCategories() {
   const [activeTab, setActiveTab] = useState(null);
-  const [hoveredId, setHoveredId] = useState(null);
   const navigate = useNavigate();
 
   return (
@@ -127,315 +135,142 @@ function ProductCategories() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');
 
-        .mb-cat-section {
-          background: #0d0a05;
-          padding: 7rem 0;
-          font-family: 'Jost', sans-serif;
-          position: relative;
-          overflow: hidden;
-        }
+        /* image zoom */
+        .pc-card .pc-img { transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.5s; }
+        .pc-card:hover .pc-img,
+        .pc-card.active .pc-img { transform: scale(1.06); opacity: 0.62 !important; }
 
-        /* Subtle background texture */
-        .mb-cat-section::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background:
-            radial-gradient(ellipse at 20% 50%, rgba(201,169,110,0.04) 0%, transparent 60%),
-            radial-gradient(ellipse at 80% 50%, rgba(201,169,110,0.03) 0%, transparent 60%);
-          pointer-events: none;
-        }
+        /* gold top-line sweep */
+        .pc-card .pc-line { transform: scaleX(0); transform-origin: center; transition: transform 0.5s ease; }
+        .pc-card:hover .pc-line,
+        .pc-card.active .pc-line { transform: scaleX(1); }
 
-        .mb-cat-inner {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 3rem;
-          position: relative;
-          z-index: 1;
-        }
+        /* content slide up */
+        .pc-card .pc-body { transform: translateY(8px); transition: transform 0.4s ease; }
+        .pc-card:hover .pc-body { transform: translateY(0); }
 
-        /* Header */
-        .mb-cat-header {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          margin-bottom: 4rem;
-        }
+        /* title gold on hover */
+        .pc-card .pc-title { transition: color 0.3s ease; }
+        .pc-card:hover .pc-title,
+        .pc-card.active .pc-title { color: #c9a96e !important; }
 
-        .mb-cat-eyebrow {
-          font-size: 0.55rem;
-          font-weight: 200;
-          letter-spacing: 0.5em;
-          text-transform: uppercase;
-          color: #c9a96e;
-          margin-bottom: 0.9rem;
-        }
+        /* footer fade in */
+        .pc-card .pc-footer { opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s; }
+        .pc-card:hover .pc-footer { opacity: 1; transform: translateY(0); }
 
-        .mb-cat-heading {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: clamp(2.2rem, 4vw, 3.2rem);
-          font-weight: 300;
-          line-height: 1.05;
-          color: #f5f0e8;
-          letter-spacing: 0.02em;
-        }
-
-        .mb-cat-heading em {
-          font-style: italic;
-          color: #c9a96e;
-        }
-
-        .mb-cat-view-all {
-          font-size: 0.58rem;
-          font-weight: 300;
-          letter-spacing: 0.3em;
-          text-transform: uppercase;
-          color: rgba(201,169,110,0.5);
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          transition: color 0.3s, gap 0.3s;
-          white-space: nowrap;
-          padding-bottom: 4px;
-        }
-        .mb-cat-view-all::after {
-          content: '';
-          display: block;
-          width: 28px;
-          height: 1px;
-          background: currentColor;
-          transition: width 0.3s;
-        }
-        .mb-cat-view-all:hover {
-          color: #c9a96e;
-        }
-        .mb-cat-view-all:hover::after { width: 44px; }
-
-        /* Grid */
-        .mb-cat-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 1px;
-          background: rgba(201,169,110,0.1);
-          border: 1px solid rgba(201,169,110,0.1);
-        }
-
-        /* Card */
-        .mb-cat-card {
-          background: #0d0a05;
-          position: relative;
-          overflow: hidden;
-          cursor: pointer;
-          border: none;
-          padding: 0;
-          text-align: left;
-          display: block;
-          width: 100%;
-          aspect-ratio: 3/4;
-          transition: background 0.4s;
-        }
-        .mb-cat-card:hover { background: #110d07; }
-
-        /* Full bleed image */
-        .mb-cat-img {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s;
-          opacity: 0.45;
-        }
-        .mb-cat-card:hover .mb-cat-img,
-        .mb-cat-card.active .mb-cat-img {
-          transform: scale(1.06);
-          opacity: 0.6;
-        }
-
-        /* Gradient overlay */
-        .mb-cat-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            to top,
-            rgba(8,5,2,0.95) 0%,
-            rgba(8,5,2,0.5) 40%,
-            rgba(8,5,2,0.1) 100%
-          );
-          transition: opacity 0.4s;
-        }
-        .mb-cat-card:hover .mb-cat-overlay {
-          background: linear-gradient(
-            to top,
-            rgba(8,5,2,0.98) 0%,
-            rgba(8,5,2,0.55) 45%,
-            rgba(8,5,2,0.15) 100%
-          );
-        }
-
-        /* Gold top line on hover */
-        .mb-cat-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 1px;
-          background: linear-gradient(to right, transparent, #c9a96e, transparent);
-          transform: scaleX(0);
-          transition: transform 0.5s ease;
-          z-index: 3;
-        }
-        .mb-cat-card:hover::before,
-        .mb-cat-card.active::before { transform: scaleX(1); }
-
-        /* Content */
-        .mb-cat-content {
-          position: absolute;
-          bottom: 0; left: 0; right: 0;
-          padding: 2rem 2rem 2.2rem;
-          z-index: 2;
-          transform: translateY(8px);
-          transition: transform 0.4s ease;
-        }
-        .mb-cat-card:hover .mb-cat-content { transform: translateY(0); }
-
-        .mb-cat-num {
-          font-size: 0.5rem;
-          font-weight: 200;
-          letter-spacing: 0.4em;
-          text-transform: uppercase;
-          color: rgba(201,169,110,0.45);
-          margin-bottom: 0.5rem;
-          display: block;
-        }
-
-        .mb-cat-name {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 2rem;
-          font-weight: 300;
-          color: #f5f0e8;
-          line-height: 1;
-          margin-bottom: 0.5rem;
-          letter-spacing: 0.02em;
-          transition: color 0.3s;
-        }
-        .mb-cat-card:hover .mb-cat-name,
-        .mb-cat-card.active .mb-cat-name { color: #c9a96e; }
-
-        .mb-cat-desc {
-          font-size: 0.58rem;
-          font-weight: 200;
-          letter-spacing: 0.15em;
-          text-transform: uppercase;
-          color: rgba(245,240,232,0.3);
-          margin-bottom: 1.4rem;
-          display: block;
-        }
-
-        .mb-cat-footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border-top: 1px solid rgba(201,169,110,0.12);
-          padding-top: 1rem;
-          opacity: 0;
-          transform: translateY(6px);
-          transition: opacity 0.35s ease 0.05s, transform 0.35s ease 0.05s;
-        }
-        .mb-cat-card:hover .mb-cat-footer {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .mb-cat-count {
-          font-size: 0.55rem;
-          font-weight: 200;
-          letter-spacing: 0.2em;
-          color: rgba(201,169,110,0.5);
-        }
-
-        .mb-cat-explore {
-          font-size: 0.55rem;
-          font-weight: 300;
-          letter-spacing: 0.25em;
-          text-transform: uppercase;
-          color: #c9a96e;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-
-        /* Number watermark top-right */
-        .mb-cat-watermark {
-          position: absolute;
-          top: 1.5rem;
-          right: 1.5rem;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 5rem;
-          font-weight: 300;
-          color: rgba(201,169,110,0.05);
-          line-height: 1;
-          z-index: 2;
-          pointer-events: none;
-          transition: color 0.4s;
-        }
-        .mb-cat-card:hover .mb-cat-watermark {
-          color: rgba(201,169,110,0.08);
-        }
-
-        @media (max-width: 768px) {
-          .mb-cat-grid { grid-template-columns: 1fr; }
-          .mb-cat-card { aspect-ratio: 4/3; }
-          .mb-cat-header { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
-        }
+        /* watermark brightens */
+        .pc-card .pc-mark { transition: color 0.4s ease; }
+        .pc-card:hover .pc-mark { color: rgba(201,169,110,0.08) !important; }
       `}</style>
 
-      <section className="mb-cat-section">
-        <div className="mb-cat-inner">
+      <section className="relative overflow-hidden bg-[#0d0a05] py-28 font-['Jost',sans-serif]">
 
-          {/* Header */}
-          <div className="mb-cat-header">
+        {/* Ambient glows */}
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div className="absolute top-0 left-[20%] w-[500px] h-[500px] rounded-full bg-[#c9a96e]/[0.04] blur-[130px]" />
+          <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] rounded-full bg-[#c9a96e]/[0.03] blur-[110px]" />
+        </div>
+
+        <div className="relative z-10 max-w-screen-xl mx-auto px-6 lg:px-14">
+
+          {/* ── Header ── */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-16">
             <div>
-              <p className="mb-cat-eyebrow">What we offer</p>
-              <h2 className="mb-cat-heading">
-                Explore Our <em>Menu</em>
+              <p className="text-[#c9a96e] text-[10px] font-light tracking-[0.5em] uppercase mb-3 opacity-70">
+                WHAT WE OFFER
+              </p>
+              <h2
+                className="text-[#f5f0e8] font-light leading-none tracking-wide"
+                style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2.2rem,4vw,3.2rem)" }}
+              >
+                Explore Our{" "}
+                <em className="italic text-[#c9a96e]">Menu</em>
               </h2>
             </div>
-            <a href="/menu" className="mb-cat-view-all">
+
+            <a
+              href="/menu"
+              className="group flex items-center gap-2.5 text-[#c9a96e]/50 hover:text-[#c9a96e] text-[10px] tracking-[0.3em] uppercase transition-colors duration-300 self-end md:self-auto pb-1"
+            >
               Full Menu
+              <span className="h-px bg-current inline-block w-7 group-hover:w-11 transition-all duration-300" />
             </a>
           </div>
 
-          {/* Cards */}
-          <div className="mb-cat-grid">
+          {/* ── Cards Grid ── */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#c9a96e]/10 border border-[#c9a96e]/10">
             {categories.map((item, i) => (
               <button
                 key={item.id}
-                className={`mb-cat-card${activeTab === item.title ? " active" : ""}`}
+                className={`pc-card relative overflow-hidden text-left w-full bg-[#0d0a05] hover:bg-[#110d07] transition-colors duration-400 aspect-[3/4] md:aspect-[3/4]${activeTab === item.title ? " active" : ""}`}
                 onClick={() => {
                   setActiveTab(item.title);
-                  navigate(`/menu/${item.title.toLowerCase().replace(" ", "-")}`);
+                  navigate(`/menu/${item.slug}`);
                 }}
-                onMouseEnter={() => setHoveredId(item.id)}
-                onMouseLeave={() => setHoveredId(null)}
               >
-                {/* Background image */}
-                <img className="mb-cat-img" src={item.image} alt={item.title} />
+                {/* Full-bleed image */}
+                <img
+                  className="pc-img absolute inset-0 w-full h-full object-cover opacity-45"
+                  src={item.image}
+                  alt={item.title}
+                />
 
-                {/* Overlay */}
-                <div className="mb-cat-overlay" />
+                {/* Gradient overlay */}
+                <div
+                  className="absolute inset-0"
+                  style={{ background: "linear-gradient(to top,rgba(8,5,2,0.96) 0%,rgba(8,5,2,0.52) 42%,rgba(8,5,2,0.10) 100%)" }}
+                />
 
-                {/* Large number watermark */}
-                <span className="mb-cat-watermark">0{i + 1}</span>
+                {/* Gold sweep line — top */}
+                <div className="absolute top-0 inset-x-0 h-px z-20">
+                  <div
+                    className="pc-line h-full"
+                    style={{ background: "linear-gradient(to right,transparent,#c9a96e,transparent)" }}
+                  />
+                </div>
 
-                {/* Content */}
-                <div className="mb-cat-content">
-                  <span className="mb-cat-num">0{i + 1}</span>
-                  <p className="mb-cat-name">{item.title}</p>
-                  <span className="mb-cat-desc">{item.sub}</span>
-                  <div className="mb-cat-footer">
-                    <span className="mb-cat-count">{item.count}</span>
-                    <span className="mb-cat-explore">Explore →</span>
+                {/* Watermark number */}
+                <span
+                  className="pc-mark absolute top-5 right-5 z-10 pointer-events-none select-none font-light leading-none"
+                  style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "5rem", color: "rgba(201,169,110,0.05)" }}
+                >
+                  0{i + 1}
+                </span>
+
+                {/* Slide-up content */}
+                <div className="pc-body absolute bottom-0 inset-x-0 z-20 px-8 pb-9">
+
+                  {/* Index label */}
+                  <span className="block text-[10px] tracking-[0.4em] uppercase font-light mb-2 text-[#c9a96e]/45">
+                    0{i + 1}
+                  </span>
+
+                  {/* Title */}
+                  <p
+                    className="pc-title font-light leading-none mb-2 text-[#f5f0e8]"
+                    style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "2rem", letterSpacing: "0.02em" }}
+                  >
+                    {item.title}
+                  </p>
+
+                  {/* Sub description */}
+                  <span className="block text-[10px] tracking-[0.18em] uppercase font-light mb-5 text-[#f5f0e8]/30">
+                    {item.sub}
+                  </span>
+
+                  {/* Footer — fades in on hover */}
+                  <div className="pc-footer flex items-center justify-between pt-4 border-t border-[#c9a96e]/12">
+                    <span className="text-[10px] tracking-[0.2em] uppercase font-light text-[#c9a96e]/50">
+                      {item.count}
+                    </span>
+                    <span className="flex items-center gap-1.5 text-[10px] tracking-[0.25em] uppercase font-light text-[#c9a96e]">
+                      Explore
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    </span>
                   </div>
                 </div>
               </button>
