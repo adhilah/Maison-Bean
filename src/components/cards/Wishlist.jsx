@@ -561,9 +561,9 @@ const WishlistPage = () => {
           </div>
 
           {/* Recommendations */}
-          {products.length > 0 && (
-            <RecommendationCarousel recommendations={products.slice(0, 6)} />
-          )}
+           {products.length > 0 && (
+          <RecommendationCarousel allProducts={products} />
+        )}
         </div>
       </div>
 

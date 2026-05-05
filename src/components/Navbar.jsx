@@ -535,6 +535,8 @@ const Navbar = () => {
             Maison <span className="text-[#c9a96e]">Bean</span>
           </a>
 
+          
+
           {/* ── DESKTOP NAV LINKS (absolute centered) ── */}
           <ul className="hidden md:flex items-center gap-12 list-none m-0 p-0
             absolute left-1/2 -translate-x-1/2">

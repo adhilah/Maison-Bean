@@ -381,14 +381,13 @@
 // }
 
 
-
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 
-const API = "http://localhost:3000";
+const API = "http://localhost:5000/api/Order";
 
 /* ─────────── Icons ─────────── */
 const PackageIcon = ({ size = 14 }) => (
@@ -430,85 +429,41 @@ const CardIcon = () => (
   </svg>
 );
 
-/* ─────────────────────────────────────────────────────────────
-   STATUS CONFIG — keys match admin dropdown exactly:
-   Pending · Processing · Out for Delivery · Delivered · Cancelled
-   (legacy keys confirmed / preparing / shipped kept for old data)
-───────────────────────────────────────────────────────────── */
 const STATUS = {
-  // ── current keys (match admin dropdown) ──
   pending: {
-    label: "Pending",
-    dot: "#f5a623",
-    step: 0,
-    text: "text-[#f5a623]",
-    bg: "bg-[#f5a62318]",
-    border: "border-[#f5a623]/30",
+    label: "Pending", dot: "#f5a623", step: 0,
+    text: "text-[#f5a623]", bg: "bg-[#f5a62318]", border: "border-[#f5a623]/30",
   },
   processing: {
-    label: "Processing",
-    dot: "#3b82f6",
-    step: 1,
-    text: "text-[#3b82f6]",
-    bg: "bg-[#3b82f618]",
-    border: "border-[#3b82f6]/30",
+    label: "Processing", dot: "#3b82f6", step: 1,
+    text: "text-[#3b82f6]", bg: "bg-[#3b82f618]", border: "border-[#3b82f6]/30",
   },
   "out for delivery": {
-    label: "Out for Delivery",
-    dot: "#a78bfa",
-    step: 2,
-    text: "text-[#a78bfa]",
-    bg: "bg-[#a78bfa18]",
-    border: "border-[#a78bfa]/30",
+    label: "Out for Delivery", dot: "#a78bfa", step: 2,
+    text: "text-[#a78bfa]", bg: "bg-[#a78bfa18]", border: "border-[#a78bfa]/30",
   },
   delivered: {
-    label: "Delivered",
-    dot: "#4ade80",
-    step: 3,
-    text: "text-[#4ade80]",
-    bg: "bg-[#4ade8018]",
-    border: "border-[#4ade80]/30",
+    label: "Delivered", dot: "#4ade80", step: 3,
+    text: "text-[#4ade80]", bg: "bg-[#4ade8018]", border: "border-[#4ade80]/30",
   },
   cancelled: {
-    label: "Cancelled",
-    dot: "#f87171",
-    step: -1,
-    text: "text-[#f87171]",
-    bg: "bg-[#f8717118]",
-    border: "border-[#f87171]/30",
+    label: "Cancelled", dot: "#f87171", step: -1,
+    text: "text-[#f87171]", bg: "bg-[#f8717118]", border: "border-[#f87171]/30",
   },
-
-  // ── legacy keys (backwards compat for old orders) ──
   confirmed: {
-    label: "Confirmed",
-    dot: "#3b82f6",
-    step: 1,
-    text: "text-[#3b82f6]",
-    bg: "bg-[#3b82f618]",
-    border: "border-[#3b82f6]/30",
+    label: "Confirmed", dot: "#3b82f6", step: 1,
+    text: "text-[#3b82f6]", bg: "bg-[#3b82f618]", border: "border-[#3b82f6]/30",
   },
   preparing: {
-    label: "Preparing",
-    dot: "#c9a96e",
-    step: 1,
-    text: "text-[#c9a96e]",
-    bg: "bg-[#c9a96e18]",
-    border: "border-[#c9a96e]/30",
+    label: "Preparing", dot: "#c9a96e", step: 1,
+    text: "text-[#c9a96e]", bg: "bg-[#c9a96e18]", border: "border-[#c9a96e]/30",
   },
   shipped: {
-    label: "Shipped",
-    dot: "#a78bfa",
-    step: 2,
-    text: "text-[#a78bfa]",
-    bg: "bg-[#a78bfa18]",
-    border: "border-[#a78bfa]/30",
+    label: "Shipped", dot: "#a78bfa", step: 2,
+    text: "text-[#a78bfa]", bg: "bg-[#a78bfa18]", border: "border-[#a78bfa]/30",
   },
 };
 
-/* Progress steps shown in the bar */
-const STEPS = ["Processing", "Out for Delivery", "Delivered"];
-
-/* Returns 0–3 for the bar width */
 const getStepIndex = (status) => STATUS[status?.toLowerCase()]?.step ?? 0;
 
 const PAYMENT = {
@@ -541,8 +496,8 @@ const ConfirmToast = ({ t, title, subtitle, confirmLabel, confirmClass, onConfir
 
 /* ─────────── Main ─────────── */
 export default function OrderList() {
-  const [orders, setOrders]       = useState([]);
-  const [loading, setLoading]     = useState(true);
+  const [orders, setOrders]           = useState([]);
+  const [loading, setLoading]         = useState(true);
   const [cancelingId, setCancelingId] = useState(null);
   const [deletingId, setDeletingId]   = useState(null);
   const [expandedId, setExpandedId]   = useState(null);
@@ -559,11 +514,8 @@ export default function OrderList() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${API}/orders`);
-      const userOrders = res.data
-        .filter((o) => String(o.userId) === String(user.id))
-        .reverse();
-      setOrders(userOrders);
+      const res = await axios.get(`${API}/${user.id}`);
+      setOrders(res.data);
     } catch {
       toast.error("Failed to fetch orders");
     } finally {
@@ -590,7 +542,7 @@ export default function OrderList() {
   const handleCancelOrder = async (orderId) => {
     try {
       setCancelingId(orderId);
-      await axios.patch(`${API}/orders/${orderId}`, { status: "cancelled" });
+      await axios.patch(`${API}/${orderId}/cancel`);
       await fetchOrders();
       toast.success("Order cancelled");
     } catch {
@@ -619,7 +571,7 @@ export default function OrderList() {
   const handleDelete = async (orderId) => {
     try {
       setDeletingId(orderId);
-      await axios.delete(`${API}/orders/${orderId}`);
+      await axios.delete(`${API}/${orderId}`);
       await fetchOrders();
       toast.success("Order deleted");
     } catch {
@@ -634,6 +586,10 @@ export default function OrderList() {
       year: "numeric", month: "long", day: "numeric",
       hour: "2-digit", minute: "2-digit",
     });
+
+  // Helper to read item fields from both ASP.NET and old JSON Server shape
+  const getItemField = (item, aspField, oldField) =>
+    item[aspField] ?? item.product?.[oldField];
 
   /* ── Not logged in ── */
   if (!user) return (
@@ -702,7 +658,7 @@ export default function OrderList() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@100;200;300;400;500&display=swap');
 
-        @keyframes fadeUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
         .order-card { animation: fadeUp 0.45s ease forwards; }
         .status-bar-fill { transition: width 0.8s cubic-bezier(0.34,1.56,0.64,1); }
@@ -778,9 +734,8 @@ export default function OrderList() {
           <div className="max-w-screen-2xl mx-auto px-6 lg:px-14 pb-28 space-y-6">
             {orders.map((order, idx) => {
 
-              // Normalise status key → lowercase, trimmed
-              const rawStatus  = (order.status || "pending").toLowerCase().trim();
-              const st         = STATUS[rawStatus] || STATUS.pending;
+              const rawStatus   = (order.status || "pending").toLowerCase().trim();
+              const st          = STATUS[rawStatus] || STATUS.pending;
               const isCancelled = rawStatus === "cancelled";
               const canCancel   = !isCancelled && rawStatus !== "delivered";
 
@@ -789,7 +744,6 @@ export default function OrderList() {
               const isExpanded = expandedId === order.id;
               const shortId    = String(order.id).slice(-8).toUpperCase();
 
-              // Progress bar: 0 = 0%, 1 = 33%, 2 = 66%, 3 = 100%
               const stepIdx  = getStepIndex(rawStatus);
               const barWidth = stepIdx <= 0 ? "0%" : stepIdx === 1 ? "33%" : stepIdx === 2 ? "66%" : "100%";
 
@@ -823,23 +777,16 @@ export default function OrderList() {
                     </div>
 
                     <div className="flex items-center gap-4">
-                      {/* Payment badge */}
                       <span className={`hidden md:flex items-center gap-1.5 px-3 py-1 border text-[9px] tracking-[0.3em] uppercase ${st.bg} ${st.border} ${st.text}`}>
                         <PayIcon /> {pm.label}
                       </span>
-
-                      {/* Status pill */}
                       <span className={`flex items-center gap-1.5 px-3 py-1 border text-[9px] tracking-[0.3em] uppercase ${st.bg} ${st.border} ${st.text}`}>
                         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: st.dot }} />
                         {st.label}
                       </span>
-
-                      {/* Total */}
                       <span className="font-['Cormorant_Garamond',serif] text-[1.6rem] font-light text-[#c9a96e]">
                         ₹{Number(order.total || 0).toFixed(0)}
                       </span>
-
-                      {/* Chevron */}
                       <svg
                         width="12" height="12" viewBox="0 0 24 24" fill="none"
                         stroke="#c9a96e" strokeWidth="1.5"
@@ -854,7 +801,6 @@ export default function OrderList() {
                   {!isCancelled && (
                     <div className="px-7 py-3 border-b border-[#c9a96e]/08 bg-[#0d0a05]/40">
                       <div className="flex items-center justify-between mb-2">
-                        {/* Step labels — 4 nodes: Pending · Processing · Out for Delivery · Delivered */}
                         {["Pending", "Processing", "Out for Delivery", "Delivered"].map((step) => {
                           const stepOrder = { Pending: 0, Processing: 1, "Out for Delivery": 2, Delivered: 3 };
                           const active    = stepIdx >= stepOrder[step];
@@ -886,38 +832,46 @@ export default function OrderList() {
 
                       {/* Items */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-[#c9a96e]/08 mb-6">
-                        {order.items.map((item, i) => (
-                          <div
-                            key={i}
-                            className="item-card group bg-[#0d0a05] border border-[#c9a96e]/08 flex gap-4 p-4 transition-all duration-300"
-                          >
-                            <div className="relative w-[76px] h-[64px] flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">
-                              <img
-                                src={item.product.image}
-                                alt={item.product.name}
-                                className="w-full h-full object-cover opacity-85"
-                              />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              {item.product.category && (
-                                <p className="text-[#c9a96e] text-[8px] tracking-[0.35em] uppercase opacity-55 mb-0.5">
-                                  {item.product.category}
-                                </p>
-                              )}
-                              <h4 className="font-['Cormorant_Garamond',serif] text-[1rem] font-light text-[#f5f0e8] leading-snug group-hover:text-[#c9a96e] transition-colors truncate">
-                                {item.product.name}
-                              </h4>
-                              <div className="flex items-center justify-between mt-2">
-                                <span className="text-[#f5f0e8]/35 text-[10px] tracking-wide">
-                                  Qty: {item.quantity}
-                                </span>
-                                <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]">
-                                  ₹{(item.product.basePrice * item.quantity).toFixed(0)}
-                                </span>
+                        {order.items.map((item, i) => {
+                          // Support both ASP.NET shape (flat) and old JSON Server shape (nested product)
+                          const name     = item.productName     ?? item.product?.name;
+                          const image    = item.productImage    ?? item.product?.image;
+                          const category = item.productCategory ?? item.product?.category;
+                          const price    = item.basePrice       ?? item.product?.basePrice ?? 0;
+
+                          return (
+                            <div
+                              key={i}
+                              className="item-card group bg-[#0d0a05] border border-[#c9a96e]/08 flex gap-4 p-4 transition-all duration-300"
+                            >
+                              <div className="relative w-[76px] h-[64px] flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">
+                                <img
+                                  src={image}
+                                  alt={name}
+                                  className="w-full h-full object-cover opacity-85"
+                                />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                {category && (
+                                  <p className="text-[#c9a96e] text-[8px] tracking-[0.35em] uppercase opacity-55 mb-0.5">
+                                    {category}
+                                  </p>
+                                )}
+                                <h4 className="font-['Cormorant_Garamond',serif] text-[1rem] font-light text-[#f5f0e8] leading-snug group-hover:text-[#c9a96e] transition-colors truncate">
+                                  {name}
+                                </h4>
+                                <div className="flex items-center justify-between mt-2">
+                                  <span className="text-[#f5f0e8]/35 text-[10px] tracking-wide">
+                                    Qty: {item.quantity}
+                                  </span>
+                                  <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]">
+                                    ₹{(price * item.quantity).toFixed(0)}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
 
                       {/* Summary */}
@@ -975,7 +929,7 @@ export default function OrderList() {
                       onClick={() => setExpandedId(order.id)}
                     >
                       <p className="text-[#f5f0e8]/25 text-[11px] tracking-wide truncate max-w-[60%]">
-                        {order.items.map((i) => i.product.name).join(" · ")}
+                        {order.items.map((i) => i.productName ?? i.product?.name).join(" · ")}
                       </p>
                       <span className="text-[#c9a96e]/40 group-hover:text-[#c9a96e]/70 text-[9px] tracking-[0.3em] uppercase flex items-center gap-2 transition-colors flex-shrink-0">
                         View Details <ArrowRight />

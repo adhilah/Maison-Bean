@@ -223,7 +223,6 @@
 
 
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -272,7 +271,6 @@ const Field = ({ label, type = "text", placeholder, value, onChange, error, icon
       {label}
     </label>
     <div className="relative">
-      {/* Left icon */}
       <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#c9a96e]/35 pointer-events-none">
         {icon}
       </span>
@@ -287,7 +285,6 @@ const Field = ({ label, type = "text", placeholder, value, onChange, error, icon
           text-[#f5f0e8] text-[13px] placeholder:text-[#f5f0e8]/18
           transition-all duration-200 font-['Jost',sans-serif]`}
       />
-      {/* Right slot (eye toggle) */}
       {rightSlot && (
         <span className="absolute right-3 top-1/2 -translate-y-1/2">
           {rightSlot}
@@ -402,15 +399,13 @@ function Login() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@100;200;300;400;500&display=swap');
 
-        @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes panIn    { from{opacity:0;transform:scale(0.97) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
-        @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        @keyframes pulse    { 0%,100%{opacity:0.15} 50%{opacity:0.35} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes panIn  { from{opacity:0;transform:scale(0.97) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
+        @keyframes float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 
         .form-panel { animation: panIn 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
         .brand-in   { animation: fadeUp 0.5s ease 0.1s both; }
         .float-gem  { animation: float 5s ease-in-out infinite; }
-        .pulse-ring { animation: pulse 4s ease-in-out infinite; }
 
         input:-webkit-autofill,
         input:-webkit-autofill:focus {
@@ -435,27 +430,22 @@ function Login() {
 
       <div className="min-h-screen bg-[#0d0a05] font-['Jost',sans-serif] flex items-center justify-center p-4 relative overflow-hidden">
 
-        {/* ── Background atmosphere ── */}
+        {/* Background atmosphere */}
         <div className="pointer-events-none absolute inset-0 z-0">
-          {/* Large glows */}
           <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[#c9a96e]/[0.025] blur-[140px]" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#c9a96e]/[0.018] blur-[120px]" />
-
-          {/* Decorative grid lines */}
           <div className="absolute inset-0 opacity-[0.025]"
             style={{
               backgroundImage: "linear-gradient(#c9a96e 1px, transparent 1px), linear-gradient(90deg, #c9a96e 1px, transparent 1px)",
               backgroundSize: "80px 80px"
             }}
           />
-
-          {/* Floating diamond gems */}
           <div className="float-gem absolute top-[18%] left-[12%] w-2 h-2 bg-[#c9a96e]/20 rotate-45" />
           <div className="float-gem absolute top-[65%] right-[14%] w-1.5 h-1.5 bg-[#c9a96e]/15 rotate-45" style={{ animationDelay: "1.5s" }} />
           <div className="float-gem absolute bottom-[25%] left-[20%] w-1 h-1 bg-[#c9a96e]/10 rotate-45" style={{ animationDelay: "3s" }} />
         </div>
 
-        {/* ── Card ── */}
+        {/* Card */}
         <div className="relative z-10 w-full max-w-[420px]">
 
           {/* Brand */}
@@ -473,8 +463,6 @@ function Login() {
 
           {/* Form panel */}
           <div className="form-panel bg-[#110d07] border border-[#c9a96e]/18 relative overflow-hidden">
-
-            {/* Top gold accent line */}
             <div className="h-px bg-gradient-to-r from-transparent via-[#c9a96e]/60 to-transparent" />
 
             <div className="p-8 space-y-6">
@@ -510,6 +498,16 @@ function Login() {
                   </button>
                 }
               />
+
+              {/* ── Forgot password link ── */}
+              <div className="flex justify-end -mt-3">
+                <Link
+                  to="/forgot-password"
+                  className="text-[#c9a96e]/45 hover:text-[#c9a96e] text-[10px] tracking-[0.3em] uppercase transition-colors"
+                >
+                  Forgot password?
+                </Link>
+              </div>
 
               {/* Divider */}
               <div className="h-px bg-gradient-to-r from-[#c9a96e]/15 via-[#c9a96e]/08 to-transparent" />
@@ -548,7 +546,6 @@ function Login() {
               </p>
             </div>
 
-            {/* Bottom gold accent line */}
             <div className="h-px bg-gradient-to-r from-transparent via-[#c9a96e]/25 to-transparent" />
           </div>
 

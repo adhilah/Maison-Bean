@@ -523,37 +523,53 @@ const PaymentPage = () => {
   };
 
   const handlePayment = async () => {
-    if (!validateForm()) return;
-    const user = JSON.parse(localStorage.getItem("authUser") || "null");
-    if (!user) { toast.error("Please login to place an order"); return; }
+  if (!validateForm()) return;
+  const user = JSON.parse(localStorage.getItem("authUser") || "null");
+  if (!user) { toast.error("Please login to place an order"); return; }
 
-    setLoading(true);
-    try {
-      const order = {
-        id: Date.now().toString(),
-        userId: user.id, userEmail: user.email,
-        items: cart, subtotal, shipping, total,
-        paymentMethod,
-        upiId: paymentMethod === "upi" ? upiId : null,
-        status: "confirmed",
-        date: new Date().toISOString(),
-      };
-      await axios.post("http://localhost:3000/orders", order);
-      await clearCart();
+  setLoading(true);
+  try {
+    const orderRequest = {
+      userId:        user.id,
+      userEmail:     user.email,
+      paymentMethod: paymentMethod,
+      upiId:         paymentMethod === "upi" ? upiId : null,
+      subtotal,
+      shipping,
+      total,
+      items: cart.map((item) => ({
+        productId:       item.product.id,
+        productName:     item.product.name,
+        productImage:    item.product.image,
+        productCategory: item.product.category || null,
+        basePrice:       item.product.basePrice,
+        quantity:        item.quantity,
+        beanId:          item.bean?.id   || null,
+        beanName:        item.bean?.name || null,
+        beanPriceAdd:    item.bean?.priceAdd || 0,
+        milkId:          item.milk?.id   || null,
+        milkName:        item.milk?.name || null,
+        milkPriceAdd:    item.milk?.priceAdd || 0,
+      })),
+    };
 
-      const msg = paymentMethod === "cod"
-        ? "Order placed! Pay on delivery."
-        : paymentMethod === "upi"
-        ? `Order placed! Use UPI ID: ${upiId}`
-        : "Payment successful! Order confirmed.";
-      toast.success(msg);
-      navigate("/orders");
-    } catch {
-      toast.error("Order failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    await axios.post("http://localhost:5000/api/Order", orderRequest);
+    await clearCart();
+
+    const msg = paymentMethod === "cod"
+      ? "Order placed! Pay on delivery."
+      : paymentMethod === "upi"
+      ? `Order placed! Use UPI ID: ${upiId}`
+      : "Payment successful! Order confirmed.";
+
+    toast.success(msg);
+    navigate("/orders");
+  } catch {
+    toast.error("Order failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* ── Empty cart ── */
   if (cart.length === 0) return (

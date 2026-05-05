@@ -53,6 +53,9 @@
 
 // export default HeroSection;
 import React, { useEffect, useRef, useState } from "react";
+// import { Coffee } from "lucide-react";
+import coffeeVideo from "../assets/coffee2.mp4";
+
 
 const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -174,7 +177,7 @@ const HeroSection = () => {
           font-weight: 300;
           line-height: 0.9;
           color: #f5f0e8;
-          margin: 0 0 2rem;
+          margin: 0 0 2rem;https://www.youtube.com/watch?v=AGDGZfsQ2fk
           animation: mb-fadeUp 1.1s ease 0.5s both;
         }
 
@@ -348,19 +351,23 @@ const HeroSection = () => {
 
         {/* Background with parallax */}
         <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <img
-            src="https://i.pinimg.com/736x/c6/1f/8f/c61f8f42ee089bee27de77f4a64cdbf6.jpg"
-            alt=""
-            aria-hidden
-            style={{
-              width: "100%",
-              height: "115%",
-              objectFit: "cover",
-              objectPosition: "center 30%",
-              transform: `translateY(${parallaxY}px)`,
-              animation: "mb-pan 22s ease-in-out infinite",
-            }}
-          />
+          {/* <div style={{ position: "absolute", inset: 0, zIndex: 0 }}> */}
+ <video
+  src={coffeeVideo}
+  autoPlay
+  loop
+  muted
+  playsInline
+  style={{
+    width: "100%",
+    height: "115%",
+    objectFit: "cover",
+    objectPosition: "center 30%",
+    transform: `translateY(${parallaxY}px)`,
+    animation: "mb-pan 22s ease-in-out infinite",
+  }}
+/>
+{/* </div> */}
           {/* Layered overlays for depth */}
           <div style={{
             position: "absolute", inset: 0,
@@ -394,7 +401,7 @@ const HeroSection = () => {
               Build your perfect drink with our interactive creator. Every detail crafted to honor your taste — from origin to cup.
             </p>
             <div className="mb-h-ctas">
-              <a href="#builder" className="mb-btn-primary">Build Your Cup</a>
+              {/* <a href="#builder" className="mb-btn-primary">Build Your Cup</a> */}
               <a href="/menu" className="mb-btn-ghost">View Menu</a>
             </div>
           </div>

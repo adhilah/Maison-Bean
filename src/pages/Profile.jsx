@@ -143,8 +143,6 @@
 
 
 
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -177,13 +175,6 @@ const EyeIcon = ({ off = false }) => off ? (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
     <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <polyline points="22,6 12,13 2,6" />
   </svg>
 );
 
@@ -229,7 +220,7 @@ const PasswordField = ({ label, placeholder, value, onChange }) => {
 /* ─────────── Main ─────────── */
 const Profile = () => {
   const { user } = useAuth();
-  const [userData, setUserData]       = useState(null);
+  const [userData, setUserData]               = useState(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword]         = useState("");
   const [cPassword, setCPassword]             = useState("");
@@ -370,13 +361,9 @@ const Profile = () => {
 
               {/* ── LEFT: Avatar + Info ── */}
               <div className="bg-[#0d0a05] section-card" style={{ animationDelay: "0ms" }}>
-
-                {/* Avatar panel */}
                 <div className="bg-[#110d07] border border-[#c9a96e]/10 p-8 flex flex-col items-center gap-5 text-center">
                   <div className="avatar-ring relative">
-                    {/* Outer ring */}
                     <div className="w-28 h-28 rounded-full border border-[#c9a96e]/25 flex items-center justify-center">
-                      {/* Inner ring */}
                       <div className="w-24 h-24 rounded-full border border-[#c9a96e]/15 bg-[#1a1510] flex items-center justify-center">
                         {initials ? (
                           <span className="font-['Cormorant_Garamond',serif] text-[2rem] font-light italic text-[#c9a96e]">
@@ -387,7 +374,6 @@ const Profile = () => {
                         )}
                       </div>
                     </div>
-                    {/* Orbiting dot */}
                     <div className="absolute top-1 right-1 w-2.5 h-2.5 bg-[#4ade80] rounded-full border-2 border-[#0d0a05]" />
                   </div>
 
@@ -401,7 +387,7 @@ const Profile = () => {
                   {/* Quick links */}
                   <div className="w-full pt-4 border-t border-[#c9a96e]/10 space-y-1">
                     {[
-                      { label: "My Orders", to: "/orders" },
+                      { label: "My Orders",   to: "/orders"   },
                       { label: "My Wishlist", to: "/wishlist" },
                     ].map(({ label, to }) => (
                       <Link
@@ -429,7 +415,7 @@ const Profile = () => {
                   {[
                     { label: "First Name", value: userData.firstName },
                     { label: "Last Name",  value: userData.lastName  },
-                    { label: "Email",      value: userData.email, wide: true },
+                    { label: "Email",      value: userData.email     },
                   ].map(({ label, value }) => (
                     <div key={label} className="bg-[#110d07] border border-[#c9a96e]/10 p-6 group hover:border-[#c9a96e]/25 transition-all duration-300">
                       <p className="text-[#c9a96e] text-[9px] tracking-[0.4em] uppercase opacity-60 mb-2">
@@ -461,12 +447,23 @@ const Profile = () => {
                   </div>
 
                   <div className="max-w-lg space-y-5">
+
                     <PasswordField
                       label="Current Password"
                       placeholder="Enter current password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                     />
+
+                    {/* ── Forgot password link ── */}
+                    <div className="flex justify-end -mt-2">
+                      <Link
+                        to="/forgot-password"
+                        className="text-[#c9a96e]/45 hover:text-[#c9a96e] text-[10px] tracking-[0.3em] uppercase transition-colors"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
 
                     <div className="h-px bg-gradient-to-r from-[#c9a96e]/15 to-transparent" />
 
@@ -536,6 +533,7 @@ const Profile = () => {
                         )}
                       </button>
                     </div>
+
                   </div>
                 </div>
 

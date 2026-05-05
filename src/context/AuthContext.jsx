@@ -6,7 +6,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Restore user from localStorage on app load/refresh
   useEffect(() => {
     const loadUser = () => {
       try {
@@ -38,19 +37,16 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("wishlist");
   };
 
-  // Add clearSession function
   const clearSession = () => {
-    // Only remove authUser, keep cart/wishlist for guest users
     localStorage.removeItem("authUser");
     setUser(null);
   };
 
-  // Enhanced value with helper to check role
   const value = {
     user,
     login,
     logout,
-    clearSession, // Added this
+    clearSession,
     isLoading,
     isAdmin: user?.role === "admin",
     isCustomer: user?.role !== "admin" && user !== null,
@@ -70,3 +66,4 @@ export const useAuth = () => {
   }
   return context;
 };
+
