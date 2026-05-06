@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const API = "http://localhost:3000";
+const API = "https://localhost:7257";
 
 /* ─────────── Icons ─────────── */
 const MailIcon = () => (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../../services/api";
 
 
 const STATUS_STYLES = {
@@ -16,7 +17,7 @@ export default function RecentOrders() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/orders")
+      .get("https://localhost:7257/api/order")
       .then((response) => {
         const processedOrders = response.data
           .map((order) => {

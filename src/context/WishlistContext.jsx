@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 import toast from "react-hot-toast";
 import { useAuth } from "./AuthContext";
 
@@ -17,7 +18,7 @@ export const WishlistProvider = ({ children }) => {
     }
 
     axios
-      .get(`http://localhost:3000/users/${user.id}`)
+      .get(`https://localhost:7257/api/user/${user.id}`)
       .then((res) => setWishlist(res.data.wishlist || []))
       .catch(() => {
         toast.error("Failed to load wishlist");
@@ -40,7 +41,7 @@ export const WishlistProvider = ({ children }) => {
       : [...wishlist, product];
 
     try {
-      await axios.patch(`http://localhost:3000/users/${user.id}`, {
+      await axios.patch(`https://localhost:7257/api/user/${user.id}`, {
         wishlist: updatedWishlist,
       });
       setWishlist(updatedWishlist);

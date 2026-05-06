@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
-const API = "http://localhost:3000";
+const API = "https://localhost:7257/api";
 
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (

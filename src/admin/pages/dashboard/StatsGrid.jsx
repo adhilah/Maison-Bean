@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { DollarSign, ShoppingBag, Package, Users } from "lucide-react";
+import api from "../../../services/api";
 
 export default function UserDashboard() {
   const [stats, setStats] = useState({
@@ -17,9 +18,9 @@ export default function UserDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const ordersRes = await fetch("http://localhost:3000/orders");
-      const productsRes = await fetch("http://localhost:3000/products");
-      const usersRes = await fetch("http://localhost:3000/users");
+      const ordersRes = await fetch("https://localhost:7257/api/order");
+      const productsRes = await fetch("https://localhost:7257/api/products");
+      const usersRes = await fetch("https://localhost:7257/api/user");
 
       const orders = await ordersRes.json();
       const products = await productsRes.json();

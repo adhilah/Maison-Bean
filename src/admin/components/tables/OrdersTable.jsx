@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../../services/api";
 import toast from "react-hot-toast";
 import { 
   Package, 
@@ -48,7 +49,7 @@ export default function OrderManagement() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/orders");
+      const res = await axios.get("https://localhost:7257/api/orders");
       const sorted = res.data.sort((a, b) => 
         new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)
       );
@@ -63,7 +64,7 @@ export default function OrderManagement() {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.patch(`http://localhost:3000/orders/${orderId}`, {
+      await axios.patch(`https://localhost:7257/api/orders/${orderId}`, {
         status: newStatus,
       });
 

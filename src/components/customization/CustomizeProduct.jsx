@@ -3,9 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import api from "../../services/api";
 import Navbar from "../Navbar";
 
-const API = "http://localhost:3000";
+const API = "http://localhost:5038/api";;
 
 /* ── Icons ── */
 const ArrowLeft = () => (

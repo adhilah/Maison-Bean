@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import api from "../../../services/api";
 
 export default function RevenueChart() {
   const [data, setData] = useState([]);
@@ -16,7 +17,7 @@ export default function RevenueChart() {
   console.log(data);
 
   useEffect(() => {
-  fetch("http://localhost:3000/orders")
+  fetch("https://localhost:7257/api/order")
     .then((res) => res.json())
     .then((orders) => {
       const monthlyData = {};

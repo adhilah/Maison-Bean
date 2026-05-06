@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import toast from "react-hot-toast";
 
-const API = "http://localhost:3000";
+const API = "http://localhost:5038/api";
 
 export default function CustomizeProduct({ product, onClose }) {
   const { addToCart } = useCart();

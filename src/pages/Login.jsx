@@ -1,235 +1,11 @@
-
-// import React, { useState } from "react";
-// import axios from "axios";
-// import { Link, useNavigate } from "react-router-dom";
-// import toast from "react-hot-toast";
-// import { useAuth } from "../context/AuthContext";
-
-// const API = "http://localhost:3000";
-
-// function Login() {
-//   const [formData, setFormData] = useState({ email: "", password: "" });
-//   const [errors, setErrors] = useState({});
-//   const [loading, setLoading] = useState(false);
-
-//   const navigate = useNavigate();
-//   const { login, clearSession } = useAuth();
-
-//   const validateForm = () => {
-//     const err = {};
-//     if (!formData.email) err.email = "Email required";
-//     if (!formData.password) err.password = "Password required";
-//     setErrors(err);
-//     return Object.keys(err).length === 0;
-//   };
-
-//   const handleChange = (field) => (e) => {
-//     setFormData({ ...formData, [field]: e.target.value });
-//     if (errors[field]) {
-//       setErrors({ ...errors, [field]: "" });
-//     }
-//   };
-
-//   const handleSubmit = async (e) => {
-//   e.preventDefault();
-//   if (!validateForm()) return;
-
-//   setLoading(true);
-//   setErrors({});
-
-//   try {
-//     // Clear old session (safe — doesn't wipe cart)
-//     if (clearSession) {
-//       clearSession();
-//     }
-
-//     const [usersRes, adminRes] = await Promise.all([
-//       axios.get(`${API}/users`),
-//       axios.get(`${API}/admin`).catch(() => ({ data: null })), // Handle if admin endpoint doesn't exist
-//     ]);
-
-//     const normalizedEmail = formData.email.toLowerCase().trim();
-    
-//     // FIX: Case-insensitive email comparison
-//     const userFound = usersRes.data.find((u) => 
-//       u.email.toLowerCase().trim() === normalizedEmail
-//     );
-    
-//     let adminFound = null;
-//     if (adminRes.data) {
-//       if (Array.isArray(adminRes.data)) {
-//         adminFound = adminRes.data.find(a => 
-//           a.email && a.email.toLowerCase().trim() === normalizedEmail
-//         );
-//       } else if (adminRes.data.email) {
-//         adminFound = adminRes.data.email.toLowerCase().trim() === normalizedEmail 
-//           ? adminRes.data 
-//           : null;
-//       }
-//     }
-
-//     const account = userFound || adminFound;
-
-//     if (!account) {
-//       setErrors({ email: "Email not registered" });
-//       toast.error("No account found with this email");
-//       setLoading(false);
-//       return;
-//     }
-
-//     // FIX: Trim password for comparison
-//     if (account.password.trim() !== formData.password.trim()) {
-//       setErrors({ password: "Incorrect password" });
-//       toast.error("Incorrect password. Please try again.");
-//       setLoading(false);
-//       return;
-//     }
-
-//     // Block check only for customers
-//     if (userFound && account.userStatus === "blocked") {
-//       toast.error("This account is blocked!");
-//       setFormData({ email: "", password: "" });
-//       setLoading(false);
-//       return;
-//     }
-
-//     const loggedInUser = {
-//       id: String(account.id || ""),
-//       email: account.email,
-//       role: adminFound ? "admin" : "customer",
-//       firstName: account.firstName || account.fname || "",
-//       lastName: account.lastName || account.lname || "",
-//       fullName:
-//         `${account.firstName || account.fname || ""} ${account.lastName || account.lname || ""}`.trim() ||
-//         account.email.split("@")[0],
-//     };
-
-//     if (!loggedInUser.id) {
-//       console.warn("User ID is missing, generating temporary ID");
-//       loggedInUser.id = `temp_${Date.now()}`;
-//     }
-
-//     login(loggedInUser);
-//     toast.success(`Welcome back, ${loggedInUser.fullName}!`);
-
-//     if (loggedInUser.role === "admin") {
-//       navigate("/admin/dashboard", { replace: true });
-//     } else {
-//       navigate("/", { replace: true });
-//     }
-
-//     setFormData({ email: "", password: "" });
-//   } catch (err) {
-//     console.error("Login error:", err);
-//     if (err.response) {
-//       toast.error(`Login failed: ${err.response.status}`);
-//     } else if (err.request) {
-//       toast.error("Network error. Please check your connection.");
-//     } else {
-//       toast.error("Login failed. Please try again.");
-//     }
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-//   return (
-//     <div className="min-h-screen bg-amber-50 flex flex-col items-center justify-center p-4">
-//       <div className="w-full max-w-md">
-//         {/* Header */}
-//         <div className="text-center mb-8">
-//           <h1 className="text-4xl font-bold text-[#7a5c2a] mb-2">
-//             Maison Bean
-//           </h1>
-//           <p className="text-[#b48a41]">
-//             Welcome back! Please login to continue
-//           </p>
-//         </div>
-
-//         {/* Login Form Card */}
-//         <div className="bg-white rounded-2xl shadow-xl p-8 border border-amber-200">
-//           <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-//             <div>
-//               <label className="block text-sm font-medium text-amber-900 mb-2">
-//                 Email Address
-//               </label>
-//               <input
-//                 type="email"
-//                 value={formData.email}
-//                 onChange={handleChange("email")}
-//                 className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7635] transition"
-//                 placeholder="Enter Email"
-//                 disabled={loading}
-//               />
-//               {errors.email && (
-//                 <p className="text-sm text-rose-600 mt-2">{errors.email}</p>
-//               )}
-//             </div>
-
-//             <div>
-//               <label className="block text-sm font-medium text-amber-900 mb-2">
-//                 Password
-//               </label>
-//               <input
-//                 type="password"
-//                 value={formData.password}
-//                 onChange={handleChange("password")}
-//                 className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#9c7635] transition"
-//                 placeholder="••••••••"
-//                 disabled={loading}
-//               />
-//               {errors.password && (
-//                 <p className="text-sm text-rose-600 mt-2">{errors.password}</p>
-//               )}
-//             </div>
-
-//             <button
-//               type="submit"
-//               disabled={loading}
-//               className="w-full bg-[#9c7635] hover:bg-[#7a5c2a] disabled:opacity-70 text-white py-4 rounded-lg font-bold text-lg transition transform hover:scale-105"
-//             >
-//               {loading ? "Logging in..." : "Login"}
-//             </button>
-//           </form>
-
-//           <div className="mt-8 text-center">
-//             <p className="text-gray-700">
-//               Don't have an account?{" "}
-//               <Link
-//                 to="/registration"
-//                 className="text-[#9c7635] font-semibold hover:underline"
-//               >
-//                 Sign up
-//               </Link>
-//             </p>
-//           </div>
-//         </div>
-
-//         {/* Continue Shopping Link */}
-//         <div className="mt-12 text-center">
-//           <Link
-//             to="/"
-//             className="inline-flex items-center gap-2 text-[#9c7635] hover:underline font-medium text-lg transition"
-//           >
-//             ← Continue Shopping
-//           </Link>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default Login;
-
-
-
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
 
-const API = "http://localhost:3000";
+const API = "https://localhost:7257/api/auth/login";
 
 /* ─────────── Icons ─────────── */
 const MailIcon = () => (
@@ -320,79 +96,138 @@ function Login() {
     if (errors[field]) setErrors({ ...errors, [field]: "" });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) return;
+  //   setLoading(true);
+  //   setErrors({});
+
+  //   try {
+  //     if (clearSession) clearSession();
+
+  //     const [usersRes, adminRes] = await Promise.all([
+  //       axios.get(`${API}/users`),
+  //       axios.get(`${API}/admin`).catch(() => ({ data: null })),
+  //     ]);
+
+  //     const normalizedEmail = formData.email.toLowerCase().trim();
+  //     const userFound = usersRes.data.find(
+  //       (u) => u.email.toLowerCase().trim() === normalizedEmail
+  //     );
+
+  //     let adminFound = null;
+  //     if (adminRes.data) {
+  //       if (Array.isArray(adminRes.data)) {
+  //         adminFound = adminRes.data.find(
+  //           (a) => a.email && a.email.toLowerCase().trim() === normalizedEmail
+  //         );
+  //       } else if (adminRes.data.email) {
+  //         adminFound =
+  //           adminRes.data.email.toLowerCase().trim() === normalizedEmail
+  //             ? adminRes.data
+  //             : null;
+  //       }
+  //     }
+
+  //     const account = userFound || adminFound;
+
+  //     if (!account) {
+  //       setErrors({ email: "No account found with this email" });
+  //       toast.error("No account found");
+  //       return;
+  //     }
+  //     if (account.password.trim() !== formData.password.trim()) {
+  //       setErrors({ password: "Incorrect password" });
+  //       toast.error("Incorrect password");
+  //       return;
+  //     }
+  //     if (userFound && account.userStatus === "blocked") {
+  //       toast.error("This account has been blocked");
+  //       setFormData({ email: "", password: "" });
+  //       return;
+  //     }
+
+  //     const loggedInUser = {
+  //       id: String(account.id || `temp_${Date.now()}`),
+  //       email: account.email,
+  //       role: adminFound ? "admin" : "customer",
+  //       firstName: account.firstName || account.fname || "",
+  //       lastName: account.lastName || account.lname || "",
+  //       fullName:
+  //         `${account.firstName || account.fname || ""} ${account.lastName || account.lname || ""}`.trim() ||
+  //         account.email.split("@")[0],
+  //     };
+
+  //     login(loggedInUser);
+  //     toast.success(`Welcome back, ${loggedInUser.fullName}`);
+  //     navigate(loggedInUser.role === "admin" ? "/admin/dashboard" : "/", { replace: true });
+  //     setFormData({ email: "", password: "" });
+  //   } catch (err) {
+  //     if (err.request) toast.error("Network error. Check your connection.");
+  //     else toast.error("Login failed. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  //==========================================
+
+  //backend connection code
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    setLoading(true);
-    setErrors({});
 
-    try {
-      if (clearSession) clearSession();
+  e.preventDefault();
 
-      const [usersRes, adminRes] = await Promise.all([
-        axios.get(`${API}/users`),
-        axios.get(`${API}/admin`).catch(() => ({ data: null })),
-      ]);
+  if (!validateForm()) return;
 
-      const normalizedEmail = formData.email.toLowerCase().trim();
-      const userFound = usersRes.data.find(
-        (u) => u.email.toLowerCase().trim() === normalizedEmail
-      );
+  setLoading(true);
 
-      let adminFound = null;
-      if (adminRes.data) {
-        if (Array.isArray(adminRes.data)) {
-          adminFound = adminRes.data.find(
-            (a) => a.email && a.email.toLowerCase().trim() === normalizedEmail
-          );
-        } else if (adminRes.data.email) {
-          adminFound =
-            adminRes.data.email.toLowerCase().trim() === normalizedEmail
-              ? adminRes.data
-              : null;
-        }
-      }
+  try {
 
-      const account = userFound || adminFound;
+    const payload = {
+      email: formData.email.trim(),
+      password: formData.password,
+    };
 
-      if (!account) {
-        setErrors({ email: "No account found with this email" });
-        toast.error("No account found");
-        return;
-      }
-      if (account.password.trim() !== formData.password.trim()) {
-        setErrors({ password: "Incorrect password" });
-        toast.error("Incorrect password");
-        return;
-      }
-      if (userFound && account.userStatus === "blocked") {
-        toast.error("This account has been blocked");
-        setFormData({ email: "", password: "" });
-        return;
-      }
+    console.log(payload);
 
-      const loggedInUser = {
-        id: String(account.id || `temp_${Date.now()}`),
-        email: account.email,
-        role: adminFound ? "admin" : "customer",
-        firstName: account.firstName || account.fname || "",
-        lastName: account.lastName || account.lname || "",
-        fullName:
-          `${account.firstName || account.fname || ""} ${account.lastName || account.lname || ""}`.trim() ||
-          account.email.split("@")[0],
-      };
+    const res = await api.post(
+      "/auth/login",
+      payload
+    );
 
-      login(loggedInUser);
-      toast.success(`Welcome back, ${loggedInUser.fullName}`);
-      navigate(loggedInUser.role === "admin" ? "/admin/dashboard" : "/", { replace: true });
-      setFormData({ email: "", password: "" });
-    } catch (err) {
-      if (err.request) toast.error("Network error. Check your connection.");
-      else toast.error("Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log(res.data);
+
+    localStorage.setItem(
+      "token",
+      res.data.token
+    );
+
+    localStorage.setItem(
+      "refreshToken",
+      res.data.refreshToken
+    );
+
+    toast.success("Login successful");
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+
+  } catch (err) {
+
+    console.log(err.response?.data);
+
+    toast.error(
+      err.response?.data?.message ||
+      "Invalid email or password"
+    );
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   return (
     <>

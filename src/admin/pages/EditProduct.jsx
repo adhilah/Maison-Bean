@@ -12,6 +12,7 @@ import {
   Coffee,
   ChefHat,
 } from "lucide-react";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
 export default function EditProduct() {
@@ -41,7 +42,7 @@ export default function EditProduct() {
   const fetchProduct = async (id) => {
     try {
       setFetching(true);
-      const res = await axios.get(`http://localhost:3000/products/${id}`);
+      const res = await axios.get(`https://localhost:7257/api/products/${id}`);
       setProduct({
         ...res.data,
         basePrice: String(res.data.basePrice || ""),
@@ -72,7 +73,7 @@ export default function EditProduct() {
       setLoading(true);
       if (editId) {
         // UPDATE
-        await axios.put(`http://localhost:3000/products/${editId}`, {
+        await axios.put(`https://localhost:7257/api/products/${editId}`, {
           ...product,
           basePrice: Number(product.basePrice),
           updatedAt: new Date(),
@@ -80,7 +81,7 @@ export default function EditProduct() {
         toast.success("Product updated successfully!");
       } else {
         // ADD (fallback, though this page is primarily for edit)
-        await axios.post("http://localhost:3000/products", {
+        await axios.post("https://localhost:7257/api/products", {
           ...product,
           basePrice: Number(product.basePrice),
           createdAt: new Date(),

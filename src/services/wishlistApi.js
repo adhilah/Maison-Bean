@@ -1,0 +1,10 @@
+import api from "./api";
+
+export const getWishlist = () =>
+  api.get("/wishlist");
+
+export const toggleWishlist = (productId) =>
+  api.post("/wishlist/toggle", { productId });
+
+export const clearWishlist = () =>
+  api.delete("/wishlist/clear");

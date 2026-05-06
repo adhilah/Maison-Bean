@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../../services/api";
 import { Search, Trash2, ArrowLeft, Ban, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -16,7 +17,7 @@ export default function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/users");
+      const res = await axios.get("https://localhost:7257/api/user");
       setUsers(res.data);
     } catch (err) {
       toast.error("Failed to load users");
@@ -36,7 +37,7 @@ export default function UserManagement() {
 
     try {
       // PATCH request to update userStatus in db.json
-      await axios.patch(`http://localhost:3000/users/${userId}`, {
+      await axios.patch(`https://localhost:7257/api/user/${userId}`, {
         userStatus: newStatus,
       });
 
@@ -86,16 +87,16 @@ export default function UserManagement() {
                 toast.loading("Deleting user and orders...");
 
                 try {
-                  const { data: allOrders } = await axios.get("http://localhost:3000/orders");
+                  const { data: allOrders } = await axios.get("https://localhost:7257/api/order");
                   const userOrders = allOrders.filter(order => order.userEmail === userEmail);
 
                   if (userOrders.length > 0) {
                     await Promise.all(
-                      userOrders.map(order => axios.delete(`http://localhost:3000/orders/${order.id}`))
+                      userOrders.map(order => axios.delete(`https://localhost:7257/api/order/${order.id}`))
                     );
                   }
 
-                  await axios.delete(`http://localhost:3000/users/${userId}`);
+                  await axios.delete(`https://localhost:7257/api/user/${userId}`);
 
                   setUsers(prev => prev.filter(u => u.id !== userId));
 

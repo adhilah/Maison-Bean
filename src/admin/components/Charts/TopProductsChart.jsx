@@ -8,7 +8,7 @@ export default function TopProductsCard() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("http://localhost:3000/orders");
+        const res = await fetch("https://localhost:7257/api/order");
         if (!res.ok) throw new Error("Failed to fetch");
         const orders = await res.json();
 

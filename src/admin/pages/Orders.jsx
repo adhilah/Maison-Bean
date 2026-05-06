@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 export default function UserOrders() {
@@ -9,7 +10,7 @@ export default function UserOrders() {
 
   // 🔹 Fetch orders when page loads
   useEffect(() => {
-    axios.get("http://localhost:3000/orders")
+    axios.get("https://localhost:7257/api/order")
       .then(res => {
         // 🔹 SIMPLE FILTER:
         // Show only orders created by this user

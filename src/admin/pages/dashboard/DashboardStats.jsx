@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import api from "../../../services/api";
 
 export default function DashboardStats() {
   const [stats, setStats] = useState({
@@ -10,9 +11,9 @@ export default function DashboardStats() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://localhost:3000/orders").then((res) => res.json()),
-      fetch("http://localhost:3000/products").then((res) => res.json()),
-      fetch("http://localhost:3000/users").then((res) => res.json()),
+      fetch("https://localhost:7257/api/order").then((res) => res.json()),
+      fetch("https://localhost:7257/api/products").then((res) => res.json()),
+      fetch("https://localhost:7257/api/user").then((res) => res.json()),
     ]).then(([orders, products, users]) => {
       const totalRevenue = orders.reduce(
         (sum, order) => sum + order.total,

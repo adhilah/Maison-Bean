@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../../../services/api";
 import {
   PieChart,
   Pie,
@@ -71,12 +72,12 @@ export default function OrdersChart() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/orders")
+      .get("https://localhost:7257/api/order")
       .then((res) => {
         const orders = res.data || [];
         console.log("Fetched orders:", orders); // Debug: Check console
 
-        // 🔥 FIXED: Include ALL possible statuses from your data
+        
         const statusCount = { 
           delivered: 0, 
           processing: 0, 
@@ -86,7 +87,7 @@ export default function OrdersChart() {
         };
 
         orders.forEach((order) => {
-          const status = order.status; // 🔥 NO .toLowerCase() - your data is already lowercase
+          const status = order.status; //NO .toLowerCase() - your data is already lowercase
           console.log("Processing status:", status); // Debug each status
           if (status && statusCount.hasOwnProperty(status)) {
             statusCount[status]++;

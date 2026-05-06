@@ -67,7 +67,7 @@ export default function CategoryChart() {
 
   useEffect(() => {
   axios
-    .get("http://localhost:3000/orders")
+    .get("https://localhost:7257/api/category")
     .then((res) => {
       const categoryMap = {
         "Hot Coffee": 0,
