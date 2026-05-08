@@ -102,6 +102,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import api from "../services/api";
 import { useSearch } from "../context/SearchContext";
 
 const SearchModal = ({ products }) => {
@@ -110,11 +111,7 @@ const SearchModal = ({ products }) => {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef(null);
 
-  const filtered = products.filter(
-    (p) =>
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.category.toLowerCase().includes(query.toLowerCase())
-  );
+  const [filtered, setFiltered] = useState([]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -122,6 +119,36 @@ const SearchModal = ({ products }) => {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
+  useEffect(() => {
+
+  if (!query.trim()) {
+    setFiltered([]);
+    return;
+  }
+
+  const timer = setTimeout(async () => {
+
+    try {
+
+      const res = await api.get(
+        `/products/search?term=${query}`
+      );
+
+      setFiltered(res.data);
+
+    } catch (err) {
+
+      console.error(err);
+
+      setFiltered([]);
+
+    }
+
+  }, 300);
+
+  return () => clearTimeout(timer);
+
+}, [query]);
 
   return createPortal(
     <>
@@ -443,7 +470,7 @@ const SearchModal = ({ products }) => {
                           fontSize: "1.1rem", fontWeight: 300,
                           color: "#c9a96e",
                         }}>
-                          ₹{Number(product.basePrice || 0).toFixed(0)}
+                          ${Number(product.price ?? 0).toFixed(0)}
                         </p>
                       </div>
 

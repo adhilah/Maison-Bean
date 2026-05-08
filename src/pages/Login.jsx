@@ -597,40 +597,46 @@ function Login() {
         password: formData.password,
       };
 
-      const res = await api.post(
+      const response = await api.post(
   "/auth/login",
   payload
 );
 
-console.log(res.data);
+const data = response.data;
 
-const authUser = {
-  token: res.data.token,
-  refreshToken: res.data.refreshToken,
+console.log(data);
 
-  id: res.data.user.id,
-  firstName: res.data.user.firstName,
-  lastName: res.data.user.lastName,
-  email: res.data.user.email,
+if (data.success) {
 
-  role: res.data.user.role,
-};
+  const userData = {
+    id: data.user.id,
+    firstName: data.user.firstName,
+    lastName: data.user.lastName,
+    email: data.user.email,
+    role: data.user.role,
+  };
 
-login(authUser);
+  login(userData);
 
-toast.success("Login successful");
+  localStorage.setItem(
+    "authUser",
+    JSON.stringify(userData)
+  );
 
-setTimeout(() => {
+  toast.success("Login successful");
 
-  if (
-    authUser.role?.toLowerCase() === "admin"
-  ) {
-    navigate("/admin/dashboard");
-  } else {
-    navigate("/");
-  }
+  setTimeout(() => {
 
-}, 1000);
+    if (
+      data.user.role === "ADMIN"
+    ) {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/");
+    }
+
+  }, 1000);
+}
 
     } catch (err) {
       console.log(err.response?.data);

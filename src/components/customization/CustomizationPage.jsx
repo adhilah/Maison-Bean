@@ -107,7 +107,7 @@ export default function CustomizeProduct({ product, onClose }) {
                   />
                   <div className="font-medium">
                     {bean.name}
-                    {bean.priceAdd > 0 && ` (+₹${bean.priceAdd})`}
+                    {bean.priceAdd > 0 && ` (+$${bean.priceAdd})`}
                   </div>
                   <p className="text-sm text-gray-600">{bean.description}</p>
                 </label>
@@ -139,7 +139,7 @@ export default function CustomizeProduct({ product, onClose }) {
                   />
                   <div className="font-medium">
                     {milk.name}
-                    {milk.priceAdd > 0 && ` (+₹${milk.priceAdd})`}
+                    {milk.priceAdd > 0 && ` (+$${milk.priceAdd})`}
                   </div>
                   <p className="text-sm text-gray-600">
                     Calories: {milk.calories}

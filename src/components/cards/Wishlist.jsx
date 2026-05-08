@@ -64,7 +64,7 @@ const WishlistPage = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch("https://localhost:7257/api/product")
+    api.get("/products")
       .then((r) => r.json())
       .then(setProducts)
       .catch(console.error);
@@ -291,7 +291,7 @@ const WishlistPage = () => {
                       {/* Price + CTA */}
                       <div className="flex items-center justify-between pt-4 border-t border-[#c9a96e]/10">
                         <span className="font-['Cormorant_Garamond',serif] text-[1.5rem] font-light text-[#c9a96e]">
-                          ₹{getPrice(product).toFixed(0)}
+                          ${getPrice(product).toFixed(0)}
                         </span>
                         <button
                           onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
@@ -363,14 +363,14 @@ const WishlistPage = () => {
                     {/* Price */}
                     <div className="hidden md:block md:col-span-1 text-right">
                       <span className="font-['Cormorant_Garamond',serif] text-[1.15rem] font-light text-[#c9a96e]">
-                        ₹{getPrice(product).toFixed(0)}
+                        ${getPrice(product).toFixed(0)}
                       </span>
                     </div>
 
                     {/* Actions */}
                     <div className="md:col-span-2 flex items-center justify-end gap-2 flex-shrink-0">
                       <span className="md:hidden font-['Cormorant_Garamond',serif] text-[1.1rem] text-[#c9a96e]">
-                        ₹{getPrice(product).toFixed(0)}
+                        ${getPrice(product).toFixed(0)}
                       </span>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleAddToCart(product); }}
@@ -429,7 +429,7 @@ const WishlistPage = () => {
                 {/* Floating price */}
                 <div className="absolute bottom-5 left-6">
                   <span className="font-['Cormorant_Garamond',serif] text-[2.4rem] font-light text-[#c9a96e] drop-shadow-lg leading-none">
-                    ₹{getPrice(selectedItem).toFixed(0)}
+                    ${getPrice(selectedItem).toFixed(0)}
                   </span>
                 </div>
               </div>

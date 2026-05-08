@@ -188,7 +188,7 @@ const ProductCard = ({ product, index = 0 }) => {
               className="text-[#c9a96e] font-light"
               style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem" }}
             >
-              {price > 0 ? `₹${price.toFixed(0)}` : "—"}
+              {price > 0 ? `$${price.toFixed(0)}` : "—"}
             </span>
 
             <button

@@ -157,7 +157,7 @@ const OptionCard = ({ item, selected, onClick, sub }) => (
       color: selected ? "#c9a96e" : "rgba(201,169,110,0.35)",
       flexShrink: 0, transition: "colors 0.2s",
     }}>
-      {item.priceAdd > 0 ? `+₹${item.priceAdd}` : "Base"}
+      {item.priceAdd > 0 ? `+$${item.priceAdd}` : "Base"}
     </span>
   </button>
 );
@@ -464,7 +464,7 @@ export default function CustomizeProduct() {
                     </div>
                     {sweetness > 3 && (
                       <p style={{ fontSize: 9, color: "rgba(201,169,110,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 6 }}>
-                        Extra syrup · +₹10
+                        Extra syrup · $₹2
                       </p>
                     )}
                   </div>

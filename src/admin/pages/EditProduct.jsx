@@ -1,53 +1,472 @@
+// import { useState, useEffect } from "react";
+// import { useNavigate, Link, useSearchParams } from "react-router-dom";
+// import axios from "axios";
+// import {
+//   ArrowLeft,
+//   Save,
+//   Image as ImageIcon,
+//   HeartPulse,
+//   Tag,
+//   DollarSign,
+//   FileText,
+//   Coffee,
+//   ChefHat,
+// } from "lucide-react";
+// import api from "../../services/api";
+// import toast from "react-hot-toast";
+
+// export default function EditProduct() {
+//   const navigate = useNavigate();
+//   const [searchParams] = useSearchParams();
+//   const editId = searchParams.get("edit"); // detect edit mode
+
+//   const [product, setProduct] = useState({
+//     name: "",
+//     category: "",
+//     basePrice: "",
+//     image: "",
+//     description: "",
+//     healthBenefits: "",
+//   });
+//   const [loading, setLoading] = useState(false);
+//   const [fetching, setFetching] = useState(false);
+//   const [imageError, setImageError] = useState(false);
+
+//   /* ================= FETCH PRODUCT (EDIT MODE) ================= */
+//   useEffect(() => {
+//     if (editId) {
+//       fetchProduct(editId);
+//     }
+//   }, [editId]);
+
+//   const fetchProduct = async (id) => {
+//     try {
+//       setFetching(true);
+//       const res = await axios.get(`https://localhost:7257/api/products/${id}`);
+//       setProduct({
+//         ...res.data,
+//         basePrice: String(res.data.basePrice || ""),
+//       });
+//     } catch (error) {
+//       toast.error("Product not found");
+//       navigate("/admin/products");
+//     } finally {
+//       setFetching(false);
+//     }
+//   };
+
+//   /* ================= HANDLERS ================= */
+//   const handleChange = (e) => {
+//     setProduct({ ...product, [e.target.name]: e.target.value });
+//     if (e.target.name === "image") {
+//       setImageError(false);
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!product.name || !product.basePrice || !product.category) {
+//       toast.error("Name, category and price are required");
+//       return;
+//     }
+//     try {
+//       setLoading(true);
+//       if (editId) {
+//         // UPDATE
+//         await axios.put(`https://localhost:7257/api/products/${editId}`, {
+//           ...product,
+//           basePrice: Number(product.basePrice),
+//           updatedAt: new Date(),
+//         });
+//         toast.success("Product updated successfully!");
+//       } else {
+//         // ADD (fallback, though this page is primarily for edit)
+//         await axios.post("https://localhost:7257/api/products", {
+//           ...product,
+//           basePrice: Number(product.basePrice),
+//           createdAt: new Date(),
+//         });
+//         toast.success("Product added successfully!");
+//       }
+//       navigate("/admin/products");
+//     } catch (err) {
+//       toast.error("Failed to save product");
+//       console.error(err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   /* ================= UI ================= */
+//   if (fetching) {
+//     return (
+//       <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 flex items-center justify-center">
+//         <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#a77c3b] border-t-transparent"></div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6">
+//       <div className="max-w-6xl mx-auto">
+//         {/* Header */}
+//         <div className="mb-8">
+//           <div className="flex items-center justify-between">
+//             <div>
+//               <div className="flex items-center gap-3 mb-2">
+//                 <div className="p-2 bg-gradient-to-r from-amber-100 to-amber-50 rounded-xl shadow-sm">
+//                   <ChefHat className="text-[#a77c3b]" size={24} />
+//                 </div>
+//                 <h1 className="text-3xl font-bold text-gray-900">
+//                   {editId ? "Edit Product" : "Add New Product"}
+//                 </h1>
+//               </div>
+//               <p className="text-gray-600 ml-12">
+//                 {editId
+//                   ? "Update the product details below"
+//                   : "Fill in the details below to add a new item to your menu"}
+//               </p>
+//             </div>
+//             <Link
+//               to="/admin/products"
+//               className="flex items-center gap-2 px-4 py-3 bg-white text-[#a77c3b] font-medium rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 hover:bg-amber-50 border border-amber-100"
+//             >
+//               <ArrowLeft size={18} />
+//               ← Back To Products
+//             </Link>
+//           </div>
+//         </div>
+
+//         {/* Main Content */}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+//           {/* Left Column - Form */}
+//           <div className="lg:col-span-2">
+//             <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-amber-100">
+//               <div className="mb-8">
+//                 <div className="flex items-center gap-2 mb-2">
+//                   <div className="w-8 h-1 bg-gradient-to-r from-[#a77c3b] to-[#c7a776] rounded-full"></div>
+//                   <h2 className="text-xl font-semibold text-gray-900">Product Details</h2>
+//                 </div>
+//                 <p className="text-gray-500 text-sm">Fill in the basic information about your product</p>
+//               </div>
+
+//               <form onSubmit={handleSubmit} className="space-y-8">
+//                 {/* Product Name & Category Row */}
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                   {/* Product Name */}
+//                   <div className="space-y-2">
+//                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                       <Coffee size={16} className="text-[#a77c3b]" />
+//                       Product Name
+//                     </label>
+//                     <div className="relative">
+//                       <input
+//                         type="text"
+//                         name="name"
+//                         value={product.name}
+//                         onChange={handleChange}
+//                         placeholder="Product name"
+//                         className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
+//                       />
+//                       <div className="absolute left-3 top-1/2 -translate-y-1/2">
+//                         <Coffee size={18} className="text-[#a77c3b]" />
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Category Dropdown */}
+//                   <div className="space-y-2">
+//                     <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                       <Tag size={16} className="text-[#a77c3b]" />
+//                       Category
+//                     </label>
+//                     <div className="relative">
+//                       <select
+//                         name="category"
+//                         value={product.category}
+//                         onChange={handleChange}
+//                         className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 appearance-none transition-all duration-200 bg-gray-50/50"
+//                       >
+//                         <option value="">Select a category</option>
+//                         <option value="Hot Coffee">Hot Coffee</option>
+//                         <option value="Cold Coffee">Cold Coffee</option>
+//                         <option value="Croissant">Croissant</option>
+//                       </select>
+//                       <div className="absolute left-3 top-1/2 -translate-y-1/2">
+//                         <Tag size={18} className="text-[#a77c3b]" />
+//                       </div>
+//                       <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+//                         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+//                         </svg>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+
+//                 {/* Price */}
+//                 <div className="space-y-2">
+//                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                     <DollarSign size={16} className="text-[#a77c3b]" />
+//                     Price
+//                   </label>
+//                   <div className="relative max-w-xs">
+//                     <div className="absolute left-3 top-1/2 -translate-y-1/2">
+//                       <DollarSign size={18} className="text-[#a77c3b]" />
+//                     </div>
+//                     <input
+//                       type="number"
+//                       name="basePrice"
+//                       value={product.basePrice}
+//                       onChange={handleChange}
+//                       placeholder="0.00"
+//                       step="0.01"
+//                       min="0"
+//                       className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
+//                     />
+//                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">USD</div>
+//                   </div>
+//                 </div>
+
+//                 {/* Description */}
+//                 <div className="space-y-2">
+//                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                     <FileText size={16} className="text-[#a77c3b]" />
+//                     Description
+//                   </label>
+//                   <textarea
+//                     name="description"
+//                     value={product.description}
+//                     onChange={handleChange}
+//                     rows={3}
+//                     placeholder="Describe your product..."
+//                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50 resize-none"
+//                   />
+//                   <p className="text-xs text-gray-500 text-right">
+//                     {product.description.length}/500 characters
+//                   </p>
+//                 </div>
+
+//                 {/* Health Benefits */}
+//                 <div className="space-y-2">
+//                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                     <HeartPulse size={16} className="text-[#a77c3b]" />
+//                     Health Benefits
+//                   </label>
+//                   <textarea
+//                     name="healthBenefits"
+//                     value={product.healthBenefits}
+//                     onChange={handleChange}
+//                     rows={2}
+//                     placeholder="Health benefits of this product..."
+//                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50 resize-none"
+//                   />
+//                   <p className="text-xs text-gray-500">
+//                     Separate benefits with commas (e.g., Boosts energy, Rich in antioxidants, Improves focus)
+//                   </p>
+//                 </div>
+
+//                 {/* Image URL */}
+//                 <div className="space-y-2">
+//                   <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+//                     <ImageIcon size={16} className="text-[#a77c3b]" />
+//                     Product Image URL
+//                   </label>
+//                   <div className="relative">
+//                     <div className="absolute left-3 top-1/2 -translate-y-1/2">
+//                       <ImageIcon size={18} className="text-[#a77c3b]" />
+//                     </div>
+//                     <input
+//                       type="text"
+//                       name="image"
+//                       value={product.image}
+//                       onChange={handleChange}
+//                       placeholder="Image url or path"
+//                       className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
+//                     />
+//                   </div>
+//                   <p className="text-xs text-gray-500">
+//                     Paste a direct image URL. We recommend using high-quality product images.
+//                   </p>
+//                 </div>
+
+//                 {/* Submit Button */}
+//                 <div className="pt-6 border-t border-gray-200">
+//                   <button
+//                     type="submit"
+//                     disabled={loading}
+//                     className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-[#a77c3b] to-[#c5a068] text-white rounded-xl font-semibold hover:from-[#a57835] hover:to-[#a2732e] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-300 w-full md:w-auto"
+//                   >
+//                     {loading ? (
+//                       <>
+//                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
+//                         {editId ? "Updating Product..." : "Adding Product..."}
+//                       </>
+//                     ) : (
+//                       <>
+//                         <Save size={18} />
+//                         {editId ? "Update Product" : "Add Product"} to Menu
+//                       </>
+//                     )}
+//                   </button>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+
+//           {/* Right Column - Preview */}
+//           <div className="lg:col-span-1">
+//             <div className="sticky top-6">
+//               {/* Preview Card */}
+//               <div className="bg-white rounded-2xl shadow-xl p-6 border border-amber-100 mb-6">
+//                 <div className="flex items-center gap-2 mb-6">
+//                   <div className="w-8 h-1 bg-gradient-to-r from-[#a77c3b] to-[#ca9d59] rounded-full"></div>
+//                   <h2 className="text-xl font-semibold text-gray-900">Live Preview</h2>
+//                 </div>
+//                 <div className="space-y-6">
+//                   {/* Image Preview */}
+//                   <div className="relative">
+//                     <div className="aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-amber-100 to-rose-50 border-2 border-dashed border-amber-200 flex items-center justify-center">
+//                       {product.image && !imageError ? (
+//                         <img
+//                           src={product.image}
+//                           alt="Product preview"
+//                           onError={() => setImageError(true)}
+//                           className="w-full h-full object-cover"
+//                         />
+//                       ) : (
+//                         <div className="text-center p-6">
+//                           <ImageIcon size={48} className="text-[#c6a26a] mx-auto mb-3" />
+//                           <p className="text-sm text-[#a77c3b] font-medium">Product Image Preview</p>
+//                           <p className="text-xs text-gray-500 mt-1">
+//                             {product.image ? "Failed to load image" : "Add an image URL to see preview"}
+//                           </p>
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+
+//                   {/* Product Info Preview */}
+//                   <div className="space-y-4">
+//                     <div>
+//                       <div className="flex justify-between items-start">
+//                         <div>
+//                           <h3 className="font-bold text-lg text-gray-900">
+//                             {product.name || "Product Name"}
+//                           </h3>
+//                           <p className="text-sm text-[#a77c3b] font-medium mt-1">
+//                             {product.category || "Category"}
+//                           </p>
+//                         </div>
+//                         {product.basePrice && (
+//                           <div className="bg-amber-50 text-[#a77c3b] font-bold px-3 py-1 rounded-lg">
+//                             ${parseFloat(product.basePrice).toFixed(2)}
+//                           </div>
+//                         )}
+//                       </div>
+//                       {product.description && (
+//                         <p className="text-gray-600 text-sm mt-3 line-clamp-2">
+//                           {product.description}
+//                         </p>
+//                       )}
+//                       {product.healthBenefits && (
+//                         <div className="mt-4">
+//                           <p className="text-xs font-semibold text-gray-700 mb-2">Health Benefits:</p>
+//                           <div className="flex flex-wrap gap-2">
+//                             {product.healthBenefits
+//                               .split(",")
+//                               .filter((benefit) => benefit.trim())
+//                               .slice(0, 3)
+//                               .map((benefit, index) => (
+//                                 <span
+//                                   key={index}
+//                                   className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full"
+//                                 >
+//                                   {benefit.trim()}
+//                                 </span>
+//                               ))}
+//                           </div>
+//                         </div>
+//                       )}
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Help Card */}
+//               <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl p-6 border border-amber-200">
+//                 <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+//                   <svg className="w-5 h-5 text-[#a77c3b]" fill="currentColor" viewBox="0 0 20 20">
+//                     <path
+//                       fillRule="evenodd"
+//                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+//                       clipRule="evenodd"
+//                     />
+//                   </svg>
+//                   Tips for better products
+//                 </h3>
+//                 <ul className="space-y-3 text-sm text-gray-700">
+//                   <li className="flex items-start gap-2">
+//                     <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
+//                     Use high-quality, appetizing product images
+//                   </li>
+//                   <li className="flex items-start gap-2">
+//                     <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
+//                     Keep descriptions clear and enticing
+//                   </li>
+//                   <li className="flex items-start gap-2">
+//                     <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
+//                     Highlight unique selling points
+//                   </li>
+//                   <li className="flex items-start gap-2">
+//                     <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
+//                     Ensure accurate pricing and categories
+//                   </li>
+//                 </ul>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import {
-  ArrowLeft,
-  Save,
-  Image as ImageIcon,
-  HeartPulse,
-  Tag,
-  DollarSign,
-  FileText,
-  Coffee,
-  ChefHat,
+  ArrowLeft, Save, Image as ImageIcon, HeartPulse,
+  Tag, DollarSign, FileText, Coffee, ChefHat,
 } from "lucide-react";
-import api from "../../services/api";
 import toast from "react-hot-toast";
 
 export default function EditProduct() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const editId = searchParams.get("edit"); // detect edit mode
+  const editId = searchParams.get("edit");
 
   const [product, setProduct] = useState({
-    name: "",
-    category: "",
-    basePrice: "",
-    image: "",
-    description: "",
-    healthBenefits: "",
+    name: "", category: "", basePrice: "",
+    image: "", description: "", healthBenefits: "",
   });
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  /* ================= FETCH PRODUCT (EDIT MODE) ================= */
   useEffect(() => {
-    if (editId) {
-      fetchProduct(editId);
-    }
+    if (editId) fetchProduct(editId);
   }, [editId]);
 
   const fetchProduct = async (id) => {
     try {
       setFetching(true);
       const res = await axios.get(`https://localhost:7257/api/products/${id}`);
-      setProduct({
-        ...res.data,
-        basePrice: String(res.data.basePrice || ""),
-      });
-    } catch (error) {
+      setProduct({ ...res.data, basePrice: String(res.data.basePrice || "") });
+    } catch {
       toast.error("Product not found");
       navigate("/admin/products");
     } finally {
@@ -55,12 +474,9 @@ export default function EditProduct() {
     }
   };
 
-  /* ================= HANDLERS ================= */
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
-    if (e.target.name === "image") {
-      setImageError(false);
-    }
+    if (e.target.name === "image") setImageError(false);
   };
 
   const handleSubmit = async (e) => {
@@ -71,359 +487,269 @@ export default function EditProduct() {
     }
     try {
       setLoading(true);
+      const payload = { ...product, basePrice: Number(product.basePrice) };
       if (editId) {
-        // UPDATE
         await axios.put(`https://localhost:7257/api/products/${editId}`, {
-          ...product,
-          basePrice: Number(product.basePrice),
-          updatedAt: new Date(),
+          ...payload, updatedAt: new Date(),
         });
-        toast.success("Product updated successfully!");
+        toast.success("Product updated!");
       } else {
-        // ADD (fallback, though this page is primarily for edit)
         await axios.post("https://localhost:7257/api/products", {
-          ...product,
-          basePrice: Number(product.basePrice),
-          createdAt: new Date(),
+          ...payload, createdAt: new Date(),
         });
-        toast.success("Product added successfully!");
+        toast.success("Product added!");
       }
       navigate("/admin/products");
-    } catch (err) {
+    } catch {
       toast.error("Failed to save product");
-      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  /* ================= UI ================= */
   if (fetching) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#a77c3b] border-t-transparent"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-2 border-amber-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
+  const benefits = product.healthBenefits
+    .split(",")
+    .map((b) => b.trim())
+    .filter(Boolean);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-amber-50/40 p-4 md:p-8">
+      <div className="max-w-5xl mx-auto">
+
+        {/* ── Header ── */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+              <ChefHat size={20} className="text-amber-700" />
+            </div>
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-gradient-to-r from-amber-100 to-amber-50 rounded-xl shadow-sm">
-                  <ChefHat className="text-[#a77c3b]" size={24} />
-                </div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {editId ? "Edit Product" : "Add New Product"}
-                </h1>
-              </div>
-              <p className="text-gray-600 ml-12">
-                {editId
-                  ? "Update the product details below"
-                  : "Fill in the details below to add a new item to your menu"}
+              <h1 className="text-xl font-semibold text-gray-900">
+                {editId ? "Edit product" : "Add product"}
+              </h1>
+              <p className="text-sm text-gray-500">
+                {editId ? "Update the product details below" : "Fill in details to add a new menu item"}
               </p>
             </div>
-            <Link
-              to="/admin/products"
-              className="flex items-center gap-2 px-4 py-3 bg-white text-[#a77c3b] font-medium rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 hover:bg-amber-50 border border-amber-100"
-            >
-              <ArrowLeft size={18} />
-              ← Back To Products
-            </Link>
           </div>
+          <Link
+            to="/admin/products"
+            className="flex items-center gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 hover:bg-amber-100 transition-colors"
+          >
+            <ArrowLeft size={15} /> Back to products
+          </Link>
         </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Form */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-amber-100">
-              <div className="mb-8">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-1 bg-gradient-to-r from-[#a77c3b] to-[#c7a776] rounded-full"></div>
-                  <h2 className="text-xl font-semibold text-gray-900">Product Details</h2>
-                </div>
-                <p className="text-gray-500 text-sm">Fill in the basic information about your product</p>
-              </div>
+        {/* ── Body ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-6 items-start">
 
-              <form onSubmit={handleSubmit} className="space-y-8">
-                {/* Product Name & Category Row */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Product Name */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                      <Coffee size={16} className="text-[#a77c3b]" />
-                      Product Name
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="name"
-                        value={product.name}
-                        onChange={handleChange}
-                        placeholder="Product name"
-                        className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
-                      />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                        <Coffee size={18} className="text-[#a77c3b]" />
-                      </div>
-                    </div>
-                  </div>
+          {/* Form */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+            <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-5 pb-3 border-b border-gray-100">
+              Product details
+            </p>
 
-                  {/* Category Dropdown */}
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                      <Tag size={16} className="text-[#a77c3b]" />
-                      Category
-                    </label>
-                    <div className="relative">
-                      <select
-                        name="category"
-                        value={product.category}
-                        onChange={handleChange}
-                        className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 appearance-none transition-all duration-200 bg-gray-50/50"
-                      >
-                        <option value="">Select a category</option>
-                        <option value="Hot Coffee">Hot Coffee</option>
-                        <option value="Cold Coffee">Cold Coffee</option>
-                        <option value="Croissant">Croissant</option>
-                      </select>
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                        <Tag size={18} className="text-[#a77c3b]" />
-                      </div>
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
 
-                {/* Price */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <DollarSign size={16} className="text-[#a77c3b]" />
-                    Price
-                  </label>
-                  <div className="relative max-w-xs">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                      <DollarSign size={18} className="text-[#a77c3b]" />
-                    </div>
-                    <input
-                      type="number"
-                      name="basePrice"
-                      value={product.basePrice}
-                      onChange={handleChange}
-                      placeholder="0.00"
-                      step="0.01"
-                      min="0"
-                      className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">USD</div>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <FileText size={16} className="text-[#a77c3b]" />
-                    Description
-                  </label>
-                  <textarea
-                    name="description"
-                    value={product.description}
-                    onChange={handleChange}
-                    rows={3}
-                    placeholder="Describe your product..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50 resize-none"
-                  />
-                  <p className="text-xs text-gray-500 text-right">
-                    {product.description.length}/500 characters
-                  </p>
-                </div>
-
-                {/* Health Benefits */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <HeartPulse size={16} className="text-[#a77c3b]" />
-                    Health Benefits
-                  </label>
-                  <textarea
-                    name="healthBenefits"
-                    value={product.healthBenefits}
-                    onChange={handleChange}
-                    rows={2}
-                    placeholder="Health benefits of this product..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50 resize-none"
-                  />
-                  <p className="text-xs text-gray-500">
-                    Separate benefits with commas (e.g., Boosts energy, Rich in antioxidants, Improves focus)
-                  </p>
-                </div>
-
-                {/* Image URL */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                    <ImageIcon size={16} className="text-[#a77c3b]" />
-                    Product Image URL
+              {/* Name + Category */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                    <Coffee size={13} className="text-amber-600" /> Product name
                   </label>
                   <div className="relative">
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                      <ImageIcon size={18} className="text-[#a77c3b]" />
-                    </div>
+                    <Coffee size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
                     <input
-                      type="text"
-                      name="image"
-                      value={product.image}
-                      onChange={handleChange}
-                      placeholder="Image url or path"
-                      className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all duration-200 bg-gray-50/50"
+                      type="text" name="name" value={product.name} onChange={handleChange}
+                      placeholder="e.g. Oat Flat White"
+                      className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
                     />
                   </div>
-                  <p className="text-xs text-gray-500">
-                    Paste a direct image URL. We recommend using high-quality product images.
-                  </p>
                 </div>
 
-                {/* Submit Button */}
-                <div className="pt-6 border-t border-gray-200">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-[#a77c3b] to-[#c5a068] text-white rounded-xl font-semibold hover:from-[#a57835] hover:to-[#a2732e] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all duration-300 w-full md:w-auto"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                        {editId ? "Updating Product..." : "Adding Product..."}
-                      </>
-                    ) : (
-                      <>
-                        <Save size={18} />
-                        {editId ? "Update Product" : "Add Product"} to Menu
-                      </>
-                    )}
-                  </button>
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                    <Tag size={13} className="text-amber-600" /> Category
+                  </label>
+                  <div className="relative">
+                    <Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
+                    <select
+                      name="category" value={product.category} onChange={handleChange}
+                      className="w-full pl-9 pr-8 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 appearance-none focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
+                    >
+                      <option value="">Select a category</option>
+                      <option>Hot Coffee</option>
+                      <option>Cold Coffee</option>
+                      <option>Croissant</option>
+                    </select>
+                    <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
                 </div>
-              </form>
-            </div>
+              </div>
+
+              {/* Price */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                  <DollarSign size={13} className="text-amber-600" /> Base price
+                </label>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-40">
+                    <DollarSign size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
+                    <input
+                      type="number" name="basePrice" value={product.basePrice}
+                      onChange={handleChange} placeholder="0.00" step="0.01" min="0"
+                      className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                    USD
+                  </span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                  <FileText size={13} className="text-amber-600" /> Description
+                </label>
+                <textarea
+                  name="description" value={product.description} onChange={handleChange}
+                  rows={3} placeholder="Describe your product…"
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
+                />
+                <p className="text-xs text-gray-400 text-right mt-1">
+                  {product.description.length} / 500
+                </p>
+              </div>
+
+              {/* Health Benefits */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                  <HeartPulse size={13} className="text-amber-600" /> Health benefits
+                </label>
+                <textarea
+                  name="healthBenefits" value={product.healthBenefits} onChange={handleChange}
+                  rows={2} placeholder="Boosts energy, Rich in antioxidants…"
+                  className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 resize-none focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
+                />
+                <p className="text-xs text-gray-400 mt-1">Separate with commas</p>
+              </div>
+
+              {/* Image URL */}
+              <div>
+                <label className="flex items-center gap-1.5 text-xs text-gray-500 mb-1.5">
+                  <ImageIcon size={13} className="text-amber-600" /> Image URL
+                </label>
+                <div className="relative">
+                  <ImageIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500" />
+                  <input
+                    type="text" name="image" value={product.image} onChange={handleChange}
+                    placeholder="https://…"
+                    className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400 transition"
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">Paste a direct image URL</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+                <button
+                  type="submit" disabled={loading}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-amber-950 text-sm font-medium rounded-xl disabled:opacity-60 transition-colors"
+                >
+                  {loading ? (
+                    <div className="h-4 w-4 border-2 border-amber-900/40 border-t-amber-900 rounded-full animate-spin" />
+                  ) : (
+                    <Save size={15} />
+                  )}
+                  {loading
+                    ? (editId ? "Updating…" : "Adding…")
+                    : (editId ? "Update product" : "Add product")}
+                </button>
+                <Link
+                  to="/admin/products"
+                  className="text-sm text-gray-500 border border-gray-200 rounded-xl px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </Link>
+              </div>
+            </form>
           </div>
 
-          {/* Right Column - Preview */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6">
-              {/* Preview Card */}
-              <div className="bg-white rounded-2xl shadow-xl p-6 border border-amber-100 mb-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <div className="w-8 h-1 bg-gradient-to-r from-[#a77c3b] to-[#ca9d59] rounded-full"></div>
-                  <h2 className="text-xl font-semibold text-gray-900">Live Preview</h2>
-                </div>
-                <div className="space-y-6">
-                  {/* Image Preview */}
-                  <div className="relative">
-                    <div className="aspect-square w-full rounded-xl overflow-hidden bg-gradient-to-br from-amber-100 to-rose-50 border-2 border-dashed border-amber-200 flex items-center justify-center">
-                      {product.image && !imageError ? (
-                        <img
-                          src={product.image}
-                          alt="Product preview"
-                          onError={() => setImageError(true)}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="text-center p-6">
-                          <ImageIcon size={48} className="text-[#c6a26a] mx-auto mb-3" />
-                          <p className="text-sm text-[#a77c3b] font-medium">Product Image Preview</p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {product.image ? "Failed to load image" : "Add an image URL to see preview"}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+          {/* Preview Sidebar */}
+          <div className="sticky top-6 space-y-4">
+            <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+              <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-4 pb-3 border-b border-gray-100">
+                Live preview
+              </p>
 
-                  {/* Product Info Preview */}
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-bold text-lg text-gray-900">
-                            {product.name || "Product Name"}
-                          </h3>
-                          <p className="text-sm text-[#a77c3b] font-medium mt-1">
-                            {product.category || "Category"}
-                          </p>
-                        </div>
-                        {product.basePrice && (
-                          <div className="bg-amber-50 text-[#a77c3b] font-bold px-3 py-1 rounded-lg">
-                            ${parseFloat(product.basePrice).toFixed(2)}
-                          </div>
-                        )}
-                      </div>
-                      {product.description && (
-                        <p className="text-gray-600 text-sm mt-3 line-clamp-2">
-                          {product.description}
-                        </p>
-                      )}
-                      {product.healthBenefits && (
-                        <div className="mt-4">
-                          <p className="text-xs font-semibold text-gray-700 mb-2">Health Benefits:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {product.healthBenefits
-                              .split(",")
-                              .filter((benefit) => benefit.trim())
-                              .slice(0, 3)
-                              .map((benefit, index) => (
-                                <span
-                                  key={index}
-                                  className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded-full"
-                                >
-                                  {benefit.trim()}
-                                </span>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
+              {/* Image */}
+              <div className="aspect-square w-full rounded-xl overflow-hidden bg-amber-50 border border-dashed border-amber-200 flex flex-col items-center justify-center mb-4">
+                {product.image && !imageError ? (
+                  <img
+                    src={product.image} alt="Preview"
+                    onError={() => setImageError(true)}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="text-center">
+                    <ImageIcon size={32} className="text-amber-300 mx-auto mb-2" />
+                    <p className="text-xs text-amber-600">
+                      {product.image ? "Failed to load" : "Image preview"}
+                    </p>
                   </div>
-                </div>
+                )}
               </div>
 
-              {/* Help Card */}
-              <div className="bg-gradient-to-br from-amber-50 to-amber-100/50 rounded-2xl p-6 border border-amber-200">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-[#a77c3b]" fill="currentColor" viewBox="0 0 20 20">
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Tips for better products
-                </h3>
-                <ul className="space-y-3 text-sm text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
-                    Use high-quality, appetizing product images
+              <h3 className="font-medium text-gray-900">{product.name || "Product name"}</h3>
+              <p className="text-xs text-amber-700 mt-0.5 mb-2">{product.category || "Category"}</p>
+
+              {product.basePrice && (
+                <p className="text-lg font-semibold text-gray-900 mb-2">
+                  ${parseFloat(product.basePrice).toFixed(2)}
+                </p>
+              )}
+
+              {product.description && (
+                <p className="text-xs text-gray-500 line-clamp-3 mb-3">{product.description}</p>
+              )}
+
+              {benefits.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {benefits.slice(0, 3).map((b, i) => (
+                    <span key={i} className="text-xs bg-green-50 text-green-700 rounded-full px-2 py-0.5">
+                      {b}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Tips */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+              <p className="text-xs font-medium text-amber-900 mb-3">Tips for better products</p>
+              <ul className="space-y-2">
+                {[
+                  "Use high-quality, appetizing images",
+                  "Keep descriptions clear and enticing",
+                  "Highlight unique selling points",
+                  "Ensure accurate pricing and categories",
+                ].map((tip, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-amber-800">
+                    <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 flex-shrink-0" />
+                    {tip}
                   </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
-                    Keep descriptions clear and enticing
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
-                    Highlight unique selling points
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#c5a068] mt-1.5"></div>
-                    Ensure accurate pricing and categories
-                  </li>
-                </ul>
-              </div>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

@@ -59,7 +59,7 @@ function ProductModal({ product, onClose }) {
   const { user }      = useAuth();
 
   const wishlisted = isWishlisted(product);
-  const isCustomer = user?.role === "customer";
+  const isCustomer = user?.role === "CUSTOMER";
   const isCoffee   = product?.category?.toLowerCase().includes("coffee");
 
   const price          = Number(product.basePrice ?? product.price ?? 0);
@@ -295,7 +295,7 @@ function ProductModal({ product, onClose }) {
                 className="text-[#c9a96e] font-light leading-none"
                 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.6rem" }}
               >
-                ₹{price.toFixed(0)}
+                ${price.toFixed(0)}
               </span>
               <span className="text-[#c9a96e]/45 text-[9px] tracking-[0.4em] uppercase"
                 style={{ fontFamily: "'Jost', sans-serif" }}>

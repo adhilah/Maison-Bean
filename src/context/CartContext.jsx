@@ -1,127 +1,346 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from "react";
+
 import api from "../services/api";
+
 import toast from "react-hot-toast";
+
 import { useAuth } from "./AuthContext";
-import { v4 as uuidv4 } from "uuid";
 
 const CartContext = createContext();
 
 function normalizeItem(item) {
-  const isShapeB = item.product && typeof item.product === "object" && item.product.name;
-  const productObj = isShapeB ? item.product : item;
+
+  const isShapeB =
+    item.product &&
+    typeof item.product === "object" &&
+    item.product.name;
+
+  const productObj =
+    isShapeB ? item.product : item;
 
   const bean = item.bean || null;
+
   const milk = item.milk || null;
 
   return {
-    productId: productObj.id || item.productId || null,
+
+    productId:
+      productObj.id ||
+      item.productId ||
+      null,
+
     product: {
-      id:          productObj.id          || null,
-      name:        productObj.name        || "Unknown Item",
-      image:       productObj.image       || "/placeholder.jpg",
-      basePrice:   Number(productObj.basePrice ?? productObj.price ?? 0),
-      category:    productObj.category    || "",
-      description: productObj.description || "",
+
+      id:
+        productObj.id || null,
+
+      name:
+        productObj.name ||
+        "Unknown Item",
+
+      image:
+        productObj.image ||
+        "/placeholder.jpg",
+
+      basePrice:
+        Number(
+          productObj.basePrice ??
+          productObj.price ??
+          0
+        ),
+
+      category:
+        productObj.category || "",
+
+      description:
+        productObj.description || "",
     },
+
     bean,
     milk,
-    beanId:       bean?.id || item.beanId || null,
-    milkId:       milk?.id || item.milkId || null,
-    isCustomized: !!item.isCustomized,
 
-    // ── Brew customization fields — were missing before ──
-    strength:  item.strength  ?? null,
-    temp:      item.temp      ?? null,
-    sweetness: item.sweetness ?? null,
+    beanId:
+      bean?.id ||
+      item.beanId ||
+      null,
+
+    milkId:
+      milk?.id ||
+      item.milkId ||
+      null,
+
+    isCustomized:
+      !!item.isCustomized,
+
+    strength:
+      item.strength ?? null,
+
+    temp:
+      item.temp ?? null,
+
+    sweetness:
+      item.sweetness ?? null,
   };
 }
 
-export const CartProvider = ({ children }) => {
+export const CartProvider = ({
+  children
+}) => {
+
   const { user } = useAuth();
+
   const [cart, setCart] = useState([]);
 
+  const [loading, setLoading] =
+    useState(false);
+
+  // LOAD CART
   useEffect(() => {
-    if (!user?.id || user.role === "admin") { setCart([]); return; }
-    axios
-      .get(`https://localhost:7257/api/user/${user.id}`)
-      .then((res) => setCart(res.data.cart || []))
-      .catch(() => { toast.error("Failed to load cart"); setCart([]); });
+
+    const fetchCart = async () => {
+
+      if (
+        !user?.id ||
+        user?.role?.toUpperCase()
+          === "ADMIN"
+      ) {
+
+        setCart([]);
+
+        return;
+      }
+
+      try {
+
+        setLoading(true);
+
+        const res =
+          await api.get("/cart");
+
+        setCart(
+          res.data.items || []
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        setCart([]);
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+    fetchCart();
+
   }, [user]);
 
-  const syncCart = async (updatedCart) => {
-    if (!user?.id || user.role === "admin") return;
-    await axios.patch(`https://localhost:7257/api/user/${user.id}`, { cart: updatedCart });
-  };
+  // ADD TO CART
+  const addToCart = async (
+    item
+  ) => {
 
-  const addToCart = async (item) => {
-    if (!user?.id || user.role === "admin") { toast.error("Please login to add items"); return; }
+    if (
+      !user?.id ||
+      user?.role?.toUpperCase()
+        === "ADMIN"
+    ) {
 
-    const norm = normalizeItem(item);
-
-    const existingIndex = cart.findIndex((cartItem) => {
-      if (!norm.isCustomized) {
-        return cartItem.productId === norm.productId && !cartItem.isCustomized;
-      }
-      // All five brew options must match — different combo = separate line item
-      return (
-        cartItem.productId    === norm.productId &&
-        cartItem.isCustomized === true &&
-        cartItem.beanId       === norm.beanId &&
-        cartItem.milkId       === norm.milkId &&
-        cartItem.strength     === norm.strength &&
-        cartItem.temp         === norm.temp &&
-        cartItem.sweetness    === norm.sweetness
+      toast.error(
+        "Please login first"
       );
-    });
 
-    let updatedCart;
-    if (existingIndex !== -1) {
-      updatedCart = cart.map((cartItem, i) =>
-        i === existingIndex ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem
-      );
-    } else {
-      updatedCart = [...cart, { id: uuidv4(), quantity: 1, ...norm }];
+      return;
     }
+
+    const norm =
+      normalizeItem(item);
 
     try {
-      await syncCart(updatedCart);
-      setCart(updatedCart);
-      toast.success(`${norm.product.name} added to cart`);
-    } catch {
-      toast.error("Failed to add to cart");
+
+      await api.post(
+        "/cart",
+        {
+
+          productId:
+            norm.productId,
+
+          quantity: 1,
+
+          isCustomized:
+            norm.isCustomized,
+
+          beanId:
+            norm.beanId,
+
+          milkId:
+            norm.milkId,
+
+          strength:
+            norm.strength,
+
+          temp:
+            norm.temp,
+
+          sweetness:
+            norm.sweetness,
+        }
+      );
+
+      const updated =
+        await api.get("/cart");
+
+      setCart(
+        updated.data.items || []
+      );
+
+      toast.success(
+        `${norm.product.name} added to cart`
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.error(
+        "Failed to add to cart"
+      );
     }
   };
 
-  const updateQuantity = async (cartId, newQty) => {
-    if (!user?.id || user.role === "admin" || newQty < 1) return;
-    const updatedCart = cart.map((item) =>
-      item.id === cartId ? { ...item, quantity: newQty } : item
+  // UPDATE QUANTITY
+  const updateQuantity =
+    async (
+      cartId,
+      newQty
+    ) => {
+
+      if (newQty < 1)
+        return;
+
+      try {
+
+        await api.patch(
+          "/cart",
+          {
+
+            cartItemId:
+              cartId,
+
+            quantity:
+              newQty
+          }
+        );
+
+        const updated =
+          await api.get("/cart");
+
+        setCart(
+          updated.data.items || []
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        toast.error(
+          "Failed to update quantity"
+        );
+      }
+    };
+
+  // REMOVE ITEM
+  const removeFromCart =
+    async (cartId) => {
+
+      try {
+
+        await api.delete(
+          `/cart/${cartId}`
+        );
+
+        const updated =
+          await api.get("/cart");
+
+        setCart(
+          updated.data.items || []
+        );
+
+        toast.success(
+          "Item removed"
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        toast.error(
+          "Failed to remove item"
+        );
+      }
+    };
+
+  // CLEAR CART
+  const clearCart =
+    async () => {
+
+      try {
+
+        await api.delete(
+          "/cart/clear"
+        );
+
+        setCart([]);
+
+      } catch (err) {
+
+        console.error(err);
+
+        toast.error(
+          "Failed to clear cart"
+        );
+      }
+    };
+
+  // TOTAL QUANTITY
+  const cartQuantity =
+    cart.reduce(
+      (total, item) =>
+        total + item.quantity,
+      0
     );
-    try { await syncCart(updatedCart); setCart(updatedCart); }
-    catch { toast.error("Failed to update quantity"); }
-  };
-
-  const removeFromCart = async (cartId) => {
-    if (!user?.id || user.role === "admin") return;
-    const updatedCart = cart.filter((item) => item.id !== cartId);
-    try { await syncCart(updatedCart); setCart(updatedCart); toast.success("Item removed"); }
-    catch { toast.error("Failed to remove item"); }
-  };
-
-  const clearCart = async () => {
-    if (!user?.id || user.role === "admin") return;
-    try { await syncCart([]); setCart([]); }
-    catch { toast.error("Failed to clear cart"); }
-  };
-
-  const cartQuantity = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cart, cartQuantity, addToCart, updateQuantity, removeFromCart, clearCart }}>
+
+    <CartContext.Provider
+      value={{
+
+        cart,
+
+        cartQuantity,
+
+        addToCart,
+
+        updateQuantity,
+
+        removeFromCart,
+
+        clearCart,
+
+        loading
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
 };
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () =>
+  useContext(CartContext);

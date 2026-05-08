@@ -174,7 +174,7 @@ const Navbar = () => {
       navigate("/login");
       return;
     }
-    if (user.role !== "customer") {
+    if (user.role !== "CUSTOMER") {
       toast.error("Access denied");
       return;
     }
@@ -189,8 +189,8 @@ const Navbar = () => {
 
   if (isLoading) return <NavSkeleton />;
 
-  const isCustomer = user?.role === "customer";
-  const isAdmin    = user?.role === "admin";
+  const isCustomer = user?.role === "CUSTOMER";
+  const isAdmin    = user?.role === "ADMIN";
 
   return (
     <>
