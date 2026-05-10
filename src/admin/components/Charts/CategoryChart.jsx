@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   PieChart,
   Pie,
@@ -66,8 +65,8 @@ export default function CategoryChart() {
   };
 
   useEffect(() => {
-  axios
-    .get("https://localhost:7257/api/category")
+   api
+    .get("/category")
     .then((res) => {
       const categoryMap = {
         "Hot Coffee": 0,

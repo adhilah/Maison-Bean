@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../../services/api";
 
 
@@ -16,8 +15,8 @@ export default function RecentOrders() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("https://localhost:7257/api/order")
+    api
+      .get("/order")
       .then((response) => {
         const processedOrders = response.data
           .map((order) => {

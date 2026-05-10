@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import toast from "react-hot-toast";
 
-const API = "http://localhost:5038/api";
+const API = "/api";
 
 export default function CustomizeProduct({ product, onClose }) {
   const { addToCart } = useCart();
@@ -21,8 +20,8 @@ export default function CustomizeProduct({ product, onClose }) {
     const fetchOptions = async () => {
       try {
         const [beansRes, milkRes] = await Promise.all([
-          axios.get(`${API}/beanTypes`),
-          axios.get(`${API}/milkOptions`),
+          api.get(`${API}/beanTypes`),
+          api.get(`${API}/milkOptions`),
         ]);
 
         setBeanTypes(beansRes.data || []);

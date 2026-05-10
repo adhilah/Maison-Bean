@@ -1,12 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
-import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
 import api from "../../services/api";
 import Navbar from "../Navbar";
 
-const API = "http://localhost:5038/api";;
+const API = "/api";;
 
 /* ── Icons ── */
 const ArrowLeft = () => (
@@ -206,9 +204,9 @@ export default function CustomizeProduct() {
     (async () => {
       try {
         const [pRes, bRes, mRes] = await Promise.all([
-          axios.get(`${API}/products/${id}`),
-          axios.get(`${API}/beanTypes`),
-          axios.get(`${API}/milkOptions`),
+          api.get(`${API}/products/${id}`),
+          api.get(`${API}/beanTypes`),
+          api.get(`${API}/milkOptions`),
         ]);
         setProduct(pRes.data);
         setBeanTypes(bRes.data || []);

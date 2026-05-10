@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Coffee } from "lucide-react";
+import api from "../../../services/api";
 
 export default function TopProductsCard() {
   const [products, setProducts] = useState([]);
@@ -8,7 +9,7 @@ export default function TopProductsCard() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("https://localhost:7257/api/order");
+        const res = await api.get("/order")
         if (!res.ok) throw new Error("Failed to fetch");
         const orders = await res.json();
 

@@ -80,7 +80,7 @@ function Home() {
       <Link to="/menu">
         <button
           aria-label="View Full Menu"
-          className="fixed bottom-5 right-5 z-50 bg-[#c9a96e]/90 backdrop-blur-lg text-[#0d0a05] px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-xl flex items-center gap-2 text-sm font-medium tracking-[0.15em] uppercase hover:bg-[#d4b87a] transition-all duration-300 active:scale-95"
+          className="fixed bottom-7 left-5 z-50 bg-[#c9a96e]/90 backdrop-blur-lg text-[#0d0a05] px-5 py-2.5 sm:px-6 sm:py-3 rounded-full shadow-xl flex items-center gap-2 text-sm font-medium tracking-[0.15em] uppercase hover:bg-[#d4b87a] transition-all duration-300 active:scale-95"
           style={{ fontFamily: "'Jost', sans-serif" }}
         >
           <span className="text-base">☰</span>

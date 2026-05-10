@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -112,7 +111,7 @@ const RegistrationPage = () => {
 
   const checkEmailExists = async (email) => {
     try {
-      const { data } = await axios.get("http://localhost:7257/api/auth");
+      const { data } = await api.get("/auth");
       return (data || []).some((u) => u.email.toLowerCase() === email.toLowerCase());
     } catch { return false; }
   };

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../../services/api";
 import { Search, Trash2, ArrowLeft, Ban, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -17,7 +16,7 @@ export default function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("https://localhost:7257/api/user");
+      const res = await api.get("/user");
       setUsers(res.data);
     } catch (err) {
       toast.error("Failed to load users");
@@ -37,7 +36,7 @@ export default function UserManagement() {
 
     try {
       // PATCH request to update userStatus in db.json
-      await axios.patch(`https://localhost:7257/api/user/${userId}`, {
+      await api.patch(`/user/${userId}`, {
         userStatus: newStatus,
       });
 
@@ -87,16 +86,16 @@ export default function UserManagement() {
                 toast.loading("Deleting user and orders...");
 
                 try {
-                  const { data: allOrders } = await axios.get("https://localhost:7257/api/order");
+                  const { data: allOrders } = await api.get("/order");
                   const userOrders = allOrders.filter(order => order.userEmail === userEmail);
 
                   if (userOrders.length > 0) {
                     await Promise.all(
-                      userOrders.map(order => axios.delete(`https://localhost:7257/api/order/${order.id}`))
+                      userOrders.map(order => api.delete(`/order/${order.id}`))
                     );
                   }
 
-                  await axios.delete(`https://localhost:7257/api/user/${userId}`);
+                  await api.delete(`/user/${userId}`);
 
                   setUsers(prev => prev.filter(u => u.id !== userId));
 

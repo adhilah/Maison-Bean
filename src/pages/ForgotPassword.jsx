@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
@@ -93,11 +92,11 @@ const ForgotPassword = () => {
 
     try {
       setLoading(true);
-      const { data: users } = await axios.get(`${API}/users?email=${email}`);
+      const { data: users } = await api.get(`${API}/users?email=${email}`);
       if (!users.length)
         return toast.error("No account found with that email");
 
-      await axios.patch(`${API}/users/${users[0].id}`, { password: newPassword });
+      await api.patch(`${API}/users/${users[0].id}`, { password: newPassword });
       toast.success("Password updated! Redirecting to login...");
       setTimeout(() => navigate("/login"), 1800);
     } catch {

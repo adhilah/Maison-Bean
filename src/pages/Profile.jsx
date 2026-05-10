@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
@@ -85,8 +84,8 @@ const Profile = () => {
 
   useEffect(() => {
     if (!user) return;
-    axios
-      .get(`https://localhost:7257/auth/user/${user.id}`)
+    api
+      .get(`/user/${user.id}`)
       .then((res) => setUserData(res.data))
       .catch(() => toast.error("Failed to load profile"));
   }, [user]);
@@ -106,7 +105,7 @@ const Profile = () => {
     }
     try {
       setSaving(true);
-      await axios.patch(`https://localhost:7257/auth/user/${user.id}`, { password: newPassword });
+      await api.patch(`/user/${user.id}`, { password: newPassword });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
       toast.success("Password updated");

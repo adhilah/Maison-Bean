@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import api from "../services/api";
 import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 
-const API = "https://localhost:7257/api/Order";
+const API = "/order";
 
 /* ─────────── Icons ─────────── */
 const PackageIcon = ({ size = 14 }) => (
@@ -132,7 +131,8 @@ export default function OrderList() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get(`${API}/${user.id}`);
+      const res = await api.get(API);
+
       setOrders(res.data);
     } catch {
       toast.error("Failed to fetch orders");
@@ -160,7 +160,7 @@ export default function OrderList() {
   const handleCancelOrder = async (orderId) => {
     try {
       setCancelingId(orderId);
-      await axios.patch(`${API}/${orderId}/cancel`);
+      await api.patch(`${API}/${orderId}/cancel`);
       await fetchOrders();
       toast.success("Order cancelled");
     } catch {
@@ -189,7 +189,7 @@ export default function OrderList() {
   const handleDelete = async (orderId) => {
     try {
       setDeletingId(orderId);
-      await axios.delete(`${API}/${orderId}`);
+      await api.delete(`${API}/${orderId}`);
       await fetchOrders();
       toast.success("Order deleted");
     } catch {

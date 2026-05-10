@@ -82,15 +82,24 @@ export default function MainProducts() {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch("https://localhost:7257/api/products");
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setProducts(data);
-    } catch {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
+
+  const res =
+    await api.get("/products");
+
+  setProducts(
+    res.data || []
+  );
+
+} catch (err) {
+
+  console.error(err);
+
+  setError(true);
+
+} finally {
+
+  setLoading(false);
+}
   };
 
   useEffect(() => {

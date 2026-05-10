@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Added useNavigate
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../../../services/api";
 import { Package, Edit, Trash2, ArrowLeft, Plus } from "lucide-react"; // Added Plus icon
 import toast from "react-hot-toast";
@@ -18,7 +17,7 @@ export default function ProductList() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("https://localhost:7257/api/products");
+      const res = await api.get("/products")
       setProducts(res.data);
     } catch (err) {
       toast.error("Failed to load products");
@@ -32,7 +31,7 @@ export default function ProductList() {
     if (!window.confirm("Delete this product? This action cannot be undone.")) return;
 
     try {
-      await axios.delete(`https://localhost:7257/api/products/${id}`);
+      await api.get(`products/${id}`);
       setProducts(products.filter((p) => p.id !== id));
       toast.success("Product deleted successfully");
     } catch (err) {

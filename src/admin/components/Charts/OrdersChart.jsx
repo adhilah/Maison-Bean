@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../../services/api";
 import {
   PieChart,
@@ -71,8 +70,7 @@ export default function OrdersChart() {
   };
 
   useEffect(() => {
-    axios
-      .get("https://localhost:7257/api/order")
+    api.get("/order")
       .then((res) => {
         const orders = res.data || [];
         console.log("Fetched orders:", orders); // Debug: Check console

@@ -1,51 +1,63 @@
-import { Bell, LogOut } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext"
+import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-export default function AdminNavbar({ onMenuClick }) {
+export default function AdminNavbar() {
   const { user, logout } = useAuth();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
   return (
-    <header className="h-16 bg-[#a77c3b] text-white flex items-center justify-between px-6">
-
-      {/* ================= LEFT ================= */}
-      <div className="flex items-center gap-4">
-        {/* Sidebar Toggle (for mobile / future use) */}
-        {/* <button
-          onClick={onMenuClick}
-          className="p-2 rounded-md hover:bg-white/20"
+    <header
+      className="h-16 flex items-center justify-between px-6 border-b border-[#1f1f1f] flex-shrink-0 sticky top-0 z-40"
+      style={{ background: "#0a0a0a" }}
+    >
+      {/* LEFT */}
+      <div className="flex items-center gap-3">
+        {/* Logo dot */}
+        <div className="w-2 h-2 rounded-full bg-[#c9a96e]" />
+        <h1
+          className="text-[15px] font-medium text-[#f0ece4] tracking-wide"
+          style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
         >
-          ☰
-        </button> */}
-
-        <h1 className="text-lg font-semibold">
-          Maison Bean – Dashboard
+          Maison Bean
+          <span className="text-[#c9a96e] ml-1.5 text-[13px] font-normal tracking-widest uppercase"
+            style={{ fontFamily: "'DM Sans', sans-serif" }}
+          >
+            ✦ Admin
+          </span>
         </h1>
       </div>
 
-      {/* ================= RIGHT ================= */}
-      <div className="flex items-center gap-5">
+      {/* RIGHT */}
+      <div className="flex items-center gap-4">
 
-        {/* Notification */}
-        {/* <button className="relative p-2 rounded-md hover:bg-white/20">
-          <Bell />
-          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </button> */}
-
-        {/* Admin Email */}
-        {/* <p className="hidden sm:block text-sm">
-          Welcome, <span className="font-semibold">admin@gmail.com</span>
-        </p> */}
+        {/* User pill */}
+        {user?.email && (
+          <div className="hidden sm:flex items-center gap-2 bg-[#141414] border border-[#2b2b2b] rounded-full px-3.5 py-1.5">
+            <div className="w-5 h-5 rounded-full bg-[#7a5c2e] flex items-center justify-center text-[10px] text-[#f5e8c8] font-medium uppercase">
+              {user.email[0]}
+            </div>
+            <span className="text-[12px] text-[#8a8680]">{user.email}</span>
+          </div>
+        )}
 
         {/* Logout */}
-       <button onClick={handleLogout} className="bg-[#a77c3b] border-amber-50 hover:bg-[#8e6a33] text-amber-50 px-6 py-2 rounded-lg font-medium transition flex items-center gap-2">
-                <span className="material-symbols-outlined text-lg">logout</span>
-                Logout
-              </button>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] text-[#8a8680] border border-[#1f1f1f] hover:border-[#c9a96e] hover:text-[#c9a96e] hover:bg-[#1a1500] transition-all duration-200 cursor-pointer"
+          style={{ background: "#111111" }}
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Logout
+        </button>
       </div>
     </header>
   );

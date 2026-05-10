@@ -169,17 +169,32 @@ const Navbar = () => {
 
   // guarded navigation — requires auth + role
   const guardNav = (path, label) => {
-    if (!user) {
-      toast.error(`Please log in to view your ${label}`);
-      navigate("/login");
-      return;
-    }
-    if (user.role !== "CUSTOMER") {
-      toast.error("Access denied");
-      return;
-    }
-    navigate(path);
-  };
+
+  if (!user) {
+
+    toast.error(
+      `Please log in to view your ${label}`
+    );
+
+    navigate("/login");
+
+    return;
+  }
+
+  // ROLE CHECK
+  if (
+    user?.role
+      ?.toUpperCase() !==
+    "CUSTOMER"
+  ) {
+
+    toast.error("Access denied");
+
+    return;
+  }
+
+  navigate(path);
+};
 
   const handleLogout = () => {
     logout();
@@ -189,8 +204,15 @@ const Navbar = () => {
 
   if (isLoading) return <NavSkeleton />;
 
-  const isCustomer = user?.role === "CUSTOMER";
-  const isAdmin    = user?.role === "ADMIN";
+const isCustomer =
+  user?.role
+    ?.toUpperCase() ===
+  "CUSTOMER";
+
+const isAdmin =
+  user?.role
+    ?.toUpperCase() ===
+  "ADMIN";
 
   return (
     <>

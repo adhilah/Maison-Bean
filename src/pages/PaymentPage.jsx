@@ -8,7 +8,6 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 
@@ -182,7 +181,7 @@ const PaymentPage = () => {
       })),
     };
 
-    await axios.post("https://localhost:7257/api/Order", orderRequest);
+    await api.post("/Order", orderRequest);
     await clearCart();
 
     const msg = paymentMethod === "cod"

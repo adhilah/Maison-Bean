@@ -17,7 +17,7 @@ export default function RevenueChart() {
   console.log(data);
 
   useEffect(() => {
-  fetch("https://localhost:7257/api/order")
+  api.get("/order")
     .then((res) => res.json())
     .then((orders) => {
       const monthlyData = {};

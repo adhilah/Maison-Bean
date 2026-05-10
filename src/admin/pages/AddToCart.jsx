@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
 import api from "../../services/api";
 import { ArrowLeft, Save, Image as ImageIcon, HeartPulse, Tag, DollarSign, FileText, Coffee, ChefHat } from "lucide-react";
 import toast from "react-hot-toast";
@@ -37,7 +36,7 @@ export default function AddProduct() {
 
     try {
       setLoading(true);
-      await axios.post("https://localhost:7257/api/products", {
+      await api.post("/products", {
         ...product,
         basePrice: Number(product.basePrice),
         createdAt: new Date(),

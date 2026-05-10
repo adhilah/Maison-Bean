@@ -1,88 +1,101 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  BarChart3,
   Users,
   Package,
   ShoppingBag,
   ShoppingCart,
   Menu,
   X,
+  Milk,
 } from "lucide-react";
 
 export default function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  const location = useLocation();
 
   const menuItems = [
-    { to: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { to: "/admin/users-management", icon: Users, label: "User Management" },
-    { to: "/admin/products-management", icon: Package, label: "Product Management" },
-    { to: "/admin/bean-milk-management", icon: Package, label: "Bean Milk Management" },
-    { to: "/admin/orders-management", icon: ShoppingBag, label: "Order Management" },
-    { to: "/admin/cart-overview", icon: ShoppingCart, label: "Cart Overview" },
+    { to: "/admin/dashboard",            icon: LayoutDashboard, label: "Dashboard" },
+    { to: "/admin/users-management",     icon: Users,           label: "User Management" },
+    { to: "/admin/products-management",  icon: Package,         label: "Product Management" },
+    { to: "/admin/bean-milk-management", icon: Milk,            label: "Bean Milk Management" },
+    { to: "/admin/orders-management",    icon: ShoppingBag,     label: "Order Management" },
+    { to: "/admin/cart-overview",        icon: ShoppingCart,    label: "Cart Overview" },
   ];
 
   return (
     <>
-      {/* Mobile Hamburger Button (visible only on small screens) */}
+      {/* Mobile toggle */}
       <button
-        onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 lg:hidden p-2 rounded-lg bg-white shadow-md hover:bg-gray-100 transition"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-50 lg:hidden w-9 h-9 rounded-lg border border-[#2b2b2b] flex items-center justify-center text-[#8a8680] hover:text-[#c9a96e] hover:border-[#c9a96e] transition-all duration-200"
+        style={{ background: "#111111" }}
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-          lg:translate-x-0 lg:static lg:inset-0
-        `}
+        className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-[#1f1f1f] flex flex-col transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0 lg:static lg:inset-0`}
+        style={{ background: "#0a0a0a" }}
       >
-        <div className="flex flex-col h-full">
-          {/* Top - Admin Info */}
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center">
-                <Users className="h-6 w-6 text-amber-700" />
-              </div>
-              <div>
-                <h3 className="font-bold text-gray-900">Admin Panel</h3>
-                <p className="text-sm text-gray-500">Full Access</p>
-              </div>
-            </div>
-          </div>
+        {/* Top — brand */}
+        <div className="px-6 py-5 border-b border-[#1f1f1f] flex-shrink-0">
+          <p className="text-[10px] tracking-[3px] uppercase text-[#8a6e45] mb-1">
+            Control Panel
+          </p>
+          <h2
+            className="text-[15px] font-medium text-[#f0ece4]"
+            style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+          >
+            Maison Bean
+          </h2>
+        </div>
 
-          {/* Menu Items */}
-          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-            {menuItems.map((item) => (
+        {/* Nav */}
+        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+          {menuItems.map((item) => {
+            const active = location.pathname === item.to;
+            return (
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={() => setIsOpen(false)} // Close on mobile after click
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-amber-100 hover:text-amber-800 transition"
+                onClick={() => setIsOpen(false)}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group
+                  ${active
+                    ? "bg-[#1a1500] text-[#c9a96e] border border-[#2e2400]"
+                    : "text-[#5a5650] border border-transparent hover:bg-[#141414] hover:text-[#a89070] hover:border-[#1f1f1f]"
+                  }`}
               >
-                <item.icon size={20} />
-                <span className="font-medium">{item.label}</span>
+                <item.icon
+                  size={16}
+                  className={`flex-shrink-0 transition-colors duration-200 ${active ? "text-[#c9a96e]" : "text-[#3a3530] group-hover:text-[#8a6e45]"}`}
+                />
+                {item.label}
+                {active && (
+                  <div className="ml-auto w-1 h-1 rounded-full bg-[#c9a96e]" />
+                )}
               </Link>
-            ))}
-          </nav>
+            );
+          })}
+        </nav>
 
-          {/* Optional Bottom Section */}
-          <div className="p-4 border-t border-gray-100">
-            <p className="text-xs text-gray-400 text-center">© 2026 Admin Panel</p>
-          </div>
+        {/* Bottom */}
+        <div className="px-6 py-4 border-t border-[#1f1f1f] flex-shrink-0">
+          <p className="text-[10px] text-[#2e2b26] tracking-widest uppercase text-center">
+            © 2026 Maison Bean
+          </p>
         </div>
       </aside>
 
-      {/* Overlay for mobile (click to close) */}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
-          onClick={toggleSidebar}
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/60 z-30 lg:hidden backdrop-blur-sm"
         />
       )}
     </>

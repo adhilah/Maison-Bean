@@ -1,6 +1,5 @@
 // admin/pages/cart/CartOverview.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -26,8 +25,8 @@ export default function CartOverview() {
   const fetchAllData = async () => {
     try {
       const [usersRes, productsRes] = await Promise.all([
-        axios.get("https://localhost:7257/api/user"),
-        axios.get("https://localhost:7257/api/products"),
+        api.get("/user"),
+        api.get("/products"),
       ]);
 
       setUsers(usersRes.data);

@@ -437,7 +437,6 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import {
   ArrowLeft, Save, Image as ImageIcon, HeartPulse,
   Tag, DollarSign, FileText, Coffee, ChefHat,
@@ -464,7 +463,7 @@ export default function EditProduct() {
   const fetchProduct = async (id) => {
     try {
       setFetching(true);
-      const res = await axios.get(`https://localhost:7257/api/products/${id}`);
+      const res = await  api.get(`/products/${id}`);
       setProduct({ ...res.data, basePrice: String(res.data.basePrice || "") });
     } catch {
       toast.error("Product not found");
@@ -489,16 +488,33 @@ export default function EditProduct() {
       setLoading(true);
       const payload = { ...product, basePrice: Number(product.basePrice) };
       if (editId) {
-        await axios.put(`https://localhost:7257/api/products/${editId}`, {
-          ...payload, updatedAt: new Date(),
-        });
-        toast.success("Product updated!");
-      } else {
-        await axios.post("https://localhost:7257/api/products", {
-          ...payload, createdAt: new Date(),
-        });
-        toast.success("Product added!");
-      }
+
+  await api.put(
+    `/products/${editId}update/ad`,
+    {
+      ...payload,
+      updatedAt: new Date(),
+    }
+  );
+
+  toast.success(
+    "Product updated!"
+  );
+
+} else {
+
+  await api.post(
+    "/products/product/ad",
+    {
+      ...payload,
+      createdAt: new Date(),
+    }
+  );
+
+  toast.success(
+    "Product added!"
+  );
+}
       navigate("/admin/products");
     } catch {
       toast.error("Failed to save product");

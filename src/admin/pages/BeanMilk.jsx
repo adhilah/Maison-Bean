@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 
-const API = "https://localhost:7257/api";
+const API = "/api";
 
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (
@@ -245,7 +244,7 @@ const Panel = ({ type, endpoint }) => {
 
   const load = async () => {
     try {
-      const res = await axios.get(`${API}/${endpoint}`);
+      const res = await api.get(`${API}/${endpoint}`);
       setItems(res.data || []);
     } catch {
       toast.error(`Failed to load ${isBean ? "beans" : "milks"}`);
@@ -259,10 +258,10 @@ const Panel = ({ type, endpoint }) => {
   const handleSave = async (form) => {
     try {
       if (modal.item?.id) {
-        await axios.put(`${API}/${endpoint}/${modal.item.id}`, form);
+        await api.put(`${API}/${endpoint}/${modal.item.id}`, form);
         toast.success(`${form.name} updated`);
       } else {
-        await axios.post(`${API}/${endpoint}`, { ...form, blocked: false });
+        await api.post(`${API}/${endpoint}`, { ...form, blocked: false });
         toast.success(`${form.name} added`);
       }
       setModal(null);
@@ -277,7 +276,7 @@ const Panel = ({ type, endpoint }) => {
       message: `Delete "${item.name}"? This cannot be undone.`,
       action: async () => {
         try {
-          await axios.delete(`${API}/${endpoint}/${item.id}`);
+          await apoi.delete(`${API}/${endpoint}/${item.id}`);
           toast.success(`${item.name} deleted`);
           load();
         } catch { toast.error("Delete failed"); }
@@ -292,7 +291,7 @@ const Panel = ({ type, endpoint }) => {
       message: `${action.charAt(0).toUpperCase() + action.slice(1)} "${item.name}"?`,
       action: async () => {
         try {
-          await axios.patch(`${API}/${endpoint}/${item.id}`, { blocked: !item.blocked });
+          await api.patch(`${API}/${endpoint}/${item.id}`, { blocked: !item.blocked });
           toast.success(`${item.name} ${action}ed`);
           load();
         } catch { toast.error(`Failed to ${action}`); }
