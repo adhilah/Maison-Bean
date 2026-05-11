@@ -1,191 +1,5 @@
-// import { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import { useCart } from "../context/CartContext";
-// import toast from "react-hot-toast";
-
-// const DeliveryDetails = () => {
-//   const { cart } = useCart();
-//   const navigate = useNavigate();
-
-//   const [address, setAddress] = useState("");
-//   const [phone1, setPhone1] = useState("");
-//   const [phone2, setPhone2] = useState("");
-//   const [errors, setErrors] = useState({});
-
-//   const subtotal = cart.reduce((sum, item) => {
-//     const price = item.product?.basePrice || 0;
-//     const addOns =
-//       (item.bean?.priceAdd || 0) + (item.milk?.priceAdd || 0);
-//     return sum + (price + addOns) * item.quantity;
-//   }, 0);
-
-//   const shipping = 9.9;
-//   const total = subtotal + shipping;
-
-//   // SIMPLE VALIDATION (NO FUNCTIONAL CHANGE)
-//   const validateForm = () => {
-//     const newErrors = {};
-
-//     if (!address.trim()) {
-//       newErrors.address = "Delivery address is required";
-//     }
-
-//     if (!phone1 || phone1.length !== 10) {
-//       newErrors.phone1 = "Valid 10-digit phone number required";
-//     }
-
-//     setErrors(newErrors);
-//     return Object.keys(newErrors).length === 0;
-//   };
-
-//   const handleProceed = () => {
-//     if (!validateForm()) {
-//       toast.error("Please fill all required fields");
-//       return;
-//     }
-
-//     navigate("/payment");
-//   };
-
-//   if (cart.length === 0) {
-//     return (
-//       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-//         <div className="text-center">
-//           <h1 className="text-3xl font-bold mb-4">Your cart is empty</h1>
-//           <Link
-//             to="/menu"
-//             className="text-[#9c7635] hover:underline text-lg"
-//           >
-//             Continue Shopping
-//           </Link>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 py-12 px-4">
-//       <div className="max-w-6xl mx-auto">
-//         <h1 className="text-4xl font-bold text-center mb-10">
-//           Delivery Details
-//         </h1>
-
-//         <div className="grid lg:grid-cols-3 gap-10">
-//           {/* LEFT */}
-//           <div className="lg:col-span-2 space-y-8">
-//             <div className="bg-white rounded-2xl shadow-lg p-8">
-//               <h2 className="text-2xl font-bold mb-6">
-//                 Where should we deliver?
-//               </h2>
-
-//               <div className="space-y-6">
-//                 {/* Address */}
-//                 <div>
-//                   <label className="block text-sm font-medium mb-2">
-//                     Delivery Address <span className="text-red-500">*</span>
-//                   </label>
-//                   <textarea
-//                     value={address}
-//                     onChange={(e) => setAddress(e.target.value)}
-//                     rows="4"
-//                     className="w-full px-4 py-3 border rounded-lg"
-//                   />
-//                   {errors.address && (
-//                     <p className="text-sm text-red-600 mt-2">
-//                       {errors.address}
-//                     </p>
-//                   )}
-//                 </div>
-
-//                 {/* Phone 1 */}
-//                 <div>
-//                   <label className="block text-sm font-medium mb-2">
-//                     Primary Phone Number{" "}
-//                     <span className="text-red-500">*</span>
-//                   </label>
-//                   <input
-//                     type="tel"
-//                     value={phone1}
-//                     onChange={(e) =>
-//                       setPhone1(e.target.value.slice(0, 10))
-//                     }
-//                     className="w-full px-4 py-3 border rounded-lg"
-//                   />
-//                   {errors.phone1 && (
-//                     <p className="text-sm text-red-600 mt-2">
-//                       {errors.phone1}
-//                     </p>
-//                   )}
-//                 </div>
-
-//                 {/* Phone 2 */}
-//                 <div>
-//                   <label className="block text-sm font-medium mb-2">
-//                     Secondary Phone Number (optional)
-//                   </label>
-//                   <input
-//                     type="tel"
-//                     value={phone2}
-//                     onChange={(e) =>
-//                       setPhone2(e.target.value.slice(0, 10))
-//                     }
-//                     className="w-full px-4 py-3 border rounded-lg"
-//                   />
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* RIGHT */}
-//           <div className="lg:col-span-1">
-//             <div className="bg-white rounded-2xl shadow-lg p-8 sticky top-24">
-//               <h2 className="text-2xl font-bold mb-6">
-//                 Order Summary
-//               </h2>
-
-//               <div className="space-y-4 mb-8">
-//                 <div className="flex justify-between text-lg">
-//                   <span>Subtotal</span>
-//                   <span>${subtotal.toFixed(2)}</span>
-//                 </div>
-//                 <div className="flex justify-between text-lg">
-//                   <span>Shipping</span>
-//                   <span>${shipping.toFixed(2)}</span>
-//                 </div>
-//                 <div className="border-t pt-4">
-//                   <div className="flex justify-between text-2xl font-bold text-[#9c7635]">
-//                     <span>Total</span>
-//                     <span>${total.toFixed(2)}</span>
-//                   </div>
-//                 </div>
-//               </div>
-
-             
-//                 <button
-//                   onClick={handleProceed}
-//                   className="w-full bg-[#9c7635] hover:bg-[#7a5c2a] text-white py-5 rounded-2xl font-bold text-xl transition"
-//                 >
-//                   Proceed to Payment
-//                 </button>
-              
-
-//               <p className="text-center text-sm text-gray-500 mt-4">
-//                 Secure checkout • Multiple payment options
-//               </p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DeliveryDetails;
-
-
-
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
@@ -285,13 +99,17 @@ const DeliveryDetails = () => {
   const [phone1, setPhone1]   = useState("");
   const [phone2, setPhone2]   = useState("");
   const [errors, setErrors]   = useState({});
+  const [savedAddresses,setSavedAddresses] = useState([]);
+  const [selectedAddressId,setSelectedAddressId] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const subtotal = cart.reduce((sum, item) => {
-    const price  = item.product?.basePrice || 0;
-    const addOns = (item.bean?.priceAdd || 0) + (item.milk?.priceAdd || 0);
-    return sum + (price + addOns) * item.quantity;
-  }, 0);
+
+  const subtotal = cart.reduce(
+  (sum, item) => {
+
+    return (sum + Number(item.totalPrice || 0 ));
+ }, 0
+);
 
   const shipping = 49;
   const total    = subtotal + shipping;
@@ -315,6 +133,32 @@ const DeliveryDetails = () => {
       navigate("/payment");
     }, 600);
   };
+
+  useEffect(() => {
+
+  const fetchAddresses =
+    async () => {
+
+      try {
+
+        const res =
+          await api.get(
+            "/address"
+          );
+
+        setSavedAddresses(
+          res.data || []
+        );
+
+      } catch (err) {
+
+        console.error(err);
+      }
+    };
+
+  fetchAddresses();
+
+}, []);
 
   /* ── Empty cart ── */
   if (cart.length === 0) return (
@@ -433,6 +277,149 @@ const DeliveryDetails = () => {
 
               {/* ── LEFT: Delivery Form ── */}
               <div className="bg-[#0d0a05] panel-in">
+                {/* SAVED ADDRESSES */}
+
+{
+  savedAddresses.length > 0 && (
+
+    <div className="
+      bg-[#110d07]
+      border border-[#c9a96e]/10
+      p-7 mb-px
+    ">
+
+      <div className="
+        flex items-start
+        gap-4 mb-6
+      ">
+
+        <span className="
+          text-[#c9a96e]/50
+          mt-0.5
+          flex-shrink-0
+        ">
+          <LocationIcon />
+        </span>
+
+        <div>
+
+          <p className="
+            text-[#c9a96e]
+            text-[9px]
+            tracking-[0.45em]
+            uppercase
+            mb-1
+            opacity-65
+          ">
+            SAVED LOCATIONS
+          </p>
+
+          <h2 className="
+            font-['Cormorant_Garamond',serif]
+            text-[1.5rem]
+            font-light
+            text-[#f5f0e8]
+          ">
+            Choose Previous
+            <span className="
+              italic text-[#c9a96e]
+            ">
+              {" "}Address
+            </span>
+          </h2>
+
+        </div>
+
+      </div>
+
+      <div className="space-y-3">
+
+        {savedAddresses.map(
+          (item) => (
+
+          <button
+            key={item.id}
+
+            type="button"
+
+            onClick={() => {
+
+              setSelectedAddressId(
+                item.id
+              );
+
+              setAddress(
+                item.deliveryAddress
+              );
+
+              setPhone1(
+                item.phone
+              );
+            }}
+
+            className={`
+              w-full
+              text-left
+              p-4
+              border
+              transition-all
+
+              ${
+                selectedAddressId
+                === item.id
+                  ? `
+                    border-[#c9a96e]
+                    bg-[#c9a96e]/05
+                  `
+                  : `
+                    border-[#c9a96e]/10
+                    hover:border-[#c9a96e]/30
+                  `
+              }
+            `}
+          >
+
+            <p className="
+              text-[#f5f0e8]
+              text-sm
+              leading-relaxed
+            ">
+              {item.deliveryAddress}
+            </p>
+
+            <div className="
+              flex items-center
+              justify-between
+              mt-3
+            ">
+
+              <p className="
+                text-[#c9a96e]/60
+                text-[10px]
+                tracking-[0.2em]
+                uppercase
+              ">
+                {item.city}
+              </p>
+
+              <p className="
+                text-[#f5f0e8]/35
+                text-[10px]
+              ">
+                {item.phone}
+              </p>
+
+            </div>
+
+          </button>
+
+        ))}
+
+      </div>
+
+    </div>
+  )
+}
 
                 {/* Address Section */}
                 <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7">
@@ -526,22 +513,24 @@ const DeliveryDetails = () => {
                   {/* Items */}
                   <div className="space-y-3 mb-6 max-h-56 overflow-y-auto pr-1 slim-scroll">
                     {cart.map((item, i) => {
-                      const base    = Number(item.product?.basePrice || 0);
-                      const beanAdd = Number(item.bean?.priceAdd      || 0);
-                      const milkAdd = Number(item.milk?.priceAdd      || 0);
-                      const price   = (base + beanAdd + milkAdd) * item.quantity;
+                      // const base    = Number(item.product?.basePrice || 0);
+                      // const beanAdd = Number(item.bean?.priceAdd      || 0);
+                      // const milkAdd = Number(item.milk?.priceAdd      || 0);
+                      // const price   = (base + beanAdd + milkAdd) * item.quantity;
+
+                      const price = Number(item.totalPrice || 0 );
                       return (
                         <div key={i} className="flex items-center gap-3 group">
                           <div className="relative w-12 h-10 flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">
                             <img
-                              src={item.product?.image}
-                              alt={item.product?.name}
+                              src={item?.image}
+                              alt={item?.name}
                               className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                             />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-['Cormorant_Garamond',serif] text-[0.95rem] font-light text-[#f5f0e8]/70 group-hover:text-[#c9a96e] transition-colors truncate">
-                              {item.product?.name}
+                              {item?.name}
                             </p>
                             <p className="text-[#f5f0e8]/25 text-[10px]">× {item.quantity}</p>
                           </div>

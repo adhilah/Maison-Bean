@@ -2,13 +2,13 @@ import {
   createContext,
   useContext,
   useEffect,
-  useState
+  useState,
+  useCallback,
+  useMemo,
 } from "react";
 
 import api from "../services/api";
-
 import toast from "react-hot-toast";
-
 import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
@@ -21,11 +21,15 @@ function normalizeItem(item) {
     item.product.name;
 
   const productObj =
-    isShapeB ? item.product : item;
+    isShapeB
+      ? item.product
+      : item;
 
-  const bean = item.bean || null;
+  const bean =
+    item.bean || null;
 
-  const milk = item.milk || null;
+  const milk =
+    item.milk || null;
 
   return {
 
@@ -92,17 +96,21 @@ export const CartProvider = ({
   children
 }) => {
 
-  const { user } = useAuth();
+  const { user } =
+    useAuth();
 
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] =
+    useState([]);
 
   const [loading, setLoading] =
     useState(false);
 
-  // LOAD CART
-  useEffect(() => {
+  // =====================================================
+  // FETCH CART
+  // =====================================================
 
-    const fetchCart = async () => {
+  const fetchCart =
+    useCallback(async () => {
 
       if (
         !user?.id ||
@@ -128,7 +136,10 @@ export const CartProvider = ({
 
       } catch (err) {
 
-        console.error(err);
+        console.error(
+          "Cart fetch failed",
+          err
+        );
 
         setCart([]);
 
@@ -136,88 +147,98 @@ export const CartProvider = ({
 
         setLoading(false);
       }
-    };
+
+    }, [user]);
+
+  // =====================================================
+  // LOAD CART WHEN USER CHANGES
+  // =====================================================
+
+  useEffect(() => {
 
     fetchCart();
 
-  }, [user]);
+  }, [fetchCart]);
 
+  // =====================================================
   // ADD TO CART
-  const addToCart = async (
-    item
-  ) => {
+  // =====================================================
 
-    if (
-      !user?.id ||
-      user?.role?.toUpperCase()
-        === "ADMIN"
-    ) {
+  const addToCart =
+    useCallback(async (
+      item
+    ) => {
 
-      toast.error(
-        "Please login first"
-      );
+      if (
+        !user?.id ||
+        user?.role?.toUpperCase()
+          === "ADMIN"
+      ) {
 
-      return;
-    }
+        toast.error(
+          "Please login first"
+        );
 
-    const norm =
-      normalizeItem(item);
+        return;
+      }
 
-    try {
+      const norm =
+        normalizeItem(item);
 
-      await api.post(
-        "/cart",
-        {
+      try {
 
-          productId:
-            norm.productId,
+        await api.post(
+          "/cart",
+          {
 
-          quantity: 1,
+            productId:
+              norm.productId,
 
-          isCustomized:
-            norm.isCustomized,
+            quantity: 1,
 
-          beanId:
-            norm.beanId,
+            isCustomized:
+              norm.isCustomized,
 
-          milkId:
-            norm.milkId,
+            beanId:
+              norm.beanId,
 
-          strength:
-            norm.strength,
+            milkId:
+              norm.milkId,
 
-          temp:
-            norm.temp,
+            strength:
+              norm.strength,
 
-          sweetness:
-            norm.sweetness,
-        }
-      );
+            temp:
+              norm.temp,
 
-      const updated =
-        await api.get("/cart");
+            sweetness:
+              norm.sweetness,
+          }
+        );
 
-      setCart(
-        updated.data.items || []
-      );
+        await fetchCart();
 
-      toast.success(
-        `${norm.product.name} added to cart`
-      );
+        toast.success(
+          `${norm.product.name} added to cart`
+        );
 
-    } catch (err) {
+      } catch (err) {
 
-      console.error(err);
+        console.error(err);
 
-      toast.error(
-        "Failed to add to cart"
-      );
-    }
-  };
+        toast.error(
+          "Failed to add to cart"
+        );
+      }
 
+    }, [user, fetchCart]);
+
+  // =====================================================
   // UPDATE QUANTITY
+  // =====================================================
+
   const updateQuantity =
-    async (
+    useCallback(async (
       cartId,
       newQty
     ) => {
@@ -230,7 +251,6 @@ export const CartProvider = ({
         await api.patch(
           "/cart",
           {
-
             cartItemId:
               cartId,
 
@@ -239,12 +259,7 @@ export const CartProvider = ({
           }
         );
 
-        const updated =
-          await api.get("/cart");
-
-        setCart(
-          updated.data.items || []
-        );
+        await fetchCart();
 
       } catch (err) {
 
@@ -254,11 +269,17 @@ export const CartProvider = ({
           "Failed to update quantity"
         );
       }
-    };
 
+    }, [fetchCart]);
+
+  // =====================================================
   // REMOVE ITEM
+  // =====================================================
+
   const removeFromCart =
-    async (cartId) => {
+    useCallback(async (
+      cartId
+    ) => {
 
       try {
 
@@ -266,12 +287,7 @@ export const CartProvider = ({
           `/cart/${cartId}`
         );
 
-        const updated =
-          await api.get("/cart");
-
-        setCart(
-          updated.data.items || []
-        );
+        await fetchCart();
 
         toast.success(
           "Item removed"
@@ -285,11 +301,15 @@ export const CartProvider = ({
           "Failed to remove item"
         );
       }
-    };
 
+    }, [fetchCart]);
+
+  // =====================================================
   // CLEAR CART
+  // =====================================================
+
   const clearCart =
-    async () => {
+    useCallback(async () => {
 
       try {
 
@@ -307,35 +327,67 @@ export const CartProvider = ({
           "Failed to clear cart"
         );
       }
-    };
 
+    }, []);
+
+  // =====================================================
   // TOTAL QUANTITY
+  // =====================================================
+
   const cartQuantity =
-    cart.reduce(
-      (total, item) =>
-        total + item.quantity,
-      0
-    );
+    useMemo(() => {
+
+      return cart.reduce(
+        (total, item) =>
+          total +
+          item.quantity,
+        0
+      );
+
+    }, [cart]);
+
+  // =====================================================
+  // CONTEXT VALUE
+  // =====================================================
+
+  const value =
+    useMemo(() => ({
+
+      cart,
+
+      cartQuantity,
+
+      addToCart,
+
+      updateQuantity,
+
+      removeFromCart,
+
+      clearCart,
+
+      loading
+
+    }), [
+
+      cart,
+
+      cartQuantity,
+
+      addToCart,
+
+      updateQuantity,
+
+      removeFromCart,
+
+      clearCart,
+
+      loading
+    ]);
 
   return (
 
     <CartContext.Provider
-      value={{
-
-        cart,
-
-        cartQuantity,
-
-        addToCart,
-
-        updateQuantity,
-
-        removeFromCart,
-
-        clearCart,
-
-        loading
-      }}
+      value={value}
     >
       {children}
     </CartContext.Provider>

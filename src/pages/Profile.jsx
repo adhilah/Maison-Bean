@@ -83,36 +83,125 @@ const Profile = () => {
   const [saved, setSaved]                     = useState(false);
 
   useEffect(() => {
-    if (!user) return;
-    api
-      .get(`/user/${user.id}`)
-      .then((res) => setUserData(res.data))
-      .catch(() => toast.error("Failed to load profile"));
-  }, [user]);
 
-  const handleChangePassword = async () => {
-    if (!currentPassword || !newPassword || !cPassword) {
-      toast.error("Please fill all password fields");
+  if (!user)
+    return;
+
+  api
+    .get("/user/me")
+    .then((res) => {
+
+      setUserData(
+        res.data
+      );
+
+    })
+    .catch(() => {
+
+      toast.error(
+        "Failed to load profile"
+      );
+    });
+
+}, [user]);
+
+  //=========================
+  //change Password
+  //==========================
+
+  // const handleChangePassword = async () => {
+  //   if (!currentPassword || !newPassword || !cPassword) {
+  //     toast.error("Please fill all password fields");
+  //     return;
+  //   }
+  //   if (currentPassword !== userData.password) {
+  //     toast.error("Current password is incorrect");
+  //     return;
+  //   }
+  //   if (newPassword !== cPassword) {
+  //     toast.error("Passwords do not match");
+  //     return;
+  //   }
+  //   try {
+  //     setSaving(true);
+  //     await api.patch(`/user/${user.id}`, { password: newPassword });
+  //     setSaved(true);
+  //     setTimeout(() => setSaved(false), 2500);
+  //     toast.success("Password updated");
+  //     setCurrentPassword(""); setNewPassword(""); setCPassword("");
+  //   } catch {
+  //     toast.error("Failed to update password");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
+
+
+  const handleChangePassword =
+  async () => {
+
+    if (
+      !currentPassword ||
+      !newPassword ||
+      !cPassword
+    ) {
+
+      toast.error(
+        "Please fill all fields"
+      );
+
       return;
     }
-    if (currentPassword !== userData.password) {
-      toast.error("Current password is incorrect");
+
+    if (
+      newPassword !== cPassword
+    ) {
+
+      toast.error(
+        "Passwords do not match"
+      );
+
       return;
     }
-    if (newPassword !== cPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
+
     try {
+
       setSaving(true);
-      await api.patch(`/user/${user.id}`, { password: newPassword });
+
+      await api.post(
+  "/user/change-password",
+  {
+    currentPassword,
+    newPassword,
+    confirmPassword:
+      cPassword
+  }
+);
+
       setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
-      toast.success("Password updated");
-      setCurrentPassword(""); setNewPassword(""); setCPassword("");
-    } catch {
-      toast.error("Failed to update password");
+
+      toast.success(
+        "Password updated"
+      );
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setCPassword("");
+
+      setTimeout(() => {
+        setSaved(false);
+      }, 2500);
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.error(
+        "Failed to update password"
+      );
+
     } finally {
+
       setSaving(false);
     }
   };

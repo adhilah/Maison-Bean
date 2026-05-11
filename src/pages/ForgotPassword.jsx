@@ -3,7 +3,7 @@ import api from "../services/api";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const API = "https`://localhost:7257";
+// const API = "https`://localhost:7257";
 
 /* ─────────── Icons ─────────── */
 const MailIcon = () => (
@@ -84,24 +84,64 @@ const ForgotPassword = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading,     setLoading]     = useState(false);
 
-  const handleReset = async () => {
-    if (!email || !newPassword || !cPassword)
-      return toast.error("Please fill all fields");
-    if (newPassword !== cPassword)
-      return toast.error("Passwords do not match");
+  const handleReset =
+  async () => {
+
+    if (
+      !email ||
+      !newPassword ||
+      !cPassword
+    ) {
+
+      return toast.error(
+        "Please fill all fields"
+      );
+    }
+
+    if (
+      newPassword !== cPassword
+    ) {
+
+      return toast.error(
+        "Passwords do not match"
+      );
+    }
 
     try {
-      setLoading(true);
-      const { data: users } = await api.get(`${API}/users?email=${email}`);
-      if (!users.length)
-        return toast.error("No account found with that email");
 
-      await api.patch(`${API}/users/${users[0].id}`, { password: newPassword });
-      toast.success("Password updated! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 1800);
-    } catch {
-      toast.error("Something went wrong");
+      setLoading(true);
+
+      await api.post(
+        "/user/forgot-password",
+        {
+          email,
+          newPassword,
+          confirmPassword:
+            cPassword
+        }
+      );
+
+      toast.success(
+        "Password updated successfully"
+      );
+
+      setTimeout(() => {
+
+        navigate("/login");
+
+      }, 1800);
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.error(
+        err?.response?.data?.message ||
+        "Something went wrong"
+      );
+
     } finally {
+
       setLoading(false);
     }
   };

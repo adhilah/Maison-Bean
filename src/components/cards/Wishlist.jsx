@@ -64,11 +64,30 @@ const WishlistPage = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    api.get("/products")
-      .then((r) => r.json())
-      .then(setProducts)
-      .catch(console.error);
-  }, []);
+
+  const fetchProducts = async () => {
+
+    try {
+
+      const res =
+        await api.get("/products");
+
+      setProducts(
+        res.data || []
+      );
+
+    } catch (err) {
+
+      console.error(
+        "Failed to fetch products",
+        err
+      );
+    }
+  };
+
+  fetchProducts();
+
+}, []);
 
   const getPrice = (p) => Number(p.basePrice ?? p.price ?? 0);
 
