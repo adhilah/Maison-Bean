@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import api from "../../services/api";
+import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../Navbar";
 
-const API = "/api";;
 
 /* ── Icons ── */
 const ArrowLeft = () => (
@@ -200,24 +200,52 @@ export default function CustomizeProduct() {
   const [sweetness, setSweetness] = useState(2);
 
   useEffect(() => {
-    if (!id) { setError("No product ID provided."); setLoading(false); return; }
-    (async () => {
-      try {
-        const [pRes, bRes, mRes] = await Promise.all([
-          api.get(`${API}/products/${id}`),
-          api.get(`${API}/beanTypes`),
-          api.get(`${API}/milkOptions`),
-        ]);
-        setProduct(pRes.data);
-        setBeanTypes(bRes.data || []);
-        setMilkOptions(mRes.data || []);
-      } catch (err) {
-        setError(err.response?.status === 404 ? "Product not found." : "Failed to load options.");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [id]);
+  if (!id) {
+    setError("No product ID provided.");
+    setLoading(false);
+    return;
+  }
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const [
+        productResponse,
+        beanResponse,
+        milkResponse,
+      ] = await Promise.all([
+        api.get(`/products/${id}`),
+        api.get("/beanTypes"),
+        api.get("/milkOptions"),
+      ]);
+
+      setProduct(productResponse.data);
+
+      setBeanTypes(
+        beanResponse.data || []
+      );
+
+      setMilkOptions(
+        milkResponse.data || []
+      );
+    }
+    catch (error) {
+      console.error(error);
+
+      setError(
+        error.response?.status === 404
+          ? "Product not found."
+          : "Failed to load customization."
+      );
+    }
+    finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);
 
   const isCoffee = product?.category?.toLowerCase().includes("coffee");
   const basePrice = Number(product?.basePrice) || 0;
@@ -367,7 +395,7 @@ export default function CustomizeProduct() {
                   </div>
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
                     <p style={{ color: "rgba(245,240,232,0.25)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", marginBottom: 2 }}>from</p>
-                    <p style={{ fontFamily: "'Cormorant Garamond',serif", color: "#c9a96e", fontWeight: 300, fontSize: "1.3rem" }}>₹{basePrice}</p>
+                    <p style={{ fontFamily: "'Cormorant Garamond',serif", color: "#c9a96e", fontWeight: 300, fontSize: "1.3rem" }}>${basePrice}</p>
                   </div>
                 </div>
 
@@ -462,7 +490,7 @@ export default function CustomizeProduct() {
                     </div>
                     {sweetness > 3 && (
                       <p style={{ fontSize: 9, color: "rgba(201,169,110,0.45)", letterSpacing: "0.2em", textTransform: "uppercase", marginTop: 6 }}>
-                        Extra syrup · $₹2
+                        Extra syrup · $2
                       </p>
                     )}
                   </div>
@@ -532,24 +560,24 @@ export default function CustomizeProduct() {
                   <div style={{ marginBottom: 16 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                       <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.35)" }}>Base</span>
-                      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>₹{basePrice}</span>
+                      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>${basePrice}</span>
                     </div>
                     {selectedBean?.priceAdd > 0 && (
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                         <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.35)", maxWidth: "60%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selectedBean.name}</span>
-                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+₹{selectedBean.priceAdd}</span>
+                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+${selectedBean.priceAdd}</span>
                       </div>
                     )}
                     {selectedMilk?.priceAdd > 0 && (
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                         <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.35)", maxWidth: "60%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selectedMilk.name}</span>
-                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+₹{selectedMilk.priceAdd}</span>
+                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+${selectedMilk.priceAdd}</span>
                       </div>
                     )}
                     {extraSweet > 0 && (
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                         <span style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(245,240,232,0.35)" }}>Extra Sweet</span>
-                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+₹{extraSweet}</span>
+                        <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 14, color: "rgba(245,240,232,0.4)" }}>+${extraSweet}</span>
                       </div>
                     )}
                     {isCoffee && !selectedBean && !selectedMilk && (

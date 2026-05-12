@@ -5,547 +5,515 @@ import toast, { Toaster } from "react-hot-toast";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 
+/* ─────────── Icons ─────────── */
+const ArrowRight = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="5" y1="12" x2="19" y2="12" />
+    <polyline points="12 5 19 12 12 19" />
+  </svg>
+);
+
+const TruckIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="1" y="3" width="15" height="13" />
+    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+    <circle cx="5.5" cy="18.5" r="2.5" />
+    <circle cx="18.5" cy="18.5" r="2.5" />
+  </svg>
+);
+
+const LockIcon = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0110 0v4" />
+  </svg>
+);
+
+const CodIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+  </svg>
+);
+
+const OnlineIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 2a14.5 14.5 0 010 20M2 12h20" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12" />
+  </svg>
+);
+
+const ShieldIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+/* ─────────── Main ─────────── */
 const PaymentPage = () => {
-
   const { cart, clearCart } = useCart();
-
   const navigate = useNavigate();
 
-  const [paymentMethod, setPaymentMethod] =
-    useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] =
-    useState(false);
-
-  // ───────── PRICE CALCULATION ─────────
-
-  const subtotal = useMemo(() => {
-
-    return cart.reduce((sum, item) => {
-
-      return (
-        sum + Number(item.totalPrice || 0)
-      );
-
-    }, 0);
-
-  }, [cart]);
+  const subtotal = useMemo(() =>
+    cart.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0),
+    [cart]
+  );
 
   const shipping = 49;
-
   const total = subtotal + shipping;
 
-  // ───────── BUILD ORDER ITEMS ─────────
-
-  const buildItems = () => {
-
-    return cart.map((item) => ({
-
-      productId:
-        item.product?.id,
-
-      productName:
-        item.product?.name,
-
-      productImage:
-        item.product?.image,
-
-      productCategory:
-        item.product?.category || null,
-
-      basePrice:
-        item.product?.basePrice || 0,
-
-      quantity:
-        item.quantity,
-
-      beanId:
-        item.bean?.id || null,
-
-      beanName:
-        item.bean?.name || null,
-
-      beanPriceAdd:
-        item.bean?.priceAdd || 0,
-
-      milkId:
-        item.milk?.id || null,
-
-      milkName:
-        item.milk?.name || null,
-
-      milkPriceAdd:
-        item.milk?.priceAdd || 0,
-
-    }));
-  };
-
-  // ───────── HANDLE PAYMENT ─────────
-
   const handlePayment = async () => {
-
-    const user = JSON.parse(
-      localStorage.getItem("authUser") || "null"
-    );
+    const user = JSON.parse(localStorage.getItem("authUser") || "null");
 
     if (!user) {
-
       toast.error("Please login");
-
       return;
     }
 
     try {
-
       setLoading(true);
 
-      // ───────── CREATE ORDER ─────────
+      const selectedAddressId = localStorage.getItem("selectedAddressId");
 
       const orderRequest = {
-
-        userId: user.id,
-
-        userEmail: user.email,
-
-        paymentMethod:
-          paymentMethod === "cod"
-            ? "cod"
-            : "razorpay",
-
-        subtotal,
-
-        shipping,
-
-        total,
-
-        items: buildItems()
+        addressId: Number(selectedAddressId),
+        paymentMethod: paymentMethod === "cod" ? "cod" : "razorpay",
+        upiId: null,
       };
 
-      console.log(
-        "ORDER REQUEST:",
-        orderRequest
-      );
-
-      // IMPORTANT
-      // Make sure token is sent
-      // in api.js interceptor
-
-      const orderResponse =
-        await api.post(
-          "/Order",
-          orderRequest
-        );
-
-      console.log(
-        "ORDER RESPONSE:",
-        orderResponse.data
-      );
-
-      const createdOrder =
-        orderResponse.data;
-
-      const orderId =
-        createdOrder.id ||
-        createdOrder.orderId ||
-        createdOrder.data?.id;
+      const orderResponse = await api.post("/Order", orderRequest);
+      const createdOrder = orderResponse.data;
+      const orderId = createdOrder.id || createdOrder.orderId || createdOrder.data?.id;
 
       if (!orderId) {
-
-        toast.error(
-          "Order ID not found"
-        );
-
+        toast.error("Order ID not found");
         return;
       }
 
-      // ───────── COD ─────────
-
+      // ── COD ──
       if (paymentMethod === "cod") {
-
         await clearCart();
-
-        toast.success(
-          "Order placed successfully"
-        );
-
+        toast.success("Order placed successfully");
         navigate("/orders");
-
         return;
       }
 
-      // ───────── CREATE RAZORPAY ORDER ─────────
-
-      const paymentResponse =
-        await api.post(
-          `/payment/create/${orderId}`
-        );
-
-      console.log(
-        "PAYMENT RESPONSE:",
-        paymentResponse.data
-      );
-
-      const paymentOrder =
-        paymentResponse.data;
-
+      // ── RAZORPAY ──
+      const paymentResponse = await api.post(`/payment/create/${orderId}`);
+      const paymentOrder = paymentResponse.data;
       const razorpayOrderId =
-        paymentOrder.orderId ||
-        paymentOrder.razorpayOrderId ||
-        paymentOrder.id;
+        paymentOrder.orderId || paymentOrder.razorpayOrderId || paymentOrder.id;
 
       if (!razorpayOrderId) {
-
-        toast.error(
-          "Razorpay Order ID missing"
-        );
-
+        toast.error("Razorpay Order ID missing");
         return;
       }
-
-      // ───────── CHECK SDK ─────────
 
       if (!window.Razorpay) {
-
-        toast.error(
-          "Razorpay SDK failed to load"
-        );
-
+        toast.error("Razorpay SDK failed to load");
         return;
       }
 
-      // ───────── OPEN RAZORPAY ─────────
-
       const options = {
-
         key: "rzp_test_xxxxxxxxx",
-
         amount: total * 100,
-
         currency: "INR",
-
         name: "Maison Bean",
-
-        description:
-          "Coffee Order Payment",
-
-        order_id:
-          razorpayOrderId,
-
+        description: "Coffee Order Payment",
+        order_id: razorpayOrderId,
         handler: async function (response) {
-
           try {
-
-            console.log(
-              "RAZORPAY RESPONSE:",
-              response
-            );
-
-            await api.post(
-              "/payment/verify",
-              {
-                razorpayOrderId:
-                  response.razorpay_order_id,
-
-                razorpayPaymentId:
-                  response.razorpay_payment_id,
-
-                razorpaySignature:
-                  response.razorpay_signature
-              }
-            );
-
+            await api.post("/payment/verify", {
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
             await clearCart();
-
-            toast.success(
-              "Payment successful"
-            );
-
+            toast.success("Payment successful");
             navigate("/orders");
-
-          } catch (error) {
-
-            console.log(error);
-
-            toast.error(
-              "Payment verification failed"
-            );
+          } catch {
+            toast.error("Payment verification failed");
           }
         },
-
-        modal: {
-
-          ondismiss: function () {
-
-            toast.error(
-              "Payment cancelled"
-            );
-          }
-        },
-
-        prefill: {
-
-          name:
-            "Maison Bean Customer",
-
-          email:
-            user.email,
-
-          contact:
-            "9999999999"
-        },
-
-        theme: {
-          color: "#c9a96e"
-        }
+        modal: { ondismiss: () => toast.error("Payment cancelled") },
+        prefill: { name: "Maison Bean Customer", email: user.email, contact: "9999999999" },
+        theme: { color: "#c9a96e" },
       };
 
-      console.log(
-        "RAZORPAY OPTIONS:",
-        options
-      );
-
-      const razorpay =
-        new window.Razorpay(options);
-
+      const razorpay = new window.Razorpay(options);
       razorpay.open();
 
-    } catch (error) {
-
-      console.log(error);
-
-      toast.error(
-        "Something went wrong"
-      );
-
+    } catch {
+      toast.error("Something went wrong");
     } finally {
-
       setLoading(false);
     }
   };
 
-  // ───────── EMPTY CART ─────────
-
-  if (cart.length === 0) {
-
-    return (
-
-      <div className="min-h-screen bg-[#0d0a05] flex items-center justify-center text-white">
-
-        Cart is empty
-
+  /* ── Empty cart ── */
+  if (cart.length === 0) return (
+    <>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');`}</style>
+      <div className="min-h-screen bg-[#0d0a05] flex flex-col items-center justify-center gap-6 font-['Jost',sans-serif]">
+        <p className="font-['Cormorant_Garamond',serif] text-[2rem] italic text-[#f5f0e8]/30">Your cart is empty</p>
       </div>
-    );
-  }
-
-  // ───────── UI ─────────
+    </>
+  );
 
   return (
-
     <>
-      <Toaster position="top-center" />
-
-      <div className="min-h-screen bg-[#0d0a05] text-white">
-
-        <Navbar />
-
-        <div className="max-w-6xl mx-auto p-8">
-
-          <h1 className="text-4xl mb-10">
-            Payment Details
-          </h1>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-
-            {/* LEFT */}
-
-            <div className="space-y-4">
-
-              {/* COD */}
-
-              <label className="border border-zinc-700 p-5 block cursor-pointer rounded">
-
-                <input
-                  type="radio"
-                  checked={
-                    paymentMethod === "cod"
-                  }
-                  onChange={() =>
-                    setPaymentMethod("cod")
-                  }
-                />
-
-                <div className="mt-2">
-
-                  <p className="text-lg">
-                    Cash on Delivery
-                  </p>
-
-                  <p className="text-sm text-zinc-400">
-                    Pay when delivered
-                  </p>
-
-                </div>
-
-              </label>
-
-              {/* ONLINE */}
-
-              <label className="border border-zinc-700 p-5 block cursor-pointer rounded">
-
-                <input
-                  type="radio"
-                  checked={
-                    paymentMethod === "online"
-                  }
-                  onChange={() =>
-                    setPaymentMethod("online")
-                  }
-                />
-
-                <div className="mt-2">
-
-                  <p className="text-lg">
-                    Online Payment
-                  </p>
-
-                  <p className="text-sm text-zinc-400">
-                    UPI, Cards, Wallets
-                  </p>
-
-                </div>
-
-              </label>
-
-            </div>
-
-            {/* RIGHT */}
-
-            <div className="border border-zinc-800 p-6 rounded">
-
-              <h2 className="text-2xl mb-6">
-                Order Summary
-              </h2>
-
-              <div className="space-y-4">
-
-                {cart.map((item, index) => (
-
-                  <div
-                    key={index}
-                    className="flex items-center gap-4 border-b border-zinc-800 pb-4"
-                  >
-
-                    <img
-                      src={
-                        item.product?.image
-                      }
-                      alt={
-                        item.product?.name
-                      }
-                      className="w-16 h-16 object-cover rounded"
-                    />
-
-                    <div className="flex-1">
-
-                      <p className="font-medium">
-                        {item.product?.name}
-                      </p>
-
-                      <p className="text-sm text-zinc-400">
-                        Qty: {item.quantity}
-                      </p>
-
-                      {item.bean?.name && (
-
-                        <p className="text-xs text-zinc-500">
-                          Bean:
-                          {" "}
-                          {item.bean.name}
-                        </p>
-
-                      )}
-
-                      {item.milk?.name && (
-
-                        <p className="text-xs text-zinc-500">
-                          Milk:
-                          {" "}
-                          {item.milk.name}
-                        </p>
-
-                      )}
-
-                    </div>
-
-                    <p className="font-semibold">
-                      ₹{item.totalPrice}
-                    </p>
-
-                  </div>
-                ))}
-
-              </div>
-
-              {/* TOTALS */}
-
-              <div className="border-t border-zinc-800 mt-6 pt-6 space-y-3">
-
-                <div className="flex justify-between">
-
-                  <span>Subtotal</span>
-
-                  <span>
-                    ₹{subtotal}
-                  </span>
-
-                </div>
-
-                <div className="flex justify-between">
-
-                  <span>Shipping</span>
-
-                  <span>
-                    ₹{shipping}
-                  </span>
-
-                </div>
-
-                <div className="flex justify-between text-xl font-bold">
-
-                  <span>Total</span>
-
-                  <span>
-                    ₹{total}
-                  </span>
-
-                </div>
-
-              </div>
-
-              {/* BUTTON */}
-
-              <button
-                onClick={handlePayment}
-                disabled={loading}
-                className="w-full mt-6 bg-yellow-500 hover:bg-yellow-400 transition text-black py-4 font-semibold rounded"
-              >
-
-                {loading
-                  ? "Processing..."
-                  : paymentMethod === "cod"
-                  ? "Place Order"
-                  : "Pay Securely"}
-
-              </button>
-
-            </div>
-
-          </div>
-
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@100;200;300;400;500&display=swap');
+
+        @keyframes fadeUp  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes slideIn { from{opacity:0;transform:translateY(10px) scaleY(0.95)} to{opacity:1;transform:translateY(0) scaleY(1)} }
+
+        .page-in  { animation: fadeUp  0.45s ease forwards; }
+        .panel-in { animation: fadeUp  0.45s ease 0.08s both; }
+        .card-in  { animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards; transform-origin: top; }
+
+        input[type="radio"] { display: none; }
+
+        .gold-btn { transition: background 0.22s ease, transform 0.15s ease; }
+        .gold-btn:hover:not(:disabled)  { background: #d4b87a; }
+        .gold-btn:active:not(:disabled) { transform: scale(0.98); }
+
+        .slim-scroll::-webkit-scrollbar { width: 3px; }
+        .slim-scroll::-webkit-scrollbar-track { background: transparent; }
+        .slim-scroll::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); }
+
+        input:-webkit-autofill, input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 0 1000px #0d0a05 inset !important;
+          -webkit-text-fill-color: #f5f0e8 !important;
+        }
+      `}</style>
+
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#110d07", color: "#f5f0e8",
+            border: "1px solid rgba(201,169,110,0.2)", borderRadius: 0,
+            fontSize: "12px", padding: "12px 18px",
+            fontFamily: "'Jost',sans-serif", letterSpacing: "0.05em",
+          },
+          success: { iconTheme: { primary: "#c9a96e", secondary: "#0d0a05" } },
+          error:   { iconTheme: { primary: "#f87171", secondary: "#0d0a05" } },
+        }}
+      />
+
+      <div className="min-h-screen bg-[#0d0a05] font-['Jost',sans-serif]">
+
+        {/* Ambient glow */}
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          <div className="absolute -top-20 -left-20 w-[500px] h-[500px] rounded-full bg-[#c9a96e]/[0.022] blur-[130px]" />
+          <div className="absolute bottom-0 right-0 w-[380px] h-[380px] rounded-full bg-[#c9a96e]/[0.015] blur-[110px]" />
         </div>
 
-      </div>
+        <div className="relative z-10">
+          <Navbar />
 
+          {/* ══ HEADER ══ */}
+          <div className="max-w-screen-xl mx-auto px-6 lg:px-14 pt-14 pb-6 page-in">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+              <div>
+                <p className="text-[#c9a96e] text-[10px] font-light tracking-[0.55em] uppercase mb-3 opacity-75">
+                  STEP 2 OF 2
+                </p>
+                <h1 className="font-['Cormorant_Garamond',serif] text-[clamp(2.5rem,5.5vw,4rem)] font-light leading-none tracking-wide text-[#f5f0e8]">
+                  Payment <span className="italic text-[#c9a96e]">Details</span>
+                </h1>
+              </div>
+              <button
+                onClick={() => navigate("/delivery")}
+                className="text-[#c9a96e]/60 hover:text-[#c9a96e] text-[10px] tracking-[0.35em] uppercase flex items-center gap-3 transition-all group self-end md:self-auto"
+              >
+                ← BACK TO DELIVERY
+                <span className="group-hover:w-10 transition-all duration-300 w-0 h-px bg-current inline-block" />
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="mt-8 flex items-center gap-3">
+              <div className="h-px flex-1 bg-gradient-to-r from-[#c9a96e]/45 via-[#c9a96e]/12 to-transparent" />
+              <div className="w-[5px] h-[5px] rotate-45 bg-[#c9a96e]/35 flex-shrink-0" />
+            </div>
+
+            {/* Progress Steps */}
+            <div className="mt-6 flex items-center gap-0">
+              {/* Step 1 - done */}
+              <div className="flex items-center gap-2.5">
+                <div className="w-6 h-6 border border-[#c9a96e]/40 bg-[#c9a96e]/10 flex items-center justify-center">
+                  <CheckIcon />
+                </div>
+                <span className="text-[#c9a96e]/40 text-[9px] tracking-[0.35em] uppercase">Delivery</span>
+              </div>
+              <div className="mx-4 h-px w-12 bg-[#c9a96e]/40" />
+              {/* Step 2 - active */}
+              <div className="flex items-center gap-2.5">
+                <div className="w-6 h-6 border border-[#c9a96e] flex items-center justify-center">
+                  <span className="text-[#c9a96e] text-[9px] tracking-widest">02</span>
+                </div>
+                <span className="text-[#c9a96e] text-[9px] tracking-[0.35em] uppercase">Payment</span>
+              </div>
+            </div>
+          </div>
+
+          {/* ══ CONTENT ══ */}
+          <div className="max-w-screen-xl mx-auto px-6 lg:px-14 pb-28">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-px bg-[#c9a96e]/10">
+
+              {/* ── LEFT: Payment Methods ── */}
+              <div className="bg-[#0d0a05] panel-in">
+                <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7">
+
+                  {/* Section header */}
+                  <div className="flex items-start gap-4 mb-8">
+                    <span className="text-[#c9a96e]/50 mt-0.5 flex-shrink-0"><ShieldIcon /></span>
+                    <div>
+                      <p className="text-[#c9a96e] text-[9px] tracking-[0.45em] uppercase mb-1 opacity-65">SELECT METHOD</p>
+                      <h2 className="font-['Cormorant_Garamond',serif] text-[1.5rem] font-light text-[#f5f0e8]">
+                        Payment <span className="italic text-[#c9a96e]">Method</span>
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+
+                    {/* ── COD ── */}
+                    <label
+                      htmlFor="cod"
+                      className={`block cursor-pointer p-5 border transition-all duration-200
+                        ${paymentMethod === "cod"
+                          ? "border-[#c9a96e] bg-[#c9a96e]/05"
+                          : "border-[#c9a96e]/15 hover:border-[#c9a96e]/35"
+                        }`}
+                    >
+                      <input
+                        type="radio"
+                        id="cod"
+                        checked={paymentMethod === "cod"}
+                        onChange={() => setPaymentMethod("cod")}
+                      />
+                      <div className="flex items-start gap-4">
+                        {/* Custom radio */}
+                        <div className={`mt-0.5 w-4 h-4 border flex items-center justify-center flex-shrink-0 transition-all
+                          ${paymentMethod === "cod" ? "border-[#c9a96e] bg-[#c9a96e]" : "border-[#c9a96e]/30"}`}>
+                          {paymentMethod === "cod" && (
+                            <div className="w-1.5 h-1.5 bg-[#0d0a05]" />
+                          )}
+                        </div>
+
+                        <span className={`flex-shrink-0 transition-colors ${paymentMethod === "cod" ? "text-[#c9a96e]" : "text-[#c9a96e]/40"}`}>
+                          <CodIcon />
+                        </span>
+
+                        <div className="flex-1">
+                          <p className={`text-[13px] tracking-[0.08em] mb-1 transition-colors ${paymentMethod === "cod" ? "text-[#f5f0e8]" : "text-[#f5f0e8]/55"}`}>
+                            Cash on Delivery
+                          </p>
+                          <p className="text-[#f5f0e8]/30 text-[10px] tracking-wide leading-relaxed">
+                            Pay in cash when your order arrives at your doorstep. No advance required.
+                          </p>
+                        </div>
+
+                        {paymentMethod === "cod" && (
+                          <span className="flex-shrink-0 text-[#c9a96e] text-[8px] tracking-[0.3em] uppercase border border-[#c9a96e]/30 px-2 py-1 self-start">
+                            Selected
+                          </span>
+                        )}
+                      </div>
+                    </label>
+
+                    {/* ── ONLINE ── */}
+                    <label
+                      htmlFor="online"
+                      className={`block cursor-pointer p-5 border transition-all duration-200
+                        ${paymentMethod === "online"
+                          ? "border-[#c9a96e] bg-[#c9a96e]/05"
+                          : "border-[#c9a96e]/15 hover:border-[#c9a96e]/35"
+                        }`}
+                    >
+                      <input
+                        type="radio"
+                        id="online"
+                        checked={paymentMethod === "online"}
+                        onChange={() => setPaymentMethod("online")}
+                      />
+                      <div className="flex items-start gap-4">
+                        {/* Custom radio */}
+                        <div className={`mt-0.5 w-4 h-4 border flex items-center justify-center flex-shrink-0 transition-all
+                          ${paymentMethod === "online" ? "border-[#c9a96e] bg-[#c9a96e]" : "border-[#c9a96e]/30"}`}>
+                          {paymentMethod === "online" && (
+                            <div className="w-1.5 h-1.5 bg-[#0d0a05]" />
+                          )}
+                        </div>
+
+                        <span className={`flex-shrink-0 transition-colors ${paymentMethod === "online" ? "text-[#c9a96e]" : "text-[#c9a96e]/40"}`}>
+                          <OnlineIcon />
+                        </span>
+
+                        <div className="flex-1">
+                          <p className={`text-[13px] tracking-[0.08em] mb-1 transition-colors ${paymentMethod === "online" ? "text-[#f5f0e8]" : "text-[#f5f0e8]/55"}`}>
+                            Online Payment
+                          </p>
+                          <p className="text-[#f5f0e8]/30 text-[10px] tracking-wide leading-relaxed">
+                            Pay securely via UPI, Debit / Credit Cards, or Wallets through Razorpay.
+                          </p>
+
+                          {/* Payment badges */}
+                          {paymentMethod === "online" && (
+                            <div className="mt-4 flex items-center gap-2 flex-wrap card-in">
+                              {["UPI", "Visa", "Mastercard", "Wallets"].map((b) => (
+                                <span key={b} className="text-[#c9a96e]/40 text-[8px] tracking-[0.25em] uppercase border border-[#c9a96e]/15 px-2.5 py-1">
+                                  {b}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {paymentMethod === "online" && (
+                          <span className="flex-shrink-0 text-[#c9a96e] text-[8px] tracking-[0.3em] uppercase border border-[#c9a96e]/30 px-2 py-1 self-start">
+                            Selected
+                          </span>
+                        )}
+                      </div>
+                    </label>
+
+                  </div>
+
+                  {/* Info note */}
+                  <div className="mt-5 flex items-center gap-2 p-3 border border-[#c9a96e]/10 bg-[#c9a96e]/03">
+                    <span className="text-[#c9a96e]/35 flex-shrink-0"><TruckIcon /></span>
+                    <p className="text-[#f5f0e8]/28 text-[10px] tracking-wide leading-relaxed">
+                      {paymentMethod === "cod"
+                        ? "Please keep exact change ready. Our delivery partner will collect payment at your door."
+                        : "You will be redirected to Razorpay's secure payment gateway to complete your transaction."}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Security note */}
+                <div className="flex items-center justify-center gap-2.5 py-5 text-[#f5f0e8]/20 border-t border-[#c9a96e]/08">
+                  <LockIcon size={11} />
+                  <span className="text-[9px] tracking-[0.3em] uppercase">All transactions are encrypted and secure</span>
+                </div>
+              </div>
+
+              {/* ── RIGHT: Order Summary ── */}
+              <div className="bg-[#110d07] border-l border-[#c9a96e]/10">
+                <div className="sticky top-6 p-7">
+                  <p className="text-[#c9a96e] text-[10px] tracking-[0.5em] uppercase mb-2 opacity-65">OVERVIEW</p>
+                  <h2 className="font-['Cormorant_Garamond',serif] text-[1.7rem] font-light text-[#f5f0e8] mb-7">
+                    Order <span className="italic text-[#c9a96e]">Summary</span>
+                  </h2>
+
+                  {/* Items */}
+                  <div className="space-y-3 mb-6 max-h-56 overflow-y-auto pr-1 slim-scroll">
+                    {cart.map((item, i) => {
+                      const price = Number(item.totalPrice || 0);
+                      return (
+                        <div key={i} className="flex items-center gap-3 group">
+                          <div className="relative w-12 h-10 flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">
+                            <img
+                              src={item?.product?.image || item?.image}
+                              alt={item?.product?.name || item?.name}
+                              className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-['Cormorant_Garamond',serif] text-[0.95rem] font-light text-[#f5f0e8]/70 group-hover:text-[#c9a96e] transition-colors truncate">
+                              {item?.product?.name || item?.name}
+                            </p>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-[#f5f0e8]/25 text-[10px]">× {item.quantity}</p>
+                              {item.bean?.name && (
+                                <p className="text-[#c9a96e]/30 text-[9px] tracking-wide">{item.bean.name}</p>
+                              )}
+                              {item.milk?.name && (
+                                <p className="text-[#c9a96e]/30 text-[9px] tracking-wide">{item.milk.name}</p>
+                              )}
+                            </div>
+                          </div>
+                          <span className="font-['Cormorant_Garamond',serif] text-[0.95rem] text-[#c9a96e] flex-shrink-0">
+                            ₹{price.toFixed(0)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <div className="h-px bg-gradient-to-r from-[#c9a96e]/25 to-transparent mb-5" />
+
+                  {/* Totals */}
+                  <div className="space-y-3 mb-7">
+                    <div className="flex justify-between">
+                      <span className="text-[#f5f0e8]/40 text-[10px] tracking-[0.2em] uppercase">Subtotal</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">₹{subtotal.toFixed(0)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#f5f0e8]/40 text-[10px] tracking-[0.2em] uppercase">Delivery</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">₹{shipping}</span>
+                    </div>
+                    <div className="h-px bg-gradient-to-r from-[#c9a96e]/20 to-transparent" />
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[#f5f0e8]/70 text-[10px] tracking-[0.2em] uppercase">Total</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[2rem] font-light text-[#c9a96e]">₹{total.toFixed(0)}</span>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <button
+                    onClick={handlePayment}
+                    disabled={loading}
+                    className="gold-btn w-full flex items-center justify-between
+                      px-6 py-4 bg-[#c9a96e] text-[#0d0a05]
+                      text-[0.62rem] tracking-[0.38em] uppercase
+                      disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily: "'Jost',sans-serif" }}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      {loading
+                        ? <div className="w-3.5 h-3.5 border border-[#0d0a05]/40 border-t-[#0d0a05] rounded-full animate-spin" />
+                        : <LockIcon size={14} />}
+                      {loading
+                        ? "Processing..."
+                        : paymentMethod === "cod"
+                        ? "Place Order"
+                        : "Pay Securely"}
+                    </span>
+                    {!loading && <ArrowRight />}
+                  </button>
+
+                  <p className="text-center text-[#f5f0e8]/18 text-[9px] tracking-[0.2em] mt-4">
+                    Free cancellation before your order is dispatched
+                  </p>
+
+                  {/* Trust badges */}
+                  <div className="mt-6 pt-5 border-t border-[#c9a96e]/08 flex justify-center gap-3">
+                    {["Fast Delivery", "Easy Returns", "Secure Pay"].map((b) => (
+                      <span key={b} className="text-[#c9a96e]/25 text-[8px] tracking-widest uppercase border border-[#c9a96e]/08 px-2 py-1">
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

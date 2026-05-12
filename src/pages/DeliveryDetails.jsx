@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
@@ -16,14 +16,6 @@ const LocationIcon = () => (
 const PhoneIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.69a16 16 0 006.29 6.29l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-  </svg>
-);
-
-const PhoneAltIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 11.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.69a16 16 0 006.29 6.29l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
-    <line x1="18" y1="2" x2="22" y2="2" />
-    <line x1="20" y1="4" x2="20" y2="0" />
   </svg>
 );
 
@@ -47,6 +39,15 @@ const LockIcon = ({ size = 12 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" />
     <path d="M7 11V7a5 5 0 0110 0v4" />
+  </svg>
+);
+
+const CityIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="22" x2="21" y2="22" />
+    <rect x="9" y="2" width="6" height="20" />
+    <rect x="3" y="7" width="6" height="15" />
+    <rect x="15" y="10" width="6" height="12" />
   </svg>
 );
 
@@ -94,21 +95,34 @@ const TextAreaField = ({ label, placeholder, value, onChange, error }) => (
 const DeliveryDetails = () => {
   const { cart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [address, setAddress] = useState("");
-  const [phone1, setPhone1]   = useState("");
-  const [phone2, setPhone2]   = useState("");
-  const [errors, setErrors]   = useState({});
-  const [savedAddresses,setSavedAddresses] = useState([]);
-  const [selectedAddressId,setSelectedAddressId] = useState(null);
+const buyNowProduct =
+  location.state?.product;
+
+const isBuyNow =
+  location.state?.buyNow;
+
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [city, setCity]                       = useState("");
+  const [phone, setPhone]                     = useState("");
+  const [errors, setErrors]                   = useState({});
+  const [savedAddresses, setSavedAddresses]   = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const items = isBuyNow
+  ? [buyNowProduct]
+  : cart;
 
-
-  const subtotal = cart.reduce(
-  (sum, item) => {
-
-    return (sum + Number(item.totalPrice || 0 ));
- }, 0
+  const subtotal = items.reduce(
+  (sum, item) =>
+    sum +
+    Number(
+      item.totalPrice ||
+      item.price ||
+      0
+    ),
+  0
 );
 
   const shipping = 49;
@@ -116,25 +130,112 @@ const DeliveryDetails = () => {
 
   const validateForm = () => {
     const err = {};
-    if (!address.trim())          err.address = "Delivery address is required";
-    if (!phone1 || phone1.length !== 10) err.phone1 = "Valid 10-digit phone number required";
+    if (!deliveryAddress.trim())          err.deliveryAddress = "Delivery address is required";
+    if (!city.trim())                     err.city = "City is required";
+    if (!phone || phone.length !== 10)    err.phone = "Valid 10-digit phone number required";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
-  const handleProceed = () => {
-    if (!validateForm()) {
-      toast.error("Please fill all required fields");
+  const handleProceed = async () => {
+
+  try {
+
+    setLoading(true);
+
+    let addressId =
+      selectedAddressId;
+
+    // =========================
+    // NEW ADDRESS
+    // =========================
+
+    if (!selectedAddressId) {
+
+      if (!validateForm()) {
+
+        toast.error(
+          "Please fill all required fields"
+        );
+
+        setLoading(false);
+
+        return;
+      }
+
+      const res =
+        await api.post(
+          "/address",
+          {
+            deliveryAddress,
+            city,
+            phone,
+          }
+        );
+
+      addressId =
+        res.data.addressId;
+
+      toast.success(
+        "Address saved successfully"
+      );
+    }
+
+    // =========================
+    // STORE ADDRESS
+    // =========================
+
+    localStorage.setItem(
+      "selectedAddressId",
+      addressId
+    );
+
+    // =========================
+    // BUY NOW FLOW
+    // =========================
+
+    if (isBuyNow) {
+
+      navigate("/payment", {
+        state: {
+          buyNow: true,
+
+          product:
+            buyNowProduct,
+
+          addressId
+        }
+      });
+
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate("/payment");
-    }, 600);
-  };
 
-  useEffect(() => {
+    // =========================
+    // CART FLOW
+    // =========================
+
+    navigate("/payment", {
+      state: {
+        addressId
+      }
+    });
+
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error(
+      err.response?.data?.message ||
+      "Failed to save address"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
+
+ useEffect(() => {
 
   const fetchAddresses =
     async () => {
@@ -142,9 +243,12 @@ const DeliveryDetails = () => {
       try {
 
         const res =
-          await api.get(
-            "/address"
-          );
+          await api.get("/address");
+
+        console.log(
+          "ADDRESSES:",
+          res.data
+        );
 
         setSavedAddresses(
           res.data || []
@@ -152,7 +256,10 @@ const DeliveryDetails = () => {
 
       } catch (err) {
 
-        console.error(err);
+        console.error(
+          "ADDRESS ERROR:",
+          err
+        );
       }
     };
 
@@ -161,7 +268,7 @@ const DeliveryDetails = () => {
 }, []);
 
   /* ── Empty cart ── */
-  if (cart.length === 0) return (
+  if (!items.length) return (
     <>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');`}</style>
       <div className="min-h-screen bg-[#0d0a05] flex flex-col items-center justify-center gap-6 font-['Jost',sans-serif]">
@@ -196,7 +303,6 @@ const DeliveryDetails = () => {
         .gold-btn:hover:not(:disabled)  { background: #d4b87a; }
         .gold-btn:active:not(:disabled) { transform: scale(0.98); }
 
-        /* Custom scrollbar */
         .slim-scroll::-webkit-scrollbar { width: 3px; }
         .slim-scroll::-webkit-scrollbar-track { background: transparent; }
         .slim-scroll::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); }
@@ -253,7 +359,6 @@ const DeliveryDetails = () => {
 
             {/* Progress Steps */}
             <div className="mt-6 flex items-center gap-0">
-              {/* Step 1 - active */}
               <div className="flex items-center gap-2.5">
                 <div className="w-6 h-6 border border-[#c9a96e] flex items-center justify-center">
                   <span className="text-[#c9a96e] text-[9px] tracking-widest">01</span>
@@ -261,7 +366,6 @@ const DeliveryDetails = () => {
                 <span className="text-[#c9a96e] text-[9px] tracking-[0.35em] uppercase">Delivery</span>
               </div>
               <div className="mx-4 h-px w-12 bg-[#c9a96e]/25" />
-              {/* Step 2 - inactive */}
               <div className="flex items-center gap-2.5">
                 <div className="w-6 h-6 border border-[#f5f0e8]/12 flex items-center justify-center">
                   <span className="text-[#f5f0e8]/25 text-[9px] tracking-widest">02</span>
@@ -277,151 +381,60 @@ const DeliveryDetails = () => {
 
               {/* ── LEFT: Delivery Form ── */}
               <div className="bg-[#0d0a05] panel-in">
+
                 {/* SAVED ADDRESSES */}
+                {savedAddresses.length > 0 && (
+                  <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7 mb-px">
+                    <div className="flex items-start gap-4 mb-6">
+                      <span className="text-[#c9a96e]/50 mt-0.5 flex-shrink-0">
+                        <LocationIcon />
+                      </span>
+                      <div>
+                        <p className="text-[#c9a96e] text-[9px] tracking-[0.45em] uppercase mb-1 opacity-65">
+                          SAVED LOCATIONS
+                        </p>
+                        <h2 className="font-['Cormorant_Garamond',serif] text-[1.5rem] font-light text-[#f5f0e8]">
+                          Choose Previous <span className="italic text-[#c9a96e]">Address</span>
+                        </h2>
+                      </div>
+                    </div>
 
-{
-  savedAddresses.length > 0 && (
+                    <div className="space-y-3">
+                      {savedAddresses.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedAddressId(item.id);
+                            setDeliveryAddress(item.deliveryAddress);
+                            setCity(item.city);
+                            setPhone(item.phone);
+                            setErrors({});
+                          }}
+                          className={`w-full text-left p-4 border transition-all
+                            ${selectedAddressId === item.id
+                              ? "border-[#c9a96e] bg-[#c9a96e]/05"
+                              : "border-[#c9a96e]/10 hover:border-[#c9a96e]/30"
+                            }`}
+                        >
+                          <p className="text-[#f5f0e8] text-sm leading-relaxed">
+                            {item.deliveryAddress}
+                          </p>
+                          <div className="flex items-center justify-between mt-3">
+                            <p className="text-[#c9a96e]/60 text-[10px] tracking-[0.2em] uppercase">
+                              {item.city}
+                            </p>
+                            <p className="text-[#f5f0e8]/35 text-[10px]">
+                              {item.phone}
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-    <div className="
-      bg-[#110d07]
-      border border-[#c9a96e]/10
-      p-7 mb-px
-    ">
-
-      <div className="
-        flex items-start
-        gap-4 mb-6
-      ">
-
-        <span className="
-          text-[#c9a96e]/50
-          mt-0.5
-          flex-shrink-0
-        ">
-          <LocationIcon />
-        </span>
-
-        <div>
-
-          <p className="
-            text-[#c9a96e]
-            text-[9px]
-            tracking-[0.45em]
-            uppercase
-            mb-1
-            opacity-65
-          ">
-            SAVED LOCATIONS
-          </p>
-
-          <h2 className="
-            font-['Cormorant_Garamond',serif]
-            text-[1.5rem]
-            font-light
-            text-[#f5f0e8]
-          ">
-            Choose Previous
-            <span className="
-              italic text-[#c9a96e]
-            ">
-              {" "}Address
-            </span>
-          </h2>
-
-        </div>
-
-      </div>
-
-      <div className="space-y-3">
-
-        {savedAddresses.map(
-          (item) => (
-
-          <button
-            key={item.id}
-
-            type="button"
-
-            onClick={() => {
-
-              setSelectedAddressId(
-                item.id
-              );
-
-              setAddress(
-                item.deliveryAddress
-              );
-
-              setPhone1(
-                item.phone
-              );
-            }}
-
-            className={`
-              w-full
-              text-left
-              p-4
-              border
-              transition-all
-
-              ${
-                selectedAddressId
-                === item.id
-                  ? `
-                    border-[#c9a96e]
-                    bg-[#c9a96e]/05
-                  `
-                  : `
-                    border-[#c9a96e]/10
-                    hover:border-[#c9a96e]/30
-                  `
-              }
-            `}
-          >
-
-            <p className="
-              text-[#f5f0e8]
-              text-sm
-              leading-relaxed
-            ">
-              {item.deliveryAddress}
-            </p>
-
-            <div className="
-              flex items-center
-              justify-between
-              mt-3
-            ">
-
-              <p className="
-                text-[#c9a96e]/60
-                text-[10px]
-                tracking-[0.2em]
-                uppercase
-              ">
-                {item.city}
-              </p>
-
-              <p className="
-                text-[#f5f0e8]/35
-                text-[10px]
-              ">
-                {item.phone}
-              </p>
-
-            </div>
-
-          </button>
-
-        ))}
-
-      </div>
-
-    </div>
-  )
-}
-
-                {/* Address Section */}
+                {/* ── Address Section ── */}
                 <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7">
                   <div className="flex items-start gap-4 mb-7">
                     <span className="text-[#c9a96e]/50 mt-0.5 flex-shrink-0"><LocationIcon /></span>
@@ -433,15 +446,33 @@ const DeliveryDetails = () => {
                     </div>
                   </div>
 
-                  <TextAreaField
-                    label="Full Delivery Address *"
-                    placeholder="House / Flat No., Street, Area, Landmark, City, Pincode"
-                    value={address}
-                    onChange={(e) => { setAddress(e.target.value); if (errors.address) setErrors({ ...errors, address: "" }); }}
-                    error={errors.address}
-                  />
+                  <div className="space-y-5">
+                    <TextAreaField
+                      label="Full Delivery Address *"
+                      placeholder="House / Flat No., Street, Area, Landmark, Pincode"
+                      value={deliveryAddress}
+                      onChange={(e) => {
+                        setDeliveryAddress(e.target.value);
+                        if (errors.deliveryAddress) setErrors({ ...errors, deliveryAddress: "" });
+                      }}
+                      error={errors.deliveryAddress}
+                    />
 
-                  <div className="mt-4 flex items-center gap-2 p-3 border border-[#c9a96e]/10 bg-[#c9a96e]/03">
+                    <Field
+                      label="City *"
+                      name="city"
+                      type="text"
+                      placeholder="e.g. Kochi"
+                      value={city}
+                      onChange={(e) => {
+                        setCity(e.target.value);
+                        if (errors.city) setErrors({ ...errors, city: "" });
+                      }}
+                      error={errors.city}
+                    />
+                  </div>
+
+                  <div className="mt-5 flex items-center gap-2 p-3 border border-[#c9a96e]/10 bg-[#c9a96e]/03">
                     <span className="text-[#c9a96e]/35 flex-shrink-0"><TruckIcon /></span>
                     <p className="text-[#f5f0e8]/28 text-[10px] tracking-wide leading-relaxed">
                       Please include a nearby landmark to help our delivery partner find you easily.
@@ -449,49 +480,34 @@ const DeliveryDetails = () => {
                   </div>
                 </div>
 
-                {/* Contact Section */}
+                {/* ── Contact Section ── */}
                 <div className="extra-in bg-[#110d07] border border-[#c9a96e]/10 border-t-0 p-7 space-y-5">
                   <div className="flex items-start gap-4 mb-2">
                     <span className="text-[#c9a96e]/50 mt-0.5 flex-shrink-0"><PhoneIcon /></span>
                     <div>
                       <p className="text-[#c9a96e] text-[9px] tracking-[0.45em] uppercase mb-1 opacity-65">STEP 2</p>
                       <h3 className="font-['Cormorant_Garamond',serif] text-[1.3rem] font-light text-[#f5f0e8]">
-                        Contact <span className="italic text-[#c9a96e]">Numbers</span>
+                        Contact <span className="italic text-[#c9a96e]">Number</span>
                       </h3>
                     </div>
                   </div>
 
                   <Field
-                    label="Primary Phone Number *"
-                    name="phone1"
+                    label="Phone Number *"
+                    name="phone"
                     type="tel"
                     placeholder="10-digit mobile number"
-                    value={phone1}
+                    value={phone}
                     onChange={(e) => {
-                      setPhone1(e.target.value.replace(/\D/g, "").slice(0, 10));
-                      if (errors.phone1) setErrors({ ...errors, phone1: "" });
+                      setPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                      if (errors.phone) setErrors({ ...errors, phone: "" });
                     }}
-                    error={errors.phone1}
+                    error={errors.phone}
                     maxLength={10}
                   />
 
-                  <div className="relative">
-                    <Field
-                      label="Secondary Phone Number (Optional)"
-                      name="phone2"
-                      type="tel"
-                      placeholder="Alternate contact number"
-                      value={phone2}
-                      onChange={(e) => setPhone2(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                      maxLength={10}
-                    />
-                    <span className="absolute right-3 top-8 text-[#f5f0e8]/15 pointer-events-none">
-                      <PhoneAltIcon />
-                    </span>
-                  </div>
-
                   <p className="text-[#f5f0e8]/22 text-[10px] tracking-wide">
-                    Our delivery partner may call you for directions — please ensure your primary number is reachable.
+                    Our delivery partner may call you for directions — please ensure your number is reachable.
                   </p>
                 </div>
 
@@ -512,13 +528,12 @@ const DeliveryDetails = () => {
 
                   {/* Items */}
                   <div className="space-y-3 mb-6 max-h-56 overflow-y-auto pr-1 slim-scroll">
-                    {cart.map((item, i) => {
-                      // const base    = Number(item.product?.basePrice || 0);
-                      // const beanAdd = Number(item.bean?.priceAdd      || 0);
-                      // const milkAdd = Number(item.milk?.priceAdd      || 0);
-                      // const price   = (base + beanAdd + milkAdd) * item.quantity;
-
-                      const price = Number(item.totalPrice || 0 );
+                    {items.map((item, i) => {
+                      const price = Number(
+  item.totalPrice ||
+  item.price ||
+  0
+);
                       return (
                         <div key={i} className="flex items-center gap-3 group">
                           <div className="relative w-12 h-10 flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">
@@ -535,7 +550,7 @@ const DeliveryDetails = () => {
                             <p className="text-[#f5f0e8]/25 text-[10px]">× {item.quantity}</p>
                           </div>
                           <span className="font-['Cormorant_Garamond',serif] text-[0.95rem] text-[#c9a96e] flex-shrink-0">
-                            ₹{price.toFixed(0)}
+                            ${price.toFixed(0)}
                           </span>
                         </div>
                       );
@@ -548,16 +563,16 @@ const DeliveryDetails = () => {
                   <div className="space-y-3 mb-7">
                     <div className="flex justify-between">
                       <span className="text-[#f5f0e8]/40 text-[10px] tracking-[0.2em] uppercase">Subtotal</span>
-                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">₹{subtotal.toFixed(0)}</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">${subtotal.toFixed(0)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#f5f0e8]/40 text-[10px] tracking-[0.2em] uppercase">Delivery</span>
-                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">₹{shipping}</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#f5f0e8]/60">${shipping}</span>
                     </div>
                     <div className="h-px bg-gradient-to-r from-[#c9a96e]/20 to-transparent" />
                     <div className="flex justify-between items-baseline">
                       <span className="text-[#f5f0e8]/70 text-[10px] tracking-[0.2em] uppercase">Total</span>
-                      <span className="font-['Cormorant_Garamond',serif] text-[2rem] font-light text-[#c9a96e]">₹{total.toFixed(0)}</span>
+                      <span className="font-['Cormorant_Garamond',serif] text-[2rem] font-light text-[#c9a96e]">${total.toFixed(0)}</span>
                     </div>
                   </div>
 

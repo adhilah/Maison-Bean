@@ -146,19 +146,35 @@ export default function UserOrders({ isAdmin = false }) {
   const [updating, setUpdating]   = useState(null); // order id being updated
 
   useEffect(() => {
-    api.get("/order")
-      .then(res => {
-        const data = isAdmin
-          ? res.data
-          : res.data.filter(o => o.userId === user.id);
-        setOrders(data);
-      })
-      .catch(err => {
-        console.error(err);
-        toast.error("Failed to load orders");
-      })
-      .finally(() => setLoading(false));
-  }, [user]);
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+
+      const endpoint =
+        isAdmin
+          ? "/admin/orders"
+          : "/order";
+
+      const response =
+        await api.get(endpoint);
+
+      setOrders(response.data || []);
+    }
+    catch (err) {
+      console.error(err);
+
+      toast.error(
+        err.response?.data?.message ||
+        "Failed to load orders"
+      );
+    }
+    finally {
+      setLoading(false);
+    }
+  };
+
+  fetchOrders();
+}, [isAdmin]);
 
   const handleAdvanceStatus = async (order) => {
     const current = order.status.toLowerCase();
@@ -186,6 +202,35 @@ export default function UserOrders({ isAdmin = false }) {
       setUpdating(null);
     }
   };
+
+  const handleDeleteOrder = async (id) => {
+  const confirmed =
+    window.confirm(
+      "Delete this order permanently?"
+    );
+
+  if (!confirmed) return;
+
+  try {
+    await api.delete(`/order/${id}`);
+
+    setOrders((prev) =>
+      prev.filter((o) => o.id !== id)
+    );
+
+    toast.success(
+      "Order deleted successfully"
+    );
+  }
+  catch (err) {
+    console.error(err);
+
+    toast.error(
+      err.response?.data?.message ||
+      "Failed to delete order"
+    );
+  }
+};
 
   /* ── Loading ── */
   if (loading) {
@@ -232,109 +277,274 @@ export default function UserOrders({ isAdmin = false }) {
       </div>
 
       {/* Table wrapper */}
-      <div className="rounded-2xl border border-[#1f1f1f] overflow-hidden" style={{ background: "#111111" }}>
-        <div className="overflow-x-auto">
-          <table className="w-full">
+      <div
+  className="rounded-2xl border border-[#1f1f1f] overflow-hidden"
+  style={{ background: "#111111" }}
+>
+  <div className="overflow-x-auto">
+    <table className="w-full">
 
-            <thead>
-              <tr className="border-b border-[#1f1f1f]">
-                {["Order", "Items", "Total", "Status", "Date", ...(isAdmin ? ["Action"] : [])].map(h => (
-                  <th
-                    key={h}
-                    className="px-5 py-3.5 text-left text-[10px] tracking-[2px] uppercase text-[#3a3530] font-medium"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+      {/* ================= HEADER ================= */}
 
-            <tbody>
-              {orders.map((order, idx) => {
-                const status  = order.status?.toLowerCase();
-                const style   = STATUS_STYLE[status] || STATUS_STYLE.pending;
-                const nextKey = STATUS_FLOW[status];
-                const isLast  = idx === orders.length - 1;
+      <thead>
+        <tr className="border-b border-[#1f1f1f]">
 
-                return (
-                  <tr
-                    key={order.id}
-                    className={`group hover:bg-[#0f0f0f] transition-colors duration-150 ${!isLast ? "border-b border-[#1a1a1a]" : ""}`}
-                  >
+          {[
+            "Order",
+            "Items",
+            "Total",
+            "Status",
+            "Date",
+            "Actions",
+          ].map((h) => (
+            <th
+              key={h}
+              className="px-5 py-3.5 text-left text-[10px]
+              tracking-[2px] uppercase text-[#3a3530]
+              font-medium whitespace-nowrap"
+            >
+              {h}
+            </th>
+          ))}
 
-                    {/* Order ID */}
-                    <td className="px-5 py-4">
-                      <span className="text-[13px] font-medium text-[#c9a96e]">
-                        #{order.id.slice(-6).toUpperCase()}
+        </tr>
+      </thead>
+
+      {/* ================= BODY ================= */}
+
+      <tbody>
+
+        {orders.map((order, idx) => {
+
+          const status =
+            order.status?.toLowerCase();
+
+          const style =
+            STATUS_STYLE[status] ||
+            STATUS_STYLE.pending;
+
+          const nextKey =
+            STATUS_FLOW[status];
+
+          const isLast =
+            idx === orders.length - 1;
+
+          return (
+
+            <tr
+              key={order.id}
+              className={`
+                group hover:bg-[#0f0f0f]
+                transition-colors duration-150
+                ${!isLast
+                  ? "border-b border-[#1a1a1a]"
+                  : ""}
+              `}
+            >
+
+              {/* ================= ORDER ID ================= */}
+
+              <td className="px-5 py-4 whitespace-nowrap">
+
+                <span className="text-[13px] font-medium text-[#c9a96e]">
+                  #{String(order.id)
+                    .slice(-6)
+                    .toUpperCase()}
+                </span>
+
+              </td>
+
+              {/* ================= ITEMS ================= */}
+
+              <td className="px-5 py-4 min-w-[220px]">
+
+                <div className="space-y-1">
+
+                  {order.items.map((item) => (
+
+                    <div
+                      key={item.id}
+                      className="text-[12.5px] text-[#8a8680]"
+                    >
+                      {item.product.name}
+
+                      <span className="text-[#3a3530] ml-1">
+                        × {item.quantity}
                       </span>
-                    </td>
 
-                    {/* Items */}
-                    <td className="px-5 py-4">
-                      <div className="space-y-0.5">
-                        {order.items.map(item => (
-                          <div key={item.id} className="text-[12.5px] text-[#8a8680]">
-                            {item.product.name}
-                            <span className="text-[#3a3530] ml-1">× {item.quantity}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </td>
+                    </div>
 
-                    {/* Total */}
-                    <td className="px-5 py-4">
-                      <span
-                        className="text-[15px] font-medium text-[#f0ece4]"
-                        style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
-                      >
-                        ₹{order.total}
-                      </span>
-                    </td>
+                  ))}
 
-                    {/* Status badge */}
-                    <td className="px-5 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium border ${style.badge}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-                        {STATUS_LABEL[status] || order.status}
-                      </span>
-                    </td>
+                </div>
 
-                    {/* Date */}
-                    <td className="px-5 py-4 text-[12.5px] text-[#5a5650]">
-                      {new Date(order.tracking?.confirmed).toLocaleDateString("en-IN", {
-                        day: "numeric", month: "short", year: "numeric"
-                      })}
-                    </td>
+              </td>
 
-                    {/* Admin action */}
-                    {isAdmin && (
-                      <td className="px-5 py-4">
-                        {nextKey ? (
-                          <button
-                            onClick={() => handleAdvanceStatus(order)}
-                            disabled={updating === order.id}
-                            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-[12px] font-medium border border-[#2e2400] text-[#c9a96e] hover:bg-[#1a1500] hover:border-[#c9a96e] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
-                            style={{ background: updating === order.id ? "#1a1500" : "transparent" }}
-                          >
-                            {updating === order.id
-                              ? <Loader2 size={13} className="animate-spin" />
-                              : <ChevronRight size={13} />
-                            }
-                            {STATUS_LABEL[nextKey]}
-                          </button>
-                        ) : (
-                          <span className="text-[11px] text-[#2e2b26] italic">Completed</span>
-                        )}
-                      </td>
-                    )}
+              {/* ================= TOTAL ================= */}
 
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              <td className="px-5 py-4 whitespace-nowrap">
+
+                <span
+                  className="text-[15px] font-medium text-[#f0ece4]"
+                  style={{
+                    fontFamily:
+                      "'Playfair Display', Georgia, serif",
+                  }}
+                >
+                  ₹{order.total}
+                </span>
+
+              </td>
+
+              {/* ================= STATUS ================= */}
+
+              <td className="px-5 py-4 whitespace-nowrap">
+
+                <span
+                  className={`
+                    inline-flex items-center gap-1.5
+                    px-3 py-1 rounded-full
+                    text-[11px] font-medium border
+                    ${style.badge}
+                  `}
+                >
+                  <span
+                    className={`
+                      w-1.5 h-1.5 rounded-full
+                      ${style.dot}
+                    `}
+                  />
+
+                  {STATUS_LABEL[status] ||
+                    order.status}
+
+                </span>
+
+              </td>
+
+              {/* ================= DATE ================= */}
+
+              <td className="px-5 py-4 text-[12.5px] text-[#5a5650] whitespace-nowrap">
+
+                {new Date(
+                  order.tracking?.confirmed
+                ).toLocaleDateString(
+                  "en-IN",
+                  {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  }
+                )}
+
+              </td>
+
+              {/* ================= ACTIONS ================= */}
+
+              <td className="px-5 py-4">
+
+                <div className="flex items-center gap-2 flex-wrap">
+
+                  {/* ===== ADMIN STATUS UPDATE ===== */}
+
+                  {isAdmin && nextKey && (
+
+                    <button
+                      onClick={() =>
+                        handleAdvanceStatus(order)
+                      }
+
+                      disabled={
+                        updating === order.id
+                      }
+
+                      className="
+                        flex items-center gap-1.5
+                        px-3.5 py-1.5
+                        rounded-xl text-[12px]
+                        font-medium border
+                        border-[#2e2400]
+                        text-[#c9a96e]
+                        hover:bg-[#1a1500]
+                        hover:border-[#c9a96e]
+                        disabled:opacity-40
+                        disabled:cursor-not-allowed
+                        transition-all duration-200
+                        cursor-pointer
+                      "
+
+                      style={{
+                        background:
+                          updating === order.id
+                            ? "#1a1500"
+                            : "transparent",
+                      }}
+                    >
+
+                      {updating === order.id ? (
+                        <Loader2
+                          size={13}
+                          className="animate-spin"
+                        />
+                      ) : (
+                        <ChevronRight size={13} />
+                      )}
+
+                      {STATUS_LABEL[nextKey]}
+
+                    </button>
+
+                  )}
+
+                  {/* ===== CUSTOMER DELETE ===== */}
+
+                  {!isAdmin && (
+
+                    <button
+                      onClick={() =>
+                        handleDeleteOrder(order.id)
+                      }
+
+                      className="
+                        px-3.5 py-1.5
+                        rounded-xl text-[12px]
+                        font-medium border
+                        border-red-900
+                        text-red-400
+                        hover:bg-red-950
+                        hover:border-red-500
+                        transition-all duration-200
+                      "
+                    >
+                      Delete
+                    </button>
+
+                  )}
+
+                  {/* ===== COMPLETED ===== */}
+
+                  {isAdmin && !nextKey && (
+
+                    <span className="text-[11px] text-[#2e2b26] italic">
+                      Completed
+                    </span>
+
+                  )}
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          );
+        })}
+
+      </tbody>
+
+    </table>
+  </div>
+</div>
 
       <p className="text-center text-[11px] text-[#2e2b26] mt-8 tracking-widest uppercase">
         Maison Bean ✦ {isAdmin ? "Admin" : "Orders"}

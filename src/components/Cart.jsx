@@ -736,7 +736,7 @@ const CartPage = () => {
                         className="text-[#f5f0e8]"
                         style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.15rem", fontWeight: 300 }}
                       >
-                        ₹{subtotal.toFixed(0)}
+                        ${subtotal.toFixed(0)}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
@@ -745,7 +745,7 @@ const CartPage = () => {
                         className="text-[#f5f0e8]"
                         style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.15rem", fontWeight: 300 }}
                       >
-                        ₹{shipping}
+                        ${shipping}
                       </span>
                     </div>
                     <div className="h-px bg-gradient-to-r from-[#c9a96e]/30 to-transparent" />
