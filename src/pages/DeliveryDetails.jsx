@@ -125,7 +125,7 @@ const isBuyNow =
   0
 );
 
-  const shipping = 49;
+  const shipping = 2;
   const total    = subtotal + shipping;
 
   const validateForm = () => {
