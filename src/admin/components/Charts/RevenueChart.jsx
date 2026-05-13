@@ -17,7 +17,7 @@ export default function RevenueChart() {
   console.log(data);
 
   useEffect(() => {
-  api.get("/order")
+  api.get("/order/all/ad")
     .then((res) => res.json())
     .then((orders) => {
       const monthlyData = {};

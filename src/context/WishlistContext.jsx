@@ -1,117 +1,79 @@
-// import { createContext, useContext, useEffect, useState } from "react";
-// import axios from "axios";
-// import api from "../services/api";
-// import toast from "react-hot-toast";
-// import { useAuth } from "./AuthContext";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState
+} from "react";
 
-// const WishlistContext = createContext();
-
-// export const WishlistProvider = ({ children }) => {
-//   const { user } = useAuth();
-//   const [wishlist, setWishlist] = useState([]);
-
-//   useEffect(() => {
-   
-//     if (!user?.id || user.role === "admin") {
-//       setWishlist([]);
-//       return;
-//     }
-
-//     axios
-//       .get(`https://localhost:7257/api/user/${user.id}`)
-//       .then((res) => setWishlist(res.data.wishlist || []))
-//       .catch(() => {
-//         toast.error("Failed to load wishlist");
-//         setWishlist([]);
-//       });
-//   }, [user]);
-
-//   const toggleWishlist = async (product) => {
-//     if (!user?.id || user.role === "admin") {
-//       toast.error("Please login to manage wishlist");
-//       return;
-//     }
-
-//     const exists = wishlist.some(
-//       (item) => String(item.id) === String(product.id)
-//     );
-
-//     const updatedWishlist = exists
-//       ? wishlist.filter((item) => String(item.id) !== String(product.id))
-//       : [...wishlist, product];
-
-//     try {
-//       await axios.patch(`https://localhost:7257/api/user/${user.id}`, {
-//         wishlist: updatedWishlist,
-//       });
-//       setWishlist(updatedWishlist);
-//       toast.success(
-//         exists
-//           ? `${product.name} removed from wishlist`
-//           : `${product.name} added to wishlist`
-//       );
-//     } catch {
-//       toast.error("Failed to update wishlist");
-//     }
-//   };
-
-//   const isWishlisted = (product) =>
-//     wishlist.some((item) => String(item.id) === String(product.id));
-
-//   return (
-//     <WishlistContext.Provider
-//       value={{
-//         wishlist,
-//         wishlistCount: wishlist.length,
-//         toggleWishlist,
-//         isWishlisted,
-//       }}
-//     >
-//       {children}
-//     </WishlistContext.Provider>
-//   );
-// };
-
-// export const useWishlist = () => useContext(WishlistContext);
-
-
-
-
-//======================================================
-
-
-
-import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 import api from "../services/api";
-import { useAuth } from "./AuthContext";
 
-const WishlistContext = createContext();
+import { useAuth }
+from "./AuthContext";
 
-export const WishlistProvider = ({ children }) => {
+const WishlistContext =
+  createContext();
 
-  const { user } = useAuth();
+export const WishlistProvider =
+({ children }) => {
 
-  const [wishlist, setWishlist] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {
+  user,
+  isLoading
+} = useAuth();
 
+  const [wishlist, setWishlist] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(false);
+
+  // ==========================================
   // LOAD WISHLIST
-  useEffect(() => {
+  // ==========================================
+useEffect(() => {
 
-    const fetchWishlist = async () => {
+  // WAIT FOR AUTH
 
-      if (!user || user.role === "admin") {
-        setWishlist([]);
-        return;
-      }
+  if (isLoading) return;
+
+  // NO USER
+
+  if (!user) {
+
+    setWishlist([]);
+
+    return;
+  }
+
+  // BLOCK ADMIN
+
+  if (
+    user?.role?.toUpperCase()
+    === "ADMIN"
+  ) {
+
+    setWishlist([]);
+
+    return;
+  }
+
+  const fetchWishlist =
+    async () => {
 
       try {
 
         setLoading(true);
 
-        const res = await api.get("/wishlist");
+        const res =
+          await api.get(
+            "/wishlist"
+          );
 
-        setWishlist(res.data || []);
+        setWishlist(
+          res.data || []
+        );
 
       } catch (err) {
 
@@ -125,133 +87,223 @@ export const WishlistProvider = ({ children }) => {
       }
     };
 
-    fetchWishlist();
+  fetchWishlist();
 
-  }, [user]);
+}, [user, isLoading]);
 
-  // TOGGLE
-  const toggleWishlist = async (product) => {
+  // ==========================================
+  // TOGGLE WISHLIST
+  // ==========================================
 
-    if (!user || user.role === "admin") {
-      toast.error("Please login first");
-      return;
-    }
+  const toggleWishlist =
+    async (product) => {
 
-    try {
+      // BLOCK ADMIN
 
-      const res = await api.post(
-        "/wishlist/toggle",
-        {
-          productId: product.id
+      if (
+        !user ||
+        user?.role
+          ?.toUpperCase() === "ADMIN"
+      ) {
+
+        toast.error(
+          "Please login as customer"
+        );
+
+        return;
+      }
+
+      try {
+
+        await api.post(
+          "/wishlist/toggle",
+          {
+            productId:
+              product.id
+          }
+        );
+
+        const exists =
+          wishlist.some(
+            (item) =>
+              String(
+                item.productId ||
+                item.id
+              ) ===
+              String(product.id)
+          );
+
+        // REMOVE
+
+        if (exists) {
+
+          setWishlist((prev) =>
+            prev.filter(
+              (item) =>
+                String(
+                  item.productId ||
+                  item.id
+                ) !==
+                String(product.id)
+            )
+          );
+
+          toast.success(
+            `${product.name} removed from wishlist`
+          );
+
         }
-      );
 
-      const exists = wishlist.some(
-        (item) =>
-          String(item.productId || item.id)
-          === String(product.id)
-      );
+        // ADD
 
-      if (exists) {
+        else {
+
+          setWishlist((prev) => [
+
+            ...prev,
+
+            {
+              ...product,
+
+              productId:
+                product.id
+            }
+          ]);
+
+          toast.success(
+            `${product.name} added to wishlist`
+          );
+        }
+
+      } catch (err) {
+
+        console.error(err);
+
+        toast.error(
+          "Failed to update wishlist"
+        );
+      }
+    };
+
+  // ==========================================
+  // REMOVE ITEM
+  // ==========================================
+
+  const removeWishlistItem =
+    async (wishlistId) => {
+
+      // BLOCK ADMIN
+
+      if (
+        !user ||
+        user?.role
+          ?.toUpperCase() === "ADMIN"
+      ) {
+        return;
+      }
+
+      try {
+
+        await api.delete(
+          `/wishlist/remove/${wishlistId}`
+        );
 
         setWishlist((prev) =>
           prev.filter(
             (item) =>
-              String(item.productId || item.id)
-              !== String(product.id)
+              item.wishlistId !==
+              wishlistId
           )
         );
 
         toast.success(
-          `${product.name} removed from wishlist`
+          "Item removed"
         );
 
-      } else {
+      } catch (err) {
 
-        setWishlist((prev) => [
-          ...prev,
-          {
-            ...product,
-            productId: product.id
-          }
-        ]);
+        console.error(err);
 
-        toast.success(
-          `${product.name} added to wishlist`
+        toast.error(
+          "Failed to remove item"
         );
       }
+    };
 
-    } catch (err) {
+  // ==========================================
+  // CLEAR WISHLIST
+  // ==========================================
 
-      console.error(err);
+  const clearWishlist =
+    async () => {
 
-      toast.error("Failed to update wishlist");
-    }
-  };
+      // BLOCK ADMIN
 
-  // REMOVE
-  const removeWishlistItem = async (wishlistId) => {
+      if (
+        !user ||
+        user?.role
+          ?.toUpperCase() === "ADMIN"
+      ) {
+        return;
+      }
 
-    try {
+      try {
 
-      await api.delete(
-        `/wishlist/remove/${wishlistId}`
+        await api.delete(
+          "/wishlist/clear"
+        );
+
+        setWishlist([]);
+
+        toast.success(
+          "Wishlist cleared"
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        toast.error(
+          "Failed to clear wishlist"
+        );
+      }
+    };
+
+  // ==========================================
+  // CHECK WISHLIST
+  // ==========================================
+
+  const isWishlisted =
+    (product) => {
+
+      return wishlist.some(
+        (item) =>
+          String(
+            item.productId ||
+            item.id
+          ) ===
+          String(product.id)
       );
-
-      setWishlist((prev) =>
-        prev.filter(
-          (item) =>
-            item.wishlistId !== wishlistId
-        )
-      );
-
-    } catch (err) {
-
-      console.error(err);
-
-      toast.error("Failed to remove item");
-    }
-  };
-
-  // CLEAR
-  const clearWishlist = async () => {
-
-    try {
-
-      await api.delete("/wishlist/clear");
-
-      setWishlist([]);
-
-      toast.success("Wishlist cleared");
-
-    } catch (err) {
-
-      console.error(err);
-
-      toast.error("Failed to clear wishlist");
-    }
-  };
-
-  // CHECK
-  const isWishlisted = (product) => {
-
-    return wishlist.some(
-      (item) =>
-        String(item.productId || item.id)
-        === String(product.id)
-    );
-  };
+    };
 
   return (
 
     <WishlistContext.Provider
       value={{
+
         wishlist,
-        wishlistCount: wishlist.length,
+
+        wishlistCount:
+          wishlist.length,
+
         toggleWishlist,
+
         removeWishlistItem,
+
         clearWishlist,
+
         isWishlisted,
+
         loading
       }}
     >
@@ -260,5 +312,7 @@ export const WishlistProvider = ({ children }) => {
   );
 };
 
-export const useWishlist = () =>
-  useContext(WishlistContext);
+export const useWishlist =
+  () => useContext(
+    WishlistContext
+  );

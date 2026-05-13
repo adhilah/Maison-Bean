@@ -5,73 +5,109 @@ import {
   useEffect,
 } from "react";
 
-const AuthContext = createContext(null);
+import api from "../services/api";
 
-export function AuthProvider({ children }) {
+const AuthContext =
+  createContext(null);
 
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+export function AuthProvider({
+  children,
+}) {
 
-  // Load user from localStorage on app start
+  const [user, setUser] =
+    useState(null);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
+  // =====================================
+  // LOAD AUTHENTICATED USER
+  // =====================================
+
   useEffect(() => {
+
+    const loadUser = async () => {
+
+      try {
+
+        const response =
+          await api.get(
+            "/user/me",
+            {
+              withCredentials: true,
+            }
+          );
+
+        setUser(response.data);
+
+      } catch (error) {
+
+        console.error(
+          "Auth check failed:",
+          error
+        );
+
+        setUser(null);
+
+      } finally {
+
+        setIsLoading(false);
+      }
+    };
+
+    loadUser();
+
+  }, []);
+
+  // =====================================
+  // LOGIN
+  // =====================================
+
+  const login = (userData) => {
+
+    setUser(userData);
+  };
+
+  // =====================================
+  // LOGOUT
+  // =====================================
+
+  const logout = async () => {
 
     try {
 
-      const storedUser =
-        localStorage.getItem("authUser");
-
-      if (storedUser) {
-
-        const parsedUser =
-          JSON.parse(storedUser);
-
-        setUser(parsedUser);
-      }
+      await api.post(
+        "/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
     } catch (error) {
 
       console.error(
-        "Failed to load auth user:",
+        "Logout failed:",
         error
       );
 
-      localStorage.removeItem("authUser");
+    } finally {
+
+      setUser(null);
     }
-
-    setIsLoading(false);
-
-  }, []);
-
-  // Login
-  const login = (userData) => {
-
-    setUser(userData);
-
-    localStorage.setItem(
-      "authUser",
-      JSON.stringify(userData)
-    );
   };
 
-  // Logout
-  const logout = () => {
+  // =====================================
+  // CLEAR SESSION
+  // =====================================
 
-    setUser(null);
-
-    localStorage.removeItem("authUser");
-    localStorage.removeItem("cart");
-    localStorage.removeItem("wishlist");
-  };
-
-  // Clear invalid session
   const clearSession = () => {
 
     setUser(null);
-
-    localStorage.removeItem("authUser");
   };
 
   return (
+
     <AuthContext.Provider
       value={{
 
@@ -85,7 +121,6 @@ export function AuthProvider({ children }) {
 
         isLoading,
 
-        // Role helpers
         isAdmin:
           user?.role?.toUpperCase() ===
           "ADMIN",
@@ -94,7 +129,8 @@ export function AuthProvider({ children }) {
           user?.role?.toUpperCase() ===
           "CUSTOMER",
 
-        isAuthenticated: !!user,
+        isAuthenticated:
+          !!user,
       }}
     >
       {children}
@@ -104,7 +140,8 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => {
 
-  const context = useContext(AuthContext);
+  const context =
+    useContext(AuthContext);
 
   if (!context) {
 

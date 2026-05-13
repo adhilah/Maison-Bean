@@ -535,9 +535,7 @@ import {
 
 import { useCart } from "../context/CartContext";
 
-import toast, {
-  Toaster,
-} from "react-hot-toast";
+import toast from "react-hot-toast";
 
 import api from "../services/api";
 import Navbar from "../components/Navbar";
@@ -750,11 +748,18 @@ const PaymentPage = () => {
       setLoading(true);
 
       const selectedAddressId =
-        addressId ||
-        localStorage.getItem(
-          "selectedAddressId"
-        );
+  addressId ??
+  localStorage.getItem(
+    "selectedAddressId"
+  );
+if (!selectedAddressId) {
 
+  toast.error(
+    "Please select delivery address"
+  );
+
+  return;
+}
       const orderRequest = {
 
         addressId:
@@ -792,11 +797,51 @@ const PaymentPage = () => {
 
       /* ================= CREATE ORDER ================= */
 
-      const orderResponse =
-        await api.post(
-          "/order",
-          orderRequest
-        );
+      let orderResponse;
+
+if (buyNow) {
+
+  orderResponse =
+    await api.post(
+      "/order/single",
+      {
+        productId:
+          buyNowProduct.productId ||
+          buyNowProduct.id,
+
+        quantity:
+          buyNowProduct.quantity || 1,
+
+        isCustomized:
+          buyNowProduct.isCustomized || false,
+
+        beanId:
+          buyNowProduct.beanId || null,
+
+        milkId:
+          buyNowProduct.milkId || null,
+
+        addressId:
+          Number(selectedAddressId),
+
+        paymentMethod:
+          paymentMethod === "cod"
+            ? "cod"
+            : "razorpay",
+
+        upiId: null,
+      }
+    );
+
+}
+else {
+
+  orderResponse =
+    await api.post(
+      "/order",
+      orderRequest
+    );
+}
 
       const createdOrder =
         orderResponse.data;
@@ -988,7 +1033,6 @@ const PaymentPage = () => {
   return (
 
     <>
-      <Toaster />
 
       <div className="min-h-screen bg-[#0d0a05]">
 

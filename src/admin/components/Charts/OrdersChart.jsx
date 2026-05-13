@@ -70,7 +70,7 @@ export default function OrdersChart() {
   };
 
   useEffect(() => {
-    api.get("/order")
+    api.get("/order/all/ad")
       .then((res) => {
         const orders = res.data || [];
         console.log("Fetched orders:", orders); // Debug: Check console

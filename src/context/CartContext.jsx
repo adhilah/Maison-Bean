@@ -96,8 +96,10 @@ export const CartProvider = ({
   children
 }) => {
 
-  const { user } =
-    useAuth();
+  const {
+  user,
+  isLoading
+} = useAuth();
 
   const [cart, setCart] =
     useState([]);
@@ -111,17 +113,6 @@ export const CartProvider = ({
 
   const fetchCart =
     useCallback(async () => {
-
-      if (
-        !user?.id ||
-        user?.role?.toUpperCase()
-          === "ADMIN"
-      ) {
-
-        setCart([]);
-
-        return;
-      }
 
       try {
 
@@ -148,17 +139,42 @@ export const CartProvider = ({
         setLoading(false);
       }
 
-    }, [user]);
+    }, []);
 
   // =====================================================
-  // LOAD CART WHEN USER CHANGES
+  // LOAD CART
   // =====================================================
 
   useEffect(() => {
 
-    fetchCart();
+  // WAIT FOR AUTH
 
-  }, [fetchCart]);
+  if (isLoading) return;
+
+  // NO USER
+
+  if (!user) {
+
+    setCart([]);
+
+    return;
+  }
+
+  // BLOCK ADMIN
+
+  if (
+    user?.role?.toUpperCase()
+    === "ADMIN"
+  ) {
+
+    setCart([]);
+
+    return;
+  }
+
+  fetchCart();
+
+}, [user, isLoading, fetchCart]);
 
   // =====================================================
   // ADD TO CART
@@ -169,14 +185,16 @@ export const CartProvider = ({
       item
     ) => {
 
+      // BLOCK ADMIN
+
       if (
-        !user?.id ||
+        !user ||
         user?.role?.toUpperCase()
           === "ADMIN"
       ) {
 
         toast.error(
-          "Please login first"
+          "Please login as customer"
         );
 
         return;

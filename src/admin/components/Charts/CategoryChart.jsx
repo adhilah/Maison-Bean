@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import api from "../../../services/api";
 
 const CATEGORY_COLORS = {
   "Hot Coffee": "#EF4444",
@@ -66,7 +67,7 @@ export default function CategoryChart() {
 
   useEffect(() => {
    api
-    .get("/category")
+    .get("api/category")
     .then((res) => {
       const categoryMap = {
         "Hot Coffee": 0,

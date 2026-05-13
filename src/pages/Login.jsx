@@ -219,7 +219,7 @@ function Login() {
       // CONTEXT LOGIN
       login(userData);
 
-      toast.success("Login successful");
+      
 
       setTimeout(() => {
 
@@ -236,8 +236,11 @@ function Login() {
           navigate("/");
         }
 
-      }, 1000);
+      }, 2200);
+      
     }
+
+    toast.success("Login successful");
 
   } catch (err) {
 
@@ -332,7 +335,14 @@ function Login() {
               {!loading && <ArrowRight />}
 
             </button>
-
+                  <div className="flex justify-end -mt-2">
+  <Link
+    to="/forgot-password"
+    className="text-[10px] tracking-[0.18em] uppercase text-[#c9a96e]/55 hover:text-[#c9a96e] transition-colors duration-200"
+  >
+    Forgot Password?
+  </Link>
+</div>
             <p className="text-center text-[#f5f0e8]/30 text-[11px] tracking-[0.15em]">
               Don't have an account?{" "}
 
