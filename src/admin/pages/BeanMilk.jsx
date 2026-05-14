@@ -1,8 +1,23 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import {
+  createBeanType,
+  updateBeanType,
+  toggleBeanType,
+  deleteBeanType,
+  getBeanTypes,
+} from "../../services/beanTypeApi";
 
-const API = "/api";
+import {
+  createMilkOption,
+  updateMilkOption,
+  toggleMilkOption,
+  deleteMilkOption,
+  getMilkOptions,
+} from "../../services/milkOptionApi";
+
+// const API = "/api";
 
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (
@@ -48,7 +63,7 @@ const MilkIcon = () => (
     <path d="M8 2h8l2 4v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6z" /><path d="M6 6h12" />
   </svg>
 );
-
+  
 // ── Empty field template ───────────────────────────────────────
 const emptyBean = { name: "", description: "", priceAdd: 0, blocked: false };
 const emptyMilk = { name: "", calories: "", priceAdd: 0, blocked: false };
@@ -243,62 +258,176 @@ const Panel = ({ type, endpoint }) => {
   const [search,   setSearch]   = useState("");
 
   const load = async () => {
-    try {
-      const res = await api.get(`${API}/${endpoint}`);
-      setItems(res.data || []);
-    } catch {
-      toast.error(`Failed to load ${isBean ? "beans" : "milks"}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+
+  try {
+
+    const data =
+      isBean
+        ? await getBeanTypes()
+        : await getMilkOptions();
+
+    setItems(data || []);
+
+  } catch {
+
+    toast.error(
+      `Failed to load ${
+        isBean ? "beans" : "milks"
+      }`
+    );
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   useEffect(() => { load(); }, []);
 
   const handleSave = async (form) => {
-    try {
+
+  try {
+
+    if (isBean) {
+
       if (modal.item?.id) {
-        await api.put(`${API}/${endpoint}/${modal.item.id}`, form);
-        toast.success(`${form.name} updated`);
+
+        await updateBeanType(
+          modal.item.id,
+          form
+        );
+
+        toast.success(
+          `${form.name} updated`
+        );
+
       } else {
-        await api.post(`${API}/${endpoint}`, { ...form, blocked: false });
-        toast.success(`${form.name} added`);
+
+        await createBeanType(form);
+
+        toast.success(
+          `${form.name} added`
+        );
       }
-      setModal(null);
-      load();
-    } catch {
-      toast.error("Save failed");
+
+    } else {
+
+      if (modal.item?.id) {
+
+        await updateMilkOption(
+          modal.item.id,
+          form
+        );
+
+        toast.success(
+          `${form.name} updated`
+        );
+
+      } else {
+
+        await createMilkOption(form);
+
+        toast.success(
+          `${form.name} added`
+        );
+      }
     }
-  };
+
+    setModal(null);
+
+    load();
+
+  } catch {
+
+    toast.error("Save failed");
+  }
+};
 
   const handleDelete = async (item) => {
-    setConfirm({
-      message: `Delete "${item.name}"? This cannot be undone.`,
-      action: async () => {
-        try {
-          await apoi.delete(`${API}/${endpoint}/${item.id}`);
-          toast.success(`${item.name} deleted`);
-          load();
-        } catch { toast.error("Delete failed"); }
-        setConfirm(null);
-      },
-    });
-  };
 
-  const handleToggleBlock = async (item) => {
-    const action = item.blocked ? "unblock" : "block";
+  setConfirm({
+
+    message:
+      `Delete "${item.name}"?`,
+
+    action: async () => {
+
+      try {
+
+        if (isBean) {
+
+          await deleteBeanType(item.id);
+
+        } else {
+
+          await deleteMilkOption(item.id);
+        }
+
+        toast.success(
+          `${item.name} deleted`
+        );
+
+        load();
+
+      } catch {
+
+        toast.error(
+          "Delete failed"
+        );
+      }
+
+      setConfirm(null);
+    },
+  });
+};
+  const handleToggleBlock =
+  async (item) => {
+
+    const action =
+      item.blocked
+        ? "unblock"
+        : "block";
+
     setConfirm({
-      message: `${action.charAt(0).toUpperCase() + action.slice(1)} "${item.name}"?`,
+
+      message:
+        `${action} "${item.name}"?`,
+
       action: async () => {
+
         try {
-          await api.patch(`${API}/${endpoint}/${item.id}`, { blocked: !item.blocked });
-          toast.success(`${item.name} ${action}ed`);
+
+          if (isBean) {
+
+            await toggleBeanType(
+              item.id
+            );
+
+          } else {
+
+            await toggleMilkOption(
+              item.id
+            );
+          }
+
+          toast.success(
+            `${item.name} ${action}ed`
+          );
+
           load();
-        } catch { toast.error(`Failed to ${action}`); }
+
+        } catch {
+
+          toast.error(
+            `Failed to ${action}`
+          );
+        }
+
         setConfirm(null);
       },
     });
-  };
+};
 
   const filtered = items.filter((i) =>
     i.name?.toLowerCase().includes(search.toLowerCase())

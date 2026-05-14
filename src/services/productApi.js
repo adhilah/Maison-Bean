@@ -4,18 +4,26 @@ import api from "./api";
 // PUBLIC PRODUCTS
 // ======================================
 
-export const getProducts = async () => {
-  const response =
-    await api.get("/products");
+export const getProducts =
+  async () => {
 
-  return response.data;
+    const response =
+      await api.get(
+        "/products"
+      );
+
+    return response.data;
 };
 
-export const getProductById = async (id) => {
-  const response =
-    await api.get(`/products/${id}`);
+export const getProductById =
+  async (id) => {
 
-  return response.data;
+    const response =
+      await api.get(
+        `/products/${id}`
+      );
+
+    return response.data;
 };
 
 export const getProductsByCategory =
@@ -43,6 +51,8 @@ export const searchProducts =
 // ======================================
 // ADMIN PRODUCTS
 // ======================================
+
+// GET ALL PRODUCTS
 
 export const getAllProductsForAdmin =
   async () => {
@@ -76,7 +86,7 @@ export const updateProduct =
 
     const response =
       await api.put(
-        `/products/${id}update/ad`,
+        `/products/${id}/update/ad`,
         payload
       );
 

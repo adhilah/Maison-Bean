@@ -47,6 +47,8 @@ export const forgotPassword =
 // ADMIN USERS
 // ======================================
 
+// GET ALL USERS
+
 export const getAllUsers =
   async () => {
 
@@ -57,6 +59,8 @@ export const getAllUsers =
 
     return response.data;
 };
+
+// BLOCK / UNBLOCK USER
 
 export const toggleUser =
   async (id) => {
@@ -69,12 +73,14 @@ export const toggleUser =
     return response.data;
 };
 
+// DELETE USER
+
 export const deleteUser =
   async (id) => {
 
     const response =
       await api.delete(
-        `/user/${id}delete/ad`
+        `/user/${id}/delete/ad`
       );
 
     return response.data;

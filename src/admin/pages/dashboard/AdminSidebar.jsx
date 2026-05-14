@@ -21,7 +21,7 @@ export default function AdminSidebar() {
     { to: "/admin/products-management",  icon: Package,         label: "Product Management" },
     { to: "/admin/bean-milk-management", icon: Milk,            label: "Bean Milk Management" },
     { to: "/admin/orders-management",    icon: ShoppingBag,     label: "Order Management" },
-    { to: "/admin/cart-overview",        icon: ShoppingCart,    label: "Cart Overview" },
+    // { to: "/admin/cart-overview",        icon: ShoppingCart,    label: "Cart Overview" },
   ];
 
   return (

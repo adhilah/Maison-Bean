@@ -240,7 +240,7 @@ function Login() {
       
     }
 
-    toast.success("Login successful");
+    // toast.success("Login successful");
 
   } catch (err) {
 

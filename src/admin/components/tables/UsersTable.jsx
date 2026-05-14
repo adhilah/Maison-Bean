@@ -1,8 +1,30 @@
 import { useEffect, useState } from "react";
+
+import {
+  getAllUsers,
+  toggleUser,
+  deleteUser,
+} from "../../../services/userApi";
+
+import {
+  getAllOrders,
+} from "../../../services/orderApi";
+
 import api from "../../../services/api";
-import { Search, Trash2, ArrowLeft, Ban, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
-import toast from "react-hot-toast";
+
+import {
+  Search,
+  Trash2,
+  ArrowLeft,
+  Ban,
+  CheckCircle
+} from "lucide-react";
+
+import { Link }
+from "react-router-dom";
+
+import toast
+from "react-hot-toast";
 
 
 export default function UserManagement() {
@@ -14,120 +36,204 @@ export default function UserManagement() {
     fetchUsers();
   }, []);
 
-  const fetchUsers = async () => {
-    try {
-      const res = await api.get("/user");
-      setUsers(res.data);
-    } catch (err) {
-      toast.error("Failed to load users");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchUsers = async () => {
 
+  try {
+
+    setLoading(true);
+
+    const data =
+      await getAllUsers();
+
+    console.log(data);
+
+    const usersArray =
+      Array.isArray(data)
+        ? data
+        : data.data || [];
+
+    setUsers(usersArray);
+
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error(
+      "Failed to load users"
+    );
+
+    setUsers([]);
+
+  } finally {
+
+    setLoading(false);
+  }
+};
   //  Block/Unblock Handler 
-  const handleToggleBlock = async (userId, currentStatus, userEmail) => {
-    // Determine new status: "active" or "blocked"
-    const newStatus = currentStatus === "blocked" ? "active" : "blocked";
-    const action = newStatus === "blocked" ? "block" : "unblock";
+  const handleToggleBlock =
+  async (
+    userId,
+    currentStatus
+  ) => {
 
-    const loadingToast = toast.loading(`${action.charAt(0).toUpperCase() + action.slice(1)}ing user...`);
+    const action =
+      currentStatus === "blocked"
+        ? "unblock"
+        : "block";
+
+    const loadingToast =
+      toast.loading(
+        `${action}ing user...`
+      );
 
     try {
-      // PATCH request to update userStatus in db.json
-      await api.patch(`/user/${userId}`, {
-        userStatus: newStatus,
-      });
 
-  
+      await toggleUser(userId);
+
       setUsers((prev) =>
         prev.map((u) =>
-          u.id === userId ? { ...u, userStatus: newStatus } : u
+
+          u.id === userId
+
+            ? {
+                ...u,
+
+                userStatus:
+                  u.userStatus === "blocked"
+                    ? "active"
+                    : "blocked",
+              }
+
+            : u
         )
       );
 
-      toast.dismiss(loadingToast);
-      toast.success(`User ${action}ed successfully`);
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.success(
+        `User ${action}ed successfully`
+      );
+
     } catch (err) {
+
       console.error(err);
-      toast.dismiss(loadingToast);
-      toast.error(`Failed to ${action} user`);
+
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.error(
+        `Failed to ${action} user`
+      );
     }
-  };
+};
 
-  const handleDeleteUser = (userId, userEmail) => {
-    if (!userEmail) {
-      toast.error("User email is missing");
-      return;
-    }
+  const handleDeleteUser =
+  async (
+    userId,
+    userEmail
+  ) => {
 
-    toast(
-      (t) => (
-        <div className="p-5 bg-white rounded-2xl shadow-2xl border border-amber-200">
-          <p className="font-semibold text-[#7a5c2a] mb-3 text-lg">
-            Permanently delete this user?
-          </p>
-          <p className="text-gray-700 mb-6 leading-relaxed">
-            This will <strong>delete the user</strong> and <strong>all their orders</strong>.<br />
-            <span className="text-gray-600 font-medium">This action cannot be undone.</span>
-          </p>
+    const confirmDelete =
+      window.confirm(
+        `Delete ${userEmail} and all orders?`
+      );
 
-          <div className="flex gap-4 justify-end">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-6 py-3 bg-amber-100 text-[#9c7635] rounded-xl font-medium hover:bg-amber-200 transition"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={async () => {
-                toast.dismiss(t.id);
-                toast.loading("Deleting user and orders...");
+    if (!confirmDelete) return;
 
-                try {
-                  const { data: allOrders } = await api.get("/order");
-                  const userOrders = allOrders.filter(order => order.userEmail === userEmail);
+    const loadingToast =
+      toast.loading(
+        "Deleting user..."
+      );
 
-                  if (userOrders.length > 0) {
-                    await Promise.all(
-                      userOrders.map(order => api.delete(`/order/${order.id}`))
-                    );
-                  }
+    try {
 
-                  await api.delete(`/user/${userId}`);
+      const allOrders =
+        await getAllOrders();
 
-                  setUsers(prev => prev.filter(u => u.id !== userId));
+      const userOrders =
+        allOrders.filter(
+          (order) =>
+            order.userEmail ===
+            userEmail
+        );
 
-                  toast.dismiss();
-                  toast.success(`User and ${userOrders.length} order${userOrders.length !== 1 ? 's' : ''} deleted successfully`);
-                } catch (err) {
-                  console.error("Delete error:", err);
-                  toast.dismiss();
-                  toast.error("Failed to delete user or orders");
-                }
-              }}
-              className="px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition shadow-lg"
-            >
-              Yes, Delete
-            </button>
-          </div>
-        </div>
-      ),
+      if (userOrders.length > 0)
       {
-        duration: Infinity,
-        style: { background: "transparent", boxShadow: "none" },
-        position: "top-center",
-      }
-    );
-  };
+        await Promise.all(
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+          userOrders.map(
+            (order) =>
+
+              api.delete(
+                `/order/${order.id}`
+              )
+          )
+        );
+      }
+
+      await deleteUser(userId);
+
+      setUsers((prev) =>
+        prev.filter(
+          (u) =>
+            u.id !== userId
+        )
+      );
+
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.success(
+        "User deleted successfully"
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.error(
+        "Failed to delete user"
+      );
+    }
+};
+  const filteredUsers =
+  Array.isArray(users)
+
+    ? users.filter(
+        (user) =>
+
+          user.firstName
+            ?.toLowerCase()
+            .includes(
+              searchTerm.toLowerCase()
+            )
+
+          ||
+
+          user.lastName
+            ?.toLowerCase()
+            .includes(
+              searchTerm.toLowerCase()
+            )
+
+          ||
+
+          user.email
+            ?.toLowerCase()
+            .includes(
+              searchTerm.toLowerCase()
+            )
+      )
+
+    : [];
 
   return (
     <div className="p-6 min-h-screen bg-gray-50">

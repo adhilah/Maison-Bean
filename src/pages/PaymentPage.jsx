@@ -890,7 +890,6 @@ else {
         paymentResponse.data;
 
       const razorpayOrderId =
-        paymentOrder.orderId ||
         paymentOrder.razorpayOrderId ||
         paymentOrder.id;
 
@@ -915,7 +914,7 @@ else {
       const options = {
 
         key:
-          "rzp_test_xxxxxxxxx",
+          "rzp_test_SoWqac341UeFbs",
 
         amount:
           total * 100,

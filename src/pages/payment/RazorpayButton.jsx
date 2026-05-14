@@ -11,7 +11,7 @@ const RazorpayButton = ({ amount }) => {
             const order = await createOrder(amount);
 
             const options = {
-                key: "rzp_test_xxxxxxxxx",
+                key: "rzp_test_SoWqac341UeFbs",
 
                 amount: amount * 100,
 

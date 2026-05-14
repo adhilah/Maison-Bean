@@ -123,7 +123,7 @@ createRoot(
   document.getElementById("root")
 ).render(
 
-  // <StrictMode>
+   <StrictMode>
 
     <BrowserRouter>
 
@@ -231,5 +231,5 @@ createRoot(
 
     </BrowserRouter>
 
-  // </StrictMode>
+   </StrictMode>
 );

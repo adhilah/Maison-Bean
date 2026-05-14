@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../../../services/api";
+import {
+  getAllProductsForAdmin,
+  deleteProduct,
+} from "../../../services/productApi";
 import { Package, Edit, Trash2, ArrowLeft, Plus } from "lucide-react"; // Added Plus icon
 import toast from "react-hot-toast";
 
@@ -17,8 +20,8 @@ export default function ProductList() {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.get("/products")
-      setProducts(res.data);
+      const data = await getAllProductsForAdmin();
+      setProducts(data);
     } catch (err) {
       toast.error("Failed to load products");
       console.error(err);
@@ -27,17 +30,52 @@ export default function ProductList() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Delete this product? This action cannot be undone.")) return;
+  const handleDelete =
+  async (id) => {
+
+    const confirmDelete =
+      window.confirm(
+        "Delete this product?"
+      );
+
+    if (!confirmDelete) return;
+
+    const loadingToast =
+      toast.loading(
+        "Deleting product..."
+      );
 
     try {
-      await api.get(`products/${id}`);
-      setProducts(products.filter((p) => p.id !== id));
-      toast.success("Product deleted successfully");
+
+      await deleteProduct(id);
+
+      setProducts((prev) =>
+        prev.filter(
+          (p) => p.id !== id
+        )
+      );
+
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.success(
+        "Product deleted successfully"
+      );
+
     } catch (err) {
-      toast.error("Failed to delete product");
+
+      console.error(err);
+
+      toast.dismiss(
+        loadingToast
+      );
+
+      toast.error(
+        "Failed to delete product"
+      );
     }
-  };
+};
 
   const handleEdit = (id) => {
   navigate(`/admin/edit-product?edit=${id}`);
