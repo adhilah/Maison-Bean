@@ -3,6 +3,7 @@ import {
   useContext,
   useState,
   useEffect,
+  useRef,
 } from "react";
 
 import api from "../services/api";
@@ -21,41 +22,68 @@ export function AuthProvider({
     useState(true);
 
   // =====================================
-  // LOAD AUTHENTICATED USER
+  // PREVENT DOUBLE LOAD
+  // =====================================
+
+  const initialized =
+    useRef(false);
+
+  // =====================================
+  // LOAD AUTH USER
   // =====================================
 
   useEffect(() => {
 
-    const loadUser = async () => {
+    if (initialized.current)
+      return;
 
-      try {
+    initialized.current = true;
 
-        const response =
-          await api.get(
-            "/user/me",
-            {
-              withCredentials: true,
-            }
+    let mounted = true;
+
+    const loadUser =
+      async () => {
+
+        try {
+
+          const response =
+            await api.get(
+              "/user/me"
+            );
+
+          if (!mounted)
+            return;
+
+          setUser(
+            response.data
           );
 
-        setUser(response.data);
+        } catch {
 
-      } catch (error) {
+          if (!mounted)
+            return;
 
-        console.error(
-          "Auth check failed:",
-          error
-        );
+          localStorage.removeItem(
+            "authUser"
+          );
 
-        setUser(null);
+          setUser(null);
 
-      } finally {
+        } finally {
 
-        setIsLoading(false);
-      }
-    };
+          if (!mounted)
+            return;
+
+          setIsLoading(false);
+        }
+      };
 
     loadUser();
+
+    return () => {
+
+      mounted = false;
+    };
 
   }, []);
 
@@ -63,7 +91,14 @@ export function AuthProvider({
   // LOGIN
   // =====================================
 
-  const login = (userData) => {
+  const login = (
+    userData
+  ) => {
+
+    localStorage.setItem(
+      "authUser",
+      JSON.stringify(userData)
+    );
 
     setUser(userData);
   };
@@ -72,83 +107,104 @@ export function AuthProvider({
   // LOGOUT
   // =====================================
 
-  const logout = async () => {
+  const logout =
+    async () => {
 
-    try {
+      try {
 
-      await api.post(
-        "/auth/logout",
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+        await api.post(
+          "/auth/logout"
+        );
 
-    } catch (error) {
+      } catch (error) {
 
-      console.error(
-        "Logout failed:",
-        error
-      );
+        console.error(
+          "Logout failed:",
+          error
+        );
 
-    } finally {
+      } finally {
 
-      setUser(null);
-    }
-  };
+        localStorage.removeItem(
+          "authUser"
+        );
+
+        setUser(null);
+      }
+    };
 
   // =====================================
   // CLEAR SESSION
   // =====================================
 
-  const clearSession = () => {
+  const clearSession =
+    () => {
 
-    setUser(null);
+      localStorage.removeItem(
+        "authUser"
+      );
+
+      setUser(null);
+    };
+
+  // =====================================
+  // CONTEXT VALUE
+  // =====================================
+
+  const value = {
+
+    user,
+
+    login,
+
+    logout,
+
+    clearSession,
+
+    isLoading,
+
+    isAuthenticated:
+      !!user,
+
+    isAdmin:
+      user?.role
+        ?.toUpperCase() ===
+      "ADMIN",
+
+    isCustomer:
+      user?.role
+        ?.toUpperCase() ===
+      "CUSTOMER",
   };
 
   return (
 
     <AuthContext.Provider
-      value={{
-
-        user,
-
-        login,
-
-        logout,
-
-        clearSession,
-
-        isLoading,
-
-        isAdmin:
-          user?.role?.toUpperCase() ===
-          "ADMIN",
-
-        isCustomer:
-          user?.role?.toUpperCase() ===
-          "CUSTOMER",
-
-        isAuthenticated:
-          !!user,
-      }}
+      value={value}
     >
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => {
+// =====================================
+// HOOK
+// =====================================
 
-  const context =
-    useContext(AuthContext);
+export const useAuth =
+  () => {
 
-  if (!context) {
+    const context =
+      useContext(
+        AuthContext
+      );
 
-    throw new Error(
-      "useAuth must be used within AuthProvider"
-    );
-  }
+    if (!context) {
 
-  return context;
+      throw new Error(
+        "useAuth must be used within AuthProvider"
+      );
+    }
+
+    return context;
 };

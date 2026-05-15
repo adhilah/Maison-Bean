@@ -1,23 +1,34 @@
 import { useEffect, useState } from "react";
-import api from "../../services/api";
 import toast from "react-hot-toast";
 import {
+
+  getAllBeanTypesAdmin,
+
   createBeanType,
+
   updateBeanType,
+
   toggleBeanType,
+
   deleteBeanType,
-  getBeanTypes,
+
 } from "../../services/beanTypeApi";
 
 import {
+
+  getAllMilkOptionsAdmin,
+
   createMilkOption,
+
   updateMilkOption,
+
   toggleMilkOption,
+
   deleteMilkOption,
-  getMilkOptions,
+
 } from "../../services/milkOptionApi";
 
-// const API = "/api";
+
 
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (
@@ -63,10 +74,15 @@ const MilkIcon = () => (
     <path d="M8 2h8l2 4v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6z" /><path d="M6 6h12" />
   </svg>
 );
-  
+
 // ── Empty field template ───────────────────────────────────────
 const emptyBean = { name: "", description: "", priceAdd: 0, blocked: false };
-const emptyMilk = { name: "", calories: "", priceAdd: 0, blocked: false };
+const emptyMilk = {
+  name: "",
+  calories: 0,
+  priceAdd: 0,
+  blocked: false,
+};
 
 // ── Confirm dialog ────────────────────────────────────────────
 const ConfirmDialog = ({ message, onConfirm, onCancel }) => (
@@ -91,19 +107,117 @@ const ConfirmDialog = ({ message, onConfirm, onCancel }) => (
 );
 
 // ── Modal form ─────────────────────────────────────────────────
-const FormModal = ({ type, initial, onSave, onClose }) => {
-  const isBean = type === "bean";
+const FormModal = ({
+  type,
+  initial,
+  onSave,
+  onClose,
+}) => {
+
+  const isBean =
+    type === "bean";
   const [form, setForm] = useState(initial || (isBean ? { ...emptyBean } : { ...emptyMilk }));
   const [saving, setSaving] = useState(false);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleSave = async () => {
-    if (!form.name.trim()) { toast.error("Name is required"); return; }
-    setSaving(true);
-    await onSave(form);
-    setSaving(false);
-  };
+  const handleSave = async (form) => {
+
+  try {
+
+    let payload;
+
+    if (isBean) {
+
+      payload = {
+
+        name:
+          form.name,
+
+        description:
+          form.description || "",
+
+        priceAdd:
+          Number(form.priceAdd),
+      };
+
+    } else {
+
+      payload = {
+
+        name:
+          form.name,
+
+        calories:
+          Number(form.calories || 0),
+
+        priceAdd:
+          Number(form.priceAdd),
+      };
+    }
+
+    // EDIT
+
+    if (modal.item?.id) {
+
+      if (isBean) {
+
+        await updateBeanType(
+          modal.item.id,
+          payload
+        );
+
+      } else {
+
+        await updateMilkOption(
+          modal.item.id,
+          payload
+        );
+      }
+
+      toast.success(
+        `${payload.name} updated`
+      );
+
+    }
+
+    // CREATE
+
+    else {
+
+      if (isBean) {
+
+        await createBeanType(
+          payload
+        );
+
+      } else {
+
+        await createMilkOption(
+          payload
+        );
+      }
+
+      toast.success(
+        `${payload.name} added`
+      );
+    }
+
+    setModal(null);
+
+    load();
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast.error(
+      error?.response?.data?.title ||
+      error?.response?.data?.message ||
+      "Save failed"
+    );
+  }
+};
 
   const inputCls = `
     w-full bg-[#0d0a05] border border-[#c9a96e]/15 px-4 py-3
@@ -156,7 +270,12 @@ const FormModal = ({ type, initial, onSave, onClose }) => {
             <div>
               <label className={labelCls}>Calories</label>
               <input className={inputCls} type="number" min="0"
-                value={form.calories} onChange={(e) => set("calories", e.target.value)}
+                value={form.calories} onChange={(e) =>
+set(
+    "calories",
+    Number(e.target.value)
+  )
+}
                 placeholder="e.g. 120" />
             </div>
           )}
@@ -249,7 +368,7 @@ const Row = ({ item, type, onEdit, onDelete, onToggleBlock, index }) => {
 };
 
 // ── Panel (beans or milks) ─────────────────────────────────────
-const Panel = ({ type, endpoint }) => {
+const Panel = ({ type }) => {
   const isBean = type === "bean";
   const [items,    setItems]    = useState([]);
   const [loading,  setLoading]  = useState(true);
@@ -261,25 +380,41 @@ const Panel = ({ type, endpoint }) => {
 
   try {
 
+    setLoading(true);
+
     const data =
       isBean
-        ? await getBeanTypes()
-        : await getMilkOptions();
+        ? await getAllBeanTypesAdmin()
+        : await getAllMilkOptionsAdmin();
 
-    setItems(data || []);
+    const normalized =
+      (data || []).map((item) => ({
 
-  } catch {
+        ...item,
+
+        blocked:
+          item.blocked ??
+          item.isBlocked ??
+          false,
+      }));
+
+    setItems(normalized);
+
+  } catch (error) {
+
+    console.error(error);
 
     toast.error(
       `Failed to load ${
-        isBean ? "beans" : "milks"
+        isBean
+          ? "beans"
+          : "milks"
       }`
     );
 
   } finally {
 
     setLoading(false);
-
   }
 };
 
@@ -289,58 +424,54 @@ const Panel = ({ type, endpoint }) => {
 
   try {
 
-    if (isBean) {
+    if (modal.item?.id) {
 
-      if (modal.item?.id) {
+      if (isBean) {
 
         await updateBeanType(
           modal.item.id,
           form
         );
 
-        toast.success(
-          `${form.name} updated`
-        );
-
       } else {
-
-        await createBeanType(form);
-
-        toast.success(
-          `${form.name} added`
-        );
-      }
-
-    } else {
-
-      if (modal.item?.id) {
 
         await updateMilkOption(
           modal.item.id,
           form
         );
+      }
 
-        toast.success(
-          `${form.name} updated`
-        );
+      toast.success(
+        `${form.name} updated`
+      );
+
+    } else {
+
+      if (isBean) {
+
+        await createBeanType(form);
 
       } else {
 
         await createMilkOption(form);
-
-        toast.success(
-          `${form.name} added`
-        );
       }
+
+      toast.success(
+        `${form.name} added`
+      );
     }
 
     setModal(null);
 
     load();
 
-  } catch {
+  } catch (error) {
 
-    toast.error("Save failed");
+    console.error(error);
+
+    toast.error(
+      "Save failed"
+    );
   }
 };
 
@@ -349,7 +480,7 @@ const Panel = ({ type, endpoint }) => {
   setConfirm({
 
     message:
-      `Delete "${item.name}"?`,
+      `Delete "${item.name}"? This cannot be undone.`,
 
     action: async () => {
 
@@ -357,11 +488,15 @@ const Panel = ({ type, endpoint }) => {
 
         if (isBean) {
 
-          await deleteBeanType(item.id);
+          await deleteBeanType(
+            item.id
+          );
 
         } else {
 
-          await deleteMilkOption(item.id);
+          await deleteMilkOption(
+            item.id
+          );
         }
 
         toast.success(
@@ -370,7 +505,9 @@ const Panel = ({ type, endpoint }) => {
 
         load();
 
-      } catch {
+      } catch (error) {
+
+        console.error(error);
 
         toast.error(
           "Delete failed"
@@ -381,54 +518,77 @@ const Panel = ({ type, endpoint }) => {
     },
   });
 };
-  const handleToggleBlock =
-  async (item) => {
 
-    const action =
-      item.blocked
-        ? "unblock"
-        : "block";
+  const handleToggleBlock = async (item) => {
 
-    setConfirm({
+  const willBlock =
+    !item.blocked;
 
-      message:
-        `${action} "${item.name}"?`,
+  setConfirm({
 
-      action: async () => {
+    message:
+      `${willBlock ? "Block" : "Unblock"} "${item.name}"?`,
 
-        try {
+    action: async () => {
 
-          if (isBean) {
+      try {
 
-            await toggleBeanType(
-              item.id
-            );
+        if (isBean) {
 
-          } else {
-
-            await toggleMilkOption(
-              item.id
-            );
-          }
-
-          toast.success(
-            `${item.name} ${action}ed`
+          await toggleBeanType(
+            item.id
           );
 
-          load();
+        } else {
 
-        } catch {
-
-          toast.error(
-            `Failed to ${action}`
+          await toggleMilkOption(
+            item.id
           );
         }
 
-        setConfirm(null);
-      },
-    });
-};
+        toast.success(
 
+          `${item.name} ${
+            willBlock
+              ? "blocked"
+              : "unblocked"
+          }`
+        );
+
+        setItems((prev) =>
+
+          prev.map((x) =>
+
+            x.id === item.id
+
+              ? {
+                  ...x,
+                  blocked:
+                    willBlock,
+                }
+
+              : x
+          )
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        toast.error(
+
+          `Failed to ${
+            willBlock
+              ? "block"
+              : "unblock"
+          }`
+        );
+      }
+
+      setConfirm(null);
+    },
+  });
+};
   const filtered = items.filter((i) =>
     i.name?.toLowerCase().includes(search.toLowerCase())
   );
@@ -445,7 +605,7 @@ const Panel = ({ type, endpoint }) => {
             {isBean ? <BeanIcon /> : <MilkIcon />}
           </div>
           <div>
-            <p className="text-[#c9a96e]/55 text-[9px] tracking-[0.5em] uppercase font-['Jost',sans-serif]">Manage</p>
+            {/* <p className="text-[#c9a96e]/55 text-[9px] tracking-[0.5em] uppercase font-['Jost',sans-serif]">Manage</p> */}
             <h2 className="font-['Cormorant_Garamond',serif] text-[1.3rem] font-light text-[#f5f0e8] leading-tight">
               {isBean ? "Bean Types" : "Milk Options"}
             </h2>
@@ -534,7 +694,9 @@ const Panel = ({ type, endpoint }) => {
 
 // ── Main page ──────────────────────────────────────────────────
 export default function BeanMilkManager() {
-  const [tab, setTab] = useState("bean"); // "bean" | "milk"
+
+  const [tab, setTab] =
+    useState("bean");
 
   return (
     <>
@@ -542,18 +704,35 @@ export default function BeanMilkManager() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');
 
         @keyframes fadeUp {
-          from { opacity:0; transform:translateY(16px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
-        .bm-in { animation: fadeUp 0.45s ease forwards; }
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
 
-        /* thin scrollbar */
-        .overflow-y-auto::-webkit-scrollbar { width: 2px; }
-        .overflow-y-auto::-webkit-scrollbar-track { background: transparent; }
-        .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .bm-in {
+          animation: fadeUp 0.45s ease forwards;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar {
+          width: 2px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+          background: rgba(201,169,110,0.2);
+        }
       `}</style>
 
-      <div className="min-h-screen bg-[#0d0a05] font-['Jost',sans-serif] px-6 lg:px-14 py-14">
+      <div className="min-h-screen bg-[#0d0a05] font-['Jost',sans-serif] px-4 sm:px-6 lg:px-14 py-10 lg:py-14">
 
         {/* Ambient glow */}
         <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
@@ -562,54 +741,86 @@ export default function BeanMilkManager() {
 
         <div className="relative z-10 max-w-screen-xl mx-auto">
 
-          {/* ── Page Header ── */}
-          <div className="mb-12 bm-in">
+          {/* Header */}
+          <div className="mb-10 bm-in">
+
             <p className="text-[#c9a96e] text-[10px] tracking-[0.55em] uppercase mb-3 opacity-65">
               Admin · Inventory
             </p>
+
             <h1 className="font-['Cormorant_Garamond',serif] text-[clamp(2rem,4vw,3rem)] font-light text-[#f5f0e8] leading-none">
-              Beans &amp; <span className="italic text-[#c9a96e]">Milk</span>
+              Beans &amp;
+              <span className="italic text-[#c9a96e]">
+                {" "}Milk
+              </span>
             </h1>
+
             <div className="mt-6 flex items-center gap-3">
+
               <div className="h-px w-16 bg-gradient-to-r from-[#c9a96e]/40 to-transparent" />
+
               <p className="text-[#f5f0e8]/20 text-[10px] tracking-[0.3em] uppercase">
                 Manage customization options
               </p>
+
             </div>
           </div>
 
-          {/* ── Mobile tab switcher ── */}
-          <div className="flex lg:hidden mb-6 border border-[#c9a96e]/15 bm-in">
-            {[
-              { key: "bean", label: "Bean Types",   Icon: BeanIcon },
-              { key: "milk", label: "Milk Options",  Icon: MilkIcon },
-            ].map(({ key, label, Icon }) => (
-              <button
-                key={key}
-                onClick={() => setTab(key)}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-[10px] tracking-[0.3em] uppercase transition-all
-                  ${tab === key
-                    ? "bg-[#c9a96e]/10 text-[#c9a96e] border-b-2 border-[#c9a96e]"
+          {/* Tabs */}
+          <div className="flex mb-6 border border-[#c9a96e]/15 bm-in">
+
+            {/* Bean Tab */}
+            <button
+              onClick={() => setTab("bean")}
+              className={`
+                flex-1 flex items-center justify-center gap-2
+                py-4 text-[10px] tracking-[0.3em] uppercase
+                transition-all duration-300
+                border-r border-[#c9a96e]/10
+
+                ${
+                  tab === "bean"
+                    ? "bg-[#c9a96e]/10 text-[#c9a96e]"
                     : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"
-                  }`}
-              >
-                <Icon /> {label}
-              </button>
-            ))}
+                }
+              `}
+            >
+              <BeanIcon />
+              Bean Types
+            </button>
+
+            {/* Milk Tab */}
+            <button
+              onClick={() => setTab("milk")}
+              className={`
+                flex-1 flex items-center justify-center gap-2
+                py-4 text-[10px] tracking-[0.3em] uppercase
+                transition-all duration-300
+
+                ${
+                  tab === "milk"
+                    ? "bg-[#c9a96e]/10 text-[#c9a96e]"
+                    : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"
+                }
+              `}
+            >
+              <MilkIcon />
+              Milk Options
+            </button>
+
           </div>
 
-          {/* ── Desktop: side by side | Mobile: tabbed ── */}
-          <div className="hidden lg:grid grid-cols-2 gap-6 bm-in">
-            <Panel type="bean" endpoint="beanTypes" />
-            <Panel type="milk" endpoint="milkOptions" />
-          </div>
+          {/* Single Active Panel */}
+          <div className="bm-in">
 
-          {/* Mobile: single panel based on tab */}
-          <div className="lg:hidden bm-in">
-            {tab === "bean"
-              ? <Panel type="bean" endpoint="beanTypes" />
-              : <Panel type="milk" endpoint="milkOptions" />
-            }
+            {tab === "bean" && (
+              <Panel type="bean" />
+            )}
+
+            {tab === "milk" && (
+              <Panel type="milk" />
+            )}
+
           </div>
 
         </div>

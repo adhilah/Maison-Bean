@@ -5,17 +5,32 @@ import api from "./api";
 ========================================= */
 
 export const getMilkOptions = async () => {
-  const response = await api.get("/milkoptions");
+
+  const response =
+    await api.get(
+      "/milkoptions"
+    );
+
   return response.data;
 };
 
 export const getAllMilkOptionsAdmin = async () => {
-  const response = await api.get("/milkoptions/all/ad");
+
+  const response =
+    await api.get(
+      "/milkoptions/all/ad"
+    );
+
   return response.data;
 };
 
 export const getMilkOptionById = async (id) => {
-  const response = await api.get(`/milkoptions/${id}`);
+
+  const response =
+    await api.get(
+      `/milkoptions/${id}`
+    );
+
   return response.data;
 };
 
@@ -23,36 +38,55 @@ export const getMilkOptionById = async (id) => {
    ADMIN
 ========================================= */
 
+// CREATE
+
 export const createMilkOption = async (payload) => {
-  const response = await api.post(
-    "/milkoptions/milk/ad",
-    payload
-  );
+
+  const response =
+    await api.post(
+      "/milkoptions/milk/ad",
+      payload
+    );
 
   return response.data;
 };
 
-export const updateMilkOption = async (id, payload) => {
-  const response = await api.put(
-    `/milkoptions/${id}/ad`,
-    payload
-  );
+// UPDATE
+
+export const updateMilkOption = async (
+  id,
+  payload
+) => {
+
+  const response =
+    await api.put(
+      `/milkoptions/${id}/update/ad`,
+      payload
+    );
 
   return response.data;
 };
+
+// BLOCK / UNBLOCK
 
 export const toggleMilkOption = async (id) => {
-  const response = await api.patch(
-    `/milkoptions/${id}/block/ad`
-  );
+
+  const response =
+    await api.patch(
+      `/milkoptions/${id}/block/ad`
+    );
 
   return response.data;
 };
 
+// DELETE
+
 export const deleteMilkOption = async (id) => {
-  const response = await api.delete(
-    `/milkoptions/${id}/ad`
-  );
+
+  const response =
+    await api.delete(
+      `/milkoptions/${id}/ad`
+    );
 
   return response.data;
 };
