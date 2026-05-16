@@ -149,7 +149,7 @@ export default function MainRouter() {
               <Route path="bean-milk-management" element={<BeanMilkManager />} />
               <Route path="orders-management" element={<OrderManagement />} />
               <Route path="cart-overview" element={<CartOverview />} />
-              <Route path="add-to-cart" element={<AddToCart />} />
+              <Route path="add-product" element={<AddToCart />} />
               <Route path="edit-product/:id" element={<EditProduct />} />
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
             </Routes>

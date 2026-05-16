@@ -27,30 +27,45 @@ export default function AddProduct() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    if (!product.name || !product.basePrice || !product.category) {
-      toast.error("Name, category and price are required");
-      return;
-    }
+  e.preventDefault();
 
-    try {
-      setLoading(true);
-      await api.post("/products", {
-        ...product,
-        basePrice: Number(product.basePrice),
-        createdAt: new Date(),
-      });
+  if (!product.name || !product.basePrice || !product.category) {
 
-      toast.success("Product added successfully!");
-      navigate("/admin/products");
-    } catch (err) {
-      toast.error("Failed to add product");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast.error("Name, category and price are required");
+
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    await api.post("/products/product/ad", {
+
+      ...product,
+
+      price: Number(product.basePrice),
+    });
+
+    toast.success("Product added successfully!");
+
+    navigate("/admin/products");
+
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error(
+      err.response?.data?.message ||
+      "Failed to add product"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-rose-50 p-4 md:p-6">

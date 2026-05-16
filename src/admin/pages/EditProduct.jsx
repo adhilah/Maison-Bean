@@ -500,10 +500,7 @@ export default function EditProduct() {
     setProduct({
       ...data,
 
-      basePrice:
-  String(
-    data.price || ""
-  ),
+      basePrice: String(data.basePrice || ""),
 
 stock:
   data.stockQuantity || 0,
@@ -560,37 +557,22 @@ baseCalories:
 
     const payload = {
 
-  name:
-    product.name,
+  name: product.name,
 
-  description:
-    product.description,
+  description: product.description,
 
-  price:
-    Number(
-      product.basePrice
-    ),
+  basePrice: Number(product.basePrice),
 
-  stock:
-    Number(
-      product.stock || 0
-    ),
+  stockQuantity: Number(product.stock || 0),
 
-  category:
-    product.category,
+  category: product.category,
 
-  image:
-    product.image,
+  image: product.image,
 
-  baseCalories:
-    Number(
-      product.baseCalories || 0
-    ),
+  baseCalories: Number(product.baseCalories || 0),
 
-  healthBenefits:
-    product.healthBenefits,
+  healthBenefits: product.healthBenefits,
 };
-
     // =====================================
     // UPDATE
     // =====================================
