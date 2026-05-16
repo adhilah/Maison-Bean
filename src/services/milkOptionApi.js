@@ -60,7 +60,7 @@ export const updateMilkOption = async (
 
   const response =
     await api.put(
-      `/milkoptions/${id}/update/ad`,
+      `/milkoptions/${id}/ad`,
       payload
     );
 

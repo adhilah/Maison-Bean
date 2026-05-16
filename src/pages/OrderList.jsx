@@ -118,28 +118,54 @@ export default function OrderList() {
   const [cancelingId, setCancelingId] = useState(null);
   const [deletingId, setDeletingId]   = useState(null);
   const [expandedId, setExpandedId]   = useState(null);
+  // const [user, setUser] = useState(null);
 
-  const storedUser = localStorage.getItem("authUser");
-  const user = storedUser ? JSON.parse(storedUser) : null;
+  // const storedUser = localStorage.getItem("authUser");
+  // const user = storedUser ? JSON.parse(storedUser) : null;
 
   useEffect(() => { toast.dismiss(); }, []);
 
-  useEffect(() => {
-    if (!user) { setLoading(false); return; }
-    fetchOrders();
-  }, []);
+//   useEffect(() => {
+
+//   const checkAuth = async () => {
+
+//     try {
+//       await api.get("/auth/me");
+//       setUser(true);
+//       fetchOrders();
+//     } catch {
+//       setUser(false);
+//       setLoading(false);
+//     }
+//   };
+//   checkAuth();
+
+// }, []);
+useEffect(() => {
+  fetchOrders();
+}, []);
 
   const fetchOrders = async () => {
-    try {
-      const res = await api.get(API);
 
-      setOrders(res.data);
-    } catch {
+  try {
+
+    const res = await api.get(API);
+
+    setOrders(res.data);
+
+  } catch (err) {
+
+    if (err.response?.status === 401) {
+      toast.error("Please login");
+    } else {
       toast.error("Failed to fetch orders");
-    } finally {
-      setLoading(false);
     }
-  };
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   const confirmCancelOrder = (orderId) => {
     toast(
@@ -210,19 +236,19 @@ export default function OrderList() {
     item[aspField] ?? item.product?.[oldField];
 
   /* ── Not logged in ── */
-  if (!user) return (
-    <>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');`}</style>
-      <div className="min-h-screen bg-[#0d0a05] flex items-center justify-center font-['Jost',sans-serif]">
-        <div className="text-center space-y-4">
-          <p className="font-['Cormorant_Garamond',serif] text-[2rem] italic text-[#f5f0e8]/40">Please sign in</p>
-          <Link to="/login" className="text-[#c9a96e] text-[10px] tracking-[0.4em] uppercase hover:text-[#d4b87a] transition-colors">
-            Go to Login →
-          </Link>
-        </div>
-      </div>
-    </>
-  );
+  // if (user === false) return (
+  //   <>
+  //     <style>{`@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');`}</style>
+  //     <div className="min-h-screen bg-[#0d0a05] flex items-center justify-center font-['Jost',sans-serif]">
+  //       <div className="text-center space-y-4">
+  //         <p className="font-['Cormorant_Garamond',serif] text-[2rem] italic text-[#f5f0e8]/40">Please sign in</p>
+  //         <Link to="/login" className="text-[#c9a96e] text-[10px] tracking-[0.4em] uppercase hover:text-[#d4b87a] transition-colors">
+  //           Go to Login →
+  //         </Link>
+  //       </div>
+  //     </div>
+  //   </>
+  // );
 
   /* ── Loading ── */
   if (loading) return (
@@ -390,7 +416,7 @@ export default function OrderList() {
                       <div className="hidden sm:block w-px h-8 bg-[#c9a96e]/10" />
                       <div className="hidden sm:block">
                         <p className="text-[#f5f0e8]/25 text-[10px] tracking-[0.2em] uppercase mb-0.5">Date</p>
-                        <p className="text-[#f5f0e8]/55 text-[12px]">{formatDate(order.date)}</p>
+                        <p className="text-[#f5f0e8]/55 text-[12px]">{formatDate(order.createdAt)}</p>
                       </div>
                     </div>
 

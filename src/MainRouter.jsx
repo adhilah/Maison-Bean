@@ -150,7 +150,7 @@ export default function MainRouter() {
               <Route path="orders-management" element={<OrderManagement />} />
               <Route path="cart-overview" element={<CartOverview />} />
               <Route path="add-to-cart" element={<AddToCart />} />
-              <Route path="edit-product" element={<EditProduct />} />
+              <Route path="edit-product/:id" element={<EditProduct />} />
               <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
             </Routes>
           </ProtectedRoute>

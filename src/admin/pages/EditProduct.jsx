@@ -436,92 +436,209 @@
 
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
+
 import {
-  ArrowLeft, Save, Image as ImageIcon, HeartPulse,
-  Tag, DollarSign, FileText, Coffee, ChefHat,
+  useNavigate,
+  Link,
+  useParams,
+} from "react-router-dom";
+
+import {
+  ArrowLeft,
+  Save,
+  Image as ImageIcon,
+  HeartPulse,
+  Tag,
+  DollarSign,
+  FileText,
+  Coffee,
+  ChefHat,
 } from "lucide-react";
+
 import toast from "react-hot-toast";
+
+import {
+  createProduct,
+  updateProduct,
+  getProductById,
+} from "../../services/productApi";
 
 export default function EditProduct() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const editId = searchParams.get("edit");
 
   const [product, setProduct] = useState({
-    name: "", category: "", basePrice: "",
-    image: "", description: "", healthBenefits: "",
-  });
+  name: "",
+  category: "",
+  basePrice: "",
+  stock: 0,
+  baseCalories: 0,
+  image: "",
+  description: "",
+  healthBenefits: "",
+});
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    if (editId) fetchProduct(editId);
-  }, [editId]);
+  const { id } = useParams();
 
-  const fetchProduct = async (id) => {
-    try {
-      setFetching(true);
-      const res = await  api.get(`/products/${id}`);
-      setProduct({ ...res.data, basePrice: String(res.data.basePrice || "") });
-    } catch {
-      toast.error("Product not found");
-      navigate("/admin/products");
-    } finally {
-      setFetching(false);
-    }
-  };
+  useEffect(() => {
+    if (id) {
+      fetchProduct();
+    }},
+     [id]);
+
+  const fetchProduct = async () => {
+
+  try {
+
+    setFetching(true);
+
+    const data =
+      await getProductById(id);
+
+    setProduct({
+      ...data,
+
+      basePrice:
+  String(
+    data.price || ""
+  ),
+
+stock:
+  data.stockQuantity || 0,
+
+baseCalories:
+  data.baseCalories || 0,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    toast.error(
+      "Product not found"
+    );
+
+    navigate(
+      "/admin/products-management"
+    );
+
+  } finally {
+
+    setFetching(false);
+  }
+};
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
     if (e.target.name === "image") setImageError(false);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!product.name || !product.basePrice || !product.category) {
-      toast.error("Name, category and price are required");
-      return;
+  const handleSubmit = async (
+  e
+) => {
+
+  e.preventDefault();
+
+  if (
+    !product.name ||
+    !product.basePrice ||
+    !product.category
+  ) {
+
+    toast.error(
+      "Name, category and price are required"
+    );
+
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    const payload = {
+
+  name:
+    product.name,
+
+  description:
+    product.description,
+
+  price:
+    Number(
+      product.basePrice
+    ),
+
+  stock:
+    Number(
+      product.stock || 0
+    ),
+
+  category:
+    product.category,
+
+  image:
+    product.image,
+
+  baseCalories:
+    Number(
+      product.baseCalories || 0
+    ),
+
+  healthBenefits:
+    product.healthBenefits,
+};
+
+    // =====================================
+    // UPDATE
+    // =====================================
+
+    if (id) {
+
+      await updateProduct(
+        id,
+        payload
+      );
+
+      toast.success(
+        "Product updated!"
+      );
     }
-    try {
-      setLoading(true);
-      const payload = { ...product, basePrice: Number(product.basePrice) };
-      if (editId) {
 
-  await api.put(
-    `/products/${editId}update/ad`,
-    {
-      ...payload,
-      updatedAt: new Date(),
+    // =====================================
+    // CREATE
+    // =====================================
+
+    else {
+
+      await createProduct(
+        payload
+      );
+
+      toast.success(
+        "Product added!"
+      );
     }
-  );
 
-  toast.success(
-    "Product updated!"
-  );
+    navigate(
+      "/admin/products-management"
+    );
 
-} else {
+  } catch (error) {
 
-  await api.post(
-    "/products/product/ad",
-    {
-      ...payload,
-      createdAt: new Date(),
-    }
-  );
+    console.error(error);
 
-  toast.success(
-    "Product added!"
-  );
-}
-      navigate("/admin/products");
-    } catch {
-      toast.error("Failed to save product");
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast.error(
+      "Failed to save product"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   if (fetching) {
     return (
@@ -548,10 +665,10 @@ export default function EditProduct() {
             </div>
             <div>
               <h1 className="text-xl font-semibold text-gray-900">
-                {editId ? "Edit product" : "Add product"}
+                {id ? "Edit product" : "Add product"}
               </h1>
               <p className="text-sm text-gray-500">
-                {editId ? "Update the product details below" : "Fill in details to add a new menu item"}
+                {id ? "Update the product details below" : "Fill in details to add a new menu item"}
               </p>
             </div>
           </div>
@@ -688,11 +805,11 @@ export default function EditProduct() {
                     <Save size={15} />
                   )}
                   {loading
-                    ? (editId ? "Updating…" : "Adding…")
-                    : (editId ? "Update product" : "Add product")}
+                    ? (id ? "Updating…" : "Adding…")
+                    : (id ? "Update product" : "Add product")}
                 </button>
                 <Link
-                  to="/admin/products"
+                  to="/admin/products-management"
                   className="text-sm text-gray-500 border border-gray-200 rounded-xl px-4 py-2.5 hover:bg-gray-50 transition-colors"
                 >
                   Cancel

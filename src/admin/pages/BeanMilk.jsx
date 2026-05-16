@@ -1,34 +1,21 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
 import {
-
   getAllBeanTypesAdmin,
-
   createBeanType,
-
   updateBeanType,
-
   toggleBeanType,
-
   deleteBeanType,
-
 } from "../../services/beanTypeApi";
 
 import {
-
   getAllMilkOptionsAdmin,
-
   createMilkOption,
-
   updateMilkOption,
-
   toggleMilkOption,
-
   deleteMilkOption,
-
 } from "../../services/milkOptionApi";
-
-
 
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (
@@ -75,16 +62,11 @@ const MilkIcon = () => (
   </svg>
 );
 
-// ── Empty field template ───────────────────────────────────────
-const emptyBean = { name: "", description: "", priceAdd: 0, blocked: false };
-const emptyMilk = {
-  name: "",
-  calories: 0,
-  priceAdd: 0,
-  blocked: false,
-};
+// ── Empty Templates ───────────────────────────────────────
+const emptyBean = { name: "", description: "", priceAdd: 0 };
+const emptyMilk = { name: "",  description: "", calories: 0, priceAdd: 0 };
 
-// ── Confirm dialog ────────────────────────────────────────────
+// ── Confirm Dialog ────────────────────────────────────────
 const ConfirmDialog = ({ message, onConfirm, onCancel }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
     <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCancel} />
@@ -106,144 +88,167 @@ const ConfirmDialog = ({ message, onConfirm, onCancel }) => (
   </div>
 );
 
-// ── Modal form ─────────────────────────────────────────────────
-const FormModal = ({
-  type,
-  initial,
-  onSave,
-  onClose,
-}) => {
-
-  const isBean =
-    type === "bean";
+// ── Form Modal ─────────────────────────────────────────────
+const FormModal = ({ type, initial, onSave, onClose }) => {
+  const isBean = type === "bean";
   const [form, setForm] = useState(initial || (isBean ? { ...emptyBean } : { ...emptyMilk }));
   const [saving, setSaving] = useState(false);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleSave = async (form) => {
+  const handleSave = async () => {
+
+  if (!form.name?.trim()) {
+
+    toast.error("Name is required");
+
+    return;
+  }
+
+  setSaving(true);
 
   try {
 
-    let payload;
+    // =====================================
+    // BEAN
+    // =====================================
 
     if (isBean) {
 
-      payload = {
+      const payload = {
 
         name:
-          form.name,
+          form.name?.trim(),
 
         description:
           form.description || "",
 
         priceAdd:
-          Number(form.priceAdd),
+          Number(form.priceAdd) || 0,
       };
 
-    } else {
-
-      payload = {
-
-        name:
-          form.name,
-
-        calories:
-          Number(form.calories || 0),
-
-        priceAdd:
-          Number(form.priceAdd),
-      };
-    }
-
-    // EDIT
-
-    if (modal.item?.id) {
-
-      if (isBean) {
+      if (initial?.id) {
 
         await updateBeanType(
-          modal.item.id,
+          initial.id,
           payload
+        );
+
+        toast.success(
+          `${payload.name} updated successfully`
         );
 
       } else {
-
-        await updateMilkOption(
-          modal.item.id,
-          payload
-        );
-      }
-
-      toast.success(
-        `${payload.name} updated`
-      );
-
-    }
-
-    // CREATE
-
-    else {
-
-      if (isBean) {
 
         await createBeanType(
           payload
         );
 
-      } else {
-
-        await createMilkOption(
-          payload
+        toast.success(
+          `${payload.name} added successfully`
         );
       }
-
-      toast.success(
-        `${payload.name} added`
-      );
     }
 
-    setModal(null);
+    // =====================================
+    // MILK
+    // =====================================
 
-    load();
+    else {
+
+      const payload = {
+
+        name:
+          form.name?.trim(),
+
+        description:
+          form.description ||
+          "Milk option",
+
+        calories:
+          parseInt(
+            form.calories
+          ) || 0,
+
+        priceAdd:
+          parseFloat(
+            form.priceAdd
+          ) || 0,
+      };
+
+      // UPDATE
+
+      if (initial?.id) {
+
+        await updateMilkOption(
+          initial.id,
+          {
+            ...payload,
+          }
+        );
+
+        toast.success(
+          `${payload.name} updated successfully`
+        );
+
+      }
+
+      // CREATE
+
+      else {
+
+        await createMilkOption({
+          ...payload,
+        });
+
+        toast.success(
+          `${payload.name} added successfully`
+        );
+      }
+    }
+
+    onSave();
+
+    onClose();
 
   } catch (error) {
 
     console.error(error);
 
     toast.error(
-      error?.response?.data?.title ||
-      error?.response?.data?.message ||
-      "Save failed"
+
+      error?.response?.data
+        ?.message ||
+
+      error?.response?.data
+        ?.title ||
+
+      "Save failed. Please check console."
     );
+
+  } finally {
+
+    setSaving(false);
   }
 };
 
-  const inputCls = `
-    w-full bg-[#0d0a05] border border-[#c9a96e]/15 px-4 py-3
-    text-[#f5f0e8] text-[13px] font-light
-    placeholder:text-[#f5f0e8]/20
-    focus:outline-none focus:border-[#c9a96e]/45
-    transition-colors duration-200
-    font-['Jost',sans-serif]
-  `;
+  const inputCls = `w-full bg-[#0d0a05] border border-[#c9a96e]/15 px-4 py-3 
+    text-[#f5f0e8] text-[13px] font-light placeholder:text-[#f5f0e8]/20 
+    focus:outline-none focus:border-[#c9a96e]/45 transition-colors duration-200 font-['Jost',sans-serif]`;
+
   const labelCls = "text-[#c9a96e]/60 text-[9px] tracking-[0.4em] uppercase font-['Jost',sans-serif] mb-1.5 block";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-[#110d07] border border-[#c9a96e]/20 w-full max-w-md">
-        {/* Header */}
         <div className="flex items-center justify-between px-7 py-5 border-b border-[#c9a96e]/10">
           <div>
             <p className="text-[#c9a96e]/55 text-[9px] tracking-[0.5em] uppercase font-['Jost',sans-serif]">
               {initial?.id ? "Edit" : "New"} {isBean ? "Bean" : "Milk"}
             </p>
             <h3 className="font-['Cormorant_Garamond',serif] text-[1.4rem] font-light text-[#f5f0e8] mt-0.5">
-              {initial?.id
-                ? <><span className="italic text-[#c9a96e]">{initial.name}</span></>
-                : <>Add {isBean ? "Bean Type" : "Milk Option"}</>
-              }
+              {initial?.id ? <span className="italic text-[#c9a96e]">{initial.name}</span> : `Add ${isBean ? "Bean Type" : "Milk Option"}`}
             </h3>
           </div>
           <button onClick={onClose} className="text-[#f5f0e8]/30 hover:text-[#f5f0e8]/70 transition-colors p-1">
@@ -251,7 +256,6 @@ const FormModal = ({
           </button>
         </div>
 
-        {/* Fields */}
         <div className="px-7 py-6 space-y-5">
           <div>
             <label className={labelCls}>Name *</label>
@@ -270,12 +274,7 @@ const FormModal = ({
             <div>
               <label className={labelCls}>Calories</label>
               <input className={inputCls} type="number" min="0"
-                value={form.calories} onChange={(e) =>
-set(
-    "calories",
-    Number(e.target.value)
-  )
-}
+                value={form.calories ?? ""} onChange={(e) => set("calories", Number(e.target.value) || 0)}
                 placeholder="e.g. 120" />
             </div>
           )}
@@ -283,7 +282,7 @@ set(
           <div>
             <label className={labelCls}>Price Add-on (₹)</label>
             <input className={inputCls} type="number" min="0" step="0.5"
-              value={form.priceAdd} onChange={(e) => set("priceAdd", Number(e.target.value))}
+              value={form.priceAdd ?? ""} onChange={(e) => set("priceAdd", Number(e.target.value) || 0)}
               placeholder="0 = included" />
             <p className="text-[#f5f0e8]/20 text-[10px] mt-1.5 font-['Jost',sans-serif]">
               Enter 0 if this option is included in the base price
@@ -291,7 +290,6 @@ set(
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-7 pb-7 flex gap-3">
           <button onClick={onClose}
             className="flex-1 py-3 border border-[#c9a96e]/20 text-[#c9a96e]/55 hover:border-[#c9a96e]/40 hover:text-[#c9a96e] text-[10px] tracking-[0.3em] uppercase transition-all font-['Jost',sans-serif]">
@@ -312,54 +310,40 @@ set(
 const Row = ({ item, type, onEdit, onDelete, onToggleBlock, index }) => {
   const isBean = type === "bean";
   return (
-    <div
-      className={`
-        group flex items-center gap-4 px-6 py-4
-        border-b border-[#c9a96e]/08
-        transition-all duration-300
-        ${item.blocked ? "bg-[#0d0a05] opacity-50" : "bg-[#0d0a05] hover:bg-[#110d07]"}
-      `}
+    <div className={`group flex items-center gap-4 px-6 py-4 border-b border-[#c9a96e]/08 transition-all duration-300
+      ${item.blocked ? "bg-[#0d0a05] opacity-50" : "bg-[#0d0a05] hover:bg-[#110d07]"}`}
       style={{ animationDelay: `${index * 40}ms` }}
     >
-      {/* Status dot */}
       <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${item.blocked ? "bg-[#f87171]/50" : "bg-[#c9a96e]/60"}`} />
 
-      {/* Name + sub */}
       <div className="flex-1 min-w-0">
         <p className="font-['Cormorant_Garamond',serif] text-[1.05rem] font-light text-[#f5f0e8]/85 truncate leading-tight">
           {item.name}
-          {item.blocked && (
-            <span className="ml-2 text-[9px] font-['Jost',sans-serif] tracking-[0.3em] text-[#f87171]/50 uppercase">Blocked</span>
-          )}
+          {item.blocked && <span className="ml-2 text-[9px] font-['Jost',sans-serif] tracking-[0.3em] text-[#f87171]/50 uppercase">Blocked</span>}
         </p>
         <p className="text-[#f5f0e8]/28 text-[11px] font-['Jost',sans-serif] font-light truncate mt-0.5">
           {isBean ? (item.description || "—") : (item.calories ? `${item.calories} cal` : "—")}
         </p>
       </div>
 
-      {/* Price badge */}
       <div className="flex-shrink-0 text-right hidden sm:block">
         <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/70">
           {item.priceAdd > 0 ? `+₹${item.priceAdd}` : <span className="text-[#f5f0e8]/25 text-[11px] tracking-widest">included</span>}
         </span>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <button onClick={() => onEdit(item)} title="Edit"
-          className="w-8 h-8 flex items-center justify-center border border-[#c9a96e]/15 text-[#c9a96e]/50 hover:border-[#c9a96e]/45 hover:text-[#c9a96e] transition-all">
+        <button onClick={() => onEdit(item)} title="Edit" className="w-8 h-8 flex items-center justify-center border border-[#c9a96e]/15 text-[#c9a96e]/50 hover:border-[#c9a96e]/45 hover:text-[#c9a96e] transition-all">
           <EditIcon />
         </button>
         <button onClick={() => onToggleBlock(item)} title={item.blocked ? "Unblock" : "Block"}
-          className={`w-8 h-8 flex items-center justify-center border transition-all
-            ${item.blocked
-              ? "border-emerald-500/20 text-emerald-400/50 hover:border-emerald-500/50 hover:text-emerald-400"
-              : "border-amber-500/20 text-amber-400/50 hover:border-amber-500/50 hover:text-amber-400"
-            }`}>
+          className={`w-8 h-8 flex items-center justify-center border transition-all ${item.blocked
+            ? "border-emerald-500/20 text-emerald-400/50 hover:border-emerald-500/50 hover:text-emerald-400"
+            : "border-amber-500/20 text-amber-400/50 hover:border-amber-500/50 hover:text-amber-400"
+          }`}>
           {item.blocked ? <UnblockIcon /> : <BlockIcon />}
         </button>
-        <button onClick={() => onDelete(item)} title="Delete"
-          className="w-8 h-8 flex items-center justify-center border border-[#f87171]/15 text-[#f87171]/40 hover:border-[#f87171]/45 hover:text-[#f87171] transition-all">
+        <button onClick={() => onDelete(item)} title="Delete" className="w-8 h-8 flex items-center justify-center border border-[#f87171]/15 text-[#f87171]/40 hover:border-[#f87171]/45 hover:text-[#f87171] transition-all">
           <TrashIcon />
         </button>
       </div>
@@ -367,265 +351,99 @@ const Row = ({ item, type, onEdit, onDelete, onToggleBlock, index }) => {
   );
 };
 
-// ── Panel (beans or milks) ─────────────────────────────────────
+// ── Panel ─────────────────────────────────────────────────────
 const Panel = ({ type }) => {
   const isBean = type === "bean";
-  const [items,    setItems]    = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [modal,    setModal]    = useState(null); // null | { mode:'add'|'edit', item }
-  const [confirm,  setConfirm]  = useState(null); // null | { action, item }
-  const [search,   setSearch]   = useState("");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modal, setModal] = useState(null);
+  const [confirm, setConfirm] = useState(null);
+  const [search, setSearch] = useState("");
 
   const load = async () => {
-
-  try {
-
-    setLoading(true);
-
-    const data =
-      isBean
-        ? await getAllBeanTypesAdmin()
-        : await getAllMilkOptionsAdmin();
-
-    const normalized =
-      (data || []).map((item) => ({
-
+    try {
+      setLoading(true);
+      const data = isBean ? await getAllBeanTypesAdmin() : await getAllMilkOptionsAdmin();
+      const normalized = (data || []).map(item => ({
         ...item,
-
-        blocked:
-          item.blocked ??
-          item.isBlocked ??
-          false,
+        blocked: item.blocked ?? item.isBlocked ?? false,
       }));
-
-    setItems(normalized);
-
-  } catch (error) {
-
-    console.error(error);
-
-    toast.error(
-      `Failed to load ${
-        isBean
-          ? "beans"
-          : "milks"
-      }`
-    );
-
-  } finally {
-
-    setLoading(false);
-  }
-};
-
-  useEffect(() => { load(); }, []);
-
-  const handleSave = async (form) => {
-
-  try {
-
-    if (modal.item?.id) {
-
-      if (isBean) {
-
-        await updateBeanType(
-          modal.item.id,
-          form
-        );
-
-      } else {
-
-        await updateMilkOption(
-          modal.item.id,
-          form
-        );
-      }
-
-      toast.success(
-        `${form.name} updated`
-      );
-
-    } else {
-
-      if (isBean) {
-
-        await createBeanType(form);
-
-      } else {
-
-        await createMilkOption(form);
-      }
-
-      toast.success(
-        `${form.name} added`
-      );
+      setItems(normalized);
+    } catch (error) {
+      console.error(error);
+      toast.error(`Failed to load ${isBean ? "beans" : "milks"}`);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setModal(null);
-
+  useEffect(() => {
     load();
+  }, [isBean]);
 
-  } catch (error) {
-
-    console.error(error);
-
-    toast.error(
-      "Save failed"
-    );
-  }
-};
-
-  const handleDelete = async (item) => {
-
-  setConfirm({
-
-    message:
-      `Delete "${item.name}"? This cannot be undone.`,
-
-    action: async () => {
-
-      try {
-
-        if (isBean) {
-
-          await deleteBeanType(
-            item.id
-          );
-
-        } else {
-
-          await deleteMilkOption(
-            item.id
-          );
+  const handleDelete = (item) => {
+    setConfirm({
+      message: `Delete "${item.name}"? This cannot be undone.`,
+      action: async () => {
+        try {
+          if (isBean) await deleteBeanType(item.id);
+          else await deleteMilkOption(item.id);
+          toast.success(`${item.name} deleted`);
+          load();
+        } catch (error) {
+          toast.error("Delete failed");
+        } finally {
+          setConfirm(null);
         }
+      },
+    });
+  };
 
-        toast.success(
-          `${item.name} deleted`
-        );
-
-        load();
-
-      } catch (error) {
-
-        console.error(error);
-
-        toast.error(
-          "Delete failed"
-        );
-      }
-
-      setConfirm(null);
-    },
-  });
-};
-
-  const handleToggleBlock = async (item) => {
-
-  const willBlock =
-    !item.blocked;
-
-  setConfirm({
-
-    message:
-      `${willBlock ? "Block" : "Unblock"} "${item.name}"?`,
-
-    action: async () => {
-
-      try {
-
-        if (isBean) {
-
-          await toggleBeanType(
-            item.id
-          );
-
-        } else {
-
-          await toggleMilkOption(
-            item.id
-          );
+  const handleToggleBlock = (item) => {
+    const willBlock = !item.blocked;
+    setConfirm({
+      message: `${willBlock ? "Block" : "Unblock"} "${item.name}"?`,
+      action: async () => {
+        try {
+          if (isBean) await toggleBeanType(item.id);
+          else await toggleMilkOption(item.id);
+          toast.success(`${item.name} ${willBlock ? "blocked" : "unblocked"}`);
+          load();
+        } catch (error) {
+          toast.error(`Failed to ${willBlock ? "block" : "unblock"}`);
+          load();
+        } finally {
+          setConfirm(null);
         }
+      },
+    });
+  };
 
-        toast.success(
-
-          `${item.name} ${
-            willBlock
-              ? "blocked"
-              : "unblocked"
-          }`
-        );
-
-        setItems((prev) =>
-
-          prev.map((x) =>
-
-            x.id === item.id
-
-              ? {
-                  ...x,
-                  blocked:
-                    willBlock,
-                }
-
-              : x
-          )
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        toast.error(
-
-          `Failed to ${
-            willBlock
-              ? "block"
-              : "unblock"
-          }`
-        );
-      }
-
-      setConfirm(null);
-    },
-  });
-};
-  const filtered = items.filter((i) =>
-    i.name?.toLowerCase().includes(search.toLowerCase())
-  );
-  const active  = items.filter((i) => !i.blocked).length;
-  const blocked = items.filter((i) =>  i.blocked).length;
+  const filtered = items.filter(i => i.name?.toLowerCase().includes(search.toLowerCase()));
+  const active = items.filter(i => !i.blocked).length;
+  const blocked = items.filter(i => i.blocked).length;
 
   return (
     <div className="bg-[#0d0a05] border border-[#c9a96e]/12 flex flex-col">
-
-      {/* Panel header */}
+      {/* Header */}
       <div className="px-6 py-5 border-b border-[#c9a96e]/10 bg-[#110d07] flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 border border-[#c9a96e]/20 flex items-center justify-center text-[#c9a96e]/70">
             {isBean ? <BeanIcon /> : <MilkIcon />}
           </div>
-          <div>
-            {/* <p className="text-[#c9a96e]/55 text-[9px] tracking-[0.5em] uppercase font-['Jost',sans-serif]">Manage</p> */}
-            <h2 className="font-['Cormorant_Garamond',serif] text-[1.3rem] font-light text-[#f5f0e8] leading-tight">
-              {isBean ? "Bean Types" : "Milk Options"}
-            </h2>
-          </div>
+          <h2 className="font-['Cormorant_Garamond',serif] text-[1.3rem] font-light text-[#f5f0e8] leading-tight">
+            {isBean ? "Bean Types" : "Milk Options"}
+          </h2>
         </div>
-        <button
-          onClick={() => setModal({ item: null })}
-          className="flex items-center gap-2 px-4 py-2.5 bg-[#c9a96e] hover:bg-[#d4b87a] text-[#0d0a05] text-[9px] tracking-[0.3em] uppercase font-['Jost',sans-serif] transition-all flex-shrink-0"
-        >
+        <button onClick={() => setModal({ item: null })}
+          className="flex items-center gap-2 px-4 py-2.5 bg-[#c9a96e] hover:bg-[#d4b87a] text-[#0d0a05] text-[9px] tracking-[0.3em] uppercase font-['Jost',sans-serif] transition-all">
           <PlusIcon /> Add {isBean ? "Bean" : "Milk"}
         </button>
       </div>
 
-      {/* Stats strip */}
+      {/* Stats + Search + List (same as before) */}
       <div className="flex divide-x divide-[#c9a96e]/08 border-b border-[#c9a96e]/08">
-        {[
-          { label: "Total",   value: items.length },
-          { label: "Active",  value: active,  color: "text-[#c9a96e]" },
-          { label: "Blocked", value: blocked, color: "text-[#f87171]/60" },
-        ].map(({ label, value, color }) => (
+        {[{ label: "Total", value: items.length }, { label: "Active", value: active, color: "text-[#c9a96e]" }, { label: "Blocked", value: blocked, color: "text-[#f87171]/60" }].map(({ label, value, color }) => (
           <div key={label} className="flex-1 py-3 px-5 text-center">
             <p className={`font-['Cormorant_Garamond',serif] text-[1.4rem] font-light ${color || "text-[#f5f0e8]/60"}`}>{value}</p>
             <p className="text-[9px] tracking-[0.3em] uppercase font-['Jost',sans-serif] text-[#f5f0e8]/25 mt-0.5">{label}</p>
@@ -633,17 +451,12 @@ const Panel = ({ type }) => {
         ))}
       </div>
 
-      {/* Search */}
       <div className="px-6 py-3 border-b border-[#c9a96e]/08">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+        <input value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder={`Search ${isBean ? "beans" : "milks"}…`}
-          className="w-full bg-transparent text-[#f5f0e8]/70 text-[12px] font-['Jost',sans-serif] font-light placeholder:text-[#f5f0e8]/18 focus:outline-none"
-        />
+          className="w-full bg-transparent text-[#f5f0e8]/70 text-[12px] font-['Jost',sans-serif] placeholder:text-[#f5f0e8]/18 focus:outline-none" />
       </div>
 
-      {/* List */}
       <div className="flex-1 overflow-y-auto" style={{ maxHeight: "480px" }}>
         {loading ? (
           <div className="flex items-center justify-center py-16">
@@ -654,12 +467,6 @@ const Panel = ({ type }) => {
             <p className="font-['Cormorant_Garamond',serif] italic text-[#f5f0e8]/20 text-[1.1rem]">
               {search ? "No matches found" : `No ${isBean ? "beans" : "milks"} yet`}
             </p>
-            {!search && (
-              <button onClick={() => setModal({ item: null })}
-                className="text-[#c9a96e]/50 hover:text-[#c9a96e] text-[10px] tracking-[0.3em] uppercase font-['Jost',sans-serif] transition-colors">
-                + Add first {isBean ? "bean" : "milk"}
-              </button>
-            )}
           </div>
         ) : (
           filtered.map((item, i) => (
@@ -672,15 +479,15 @@ const Panel = ({ type }) => {
         )}
       </div>
 
-      {/* Modals */}
-      {modal !== null && (
+      {modal && (
         <FormModal
           type={type}
           initial={modal.item}
-          onSave={handleSave}
+          onSave={load}
           onClose={() => setModal(null)}
         />
       )}
+
       {confirm && (
         <ConfirmDialog
           message={confirm.message}
@@ -692,137 +499,97 @@ const Panel = ({ type }) => {
   );
 };
 
-// ── Main page ──────────────────────────────────────────────────
+// ── Main Component ───────────────────────────────────────────
 export default function BeanMilkManager() {
-
-  const [tab, setTab] =
-    useState("bean");
+  const [tab, setTab] = useState("bean");
 
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@100;200;300;400&display=swap');
-
-        @keyframes fadeUp {
-          from {
-            opacity: 0;
-            transform: translateY(16px);
-          }
-
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .bm-in {
-          animation: fadeUp 0.45s ease forwards;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar {
-          width: 2px;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .overflow-y-auto::-webkit-scrollbar-thumb {
-          background: rgba(201,169,110,0.2);
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .bm-in { animation: fadeUp 0.45s ease forwards; }
+        .overflow-y-auto::-webkit-scrollbar { width: 2px; }
+        .overflow-y-auto::-webkit-scrollbar-track { background: transparent; }
+        .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.2); }
       `}</style>
 
       <div className="min-h-screen bg-[#0d0a05] font-['Jost',sans-serif] px-4 sm:px-6 lg:px-14 py-10 lg:py-14">
-
-        {/* Ambient glow */}
         <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
           <div className="absolute top-0 left-1/4 w-[600px] h-[400px] rounded-full bg-[#c9a96e]/[0.025] blur-[160px]" />
         </div>
 
         <div className="relative z-10 max-w-screen-xl mx-auto">
-
           {/* Header */}
-          <div className="mb-10 bm-in">
+          <div className="flex items-center justify-between mb-8">
 
-            <p className="text-[#c9a96e] text-[10px] tracking-[0.55em] uppercase mb-3 opacity-65">
-              Admin · Inventory
-            </p>
+  <div>
 
-            <h1 className="font-['Cormorant_Garamond',serif] text-[clamp(2rem,4vw,3rem)] font-light text-[#f5f0e8] leading-none">
-              Beans &amp;
-              <span className="italic text-[#c9a96e]">
-                {" "}Milk
-              </span>
-            </h1>
+    <p className="text-[#c9a96e] text-[10px] tracking-[0.55em] uppercase opacity-65 mb-4">
+      Admin · Inventory
+    </p>
 
-            <div className="mt-6 flex items-center gap-3">
+    <h1 className="font-['Cormorant_Garamond',serif] text-[clamp(2rem,4vw,3rem)] font-light text-[#f5f0e8] leading-none">
 
-              <div className="h-px w-16 bg-gradient-to-r from-[#c9a96e]/40 to-transparent" />
+      Beans &amp;{" "}
 
-              <p className="text-[#f5f0e8]/20 text-[10px] tracking-[0.3em] uppercase">
-                Manage customization options
-              </p>
+      <span className="italic text-[#c9a96e]">
+        Milk
+      </span>
 
-            </div>
-          </div>
+    </h1>
+
+  </div>
+
+  {/* Dashboard Navigation */}
+
+  <a
+    href="/admin/dashboard"
+    className="
+      group
+      flex
+      items-center
+      gap-3
+      text-[#c9a96e]/60
+      hover:text-[#c9a96e]
+      transition-all
+      uppercase
+      tracking-[0.35em]
+      text-[10px]
+      font-['Jost',sans-serif]
+    "
+  >
+
+    <span className="
+      w-10
+      h-px
+      bg-[#c9a96e]/35
+      group-hover:w-14
+      group-hover:bg-[#c9a96e]
+      transition-all
+      duration-300
+    " />
+
+    Dashboard
+
+  </a>
+
+</div>
 
           {/* Tabs */}
           <div className="flex mb-6 border border-[#c9a96e]/15 bm-in">
-
-            {/* Bean Tab */}
-            <button
-              onClick={() => setTab("bean")}
-              className={`
-                flex-1 flex items-center justify-center gap-2
-                py-4 text-[10px] tracking-[0.3em] uppercase
-                transition-all duration-300
-                border-r border-[#c9a96e]/10
-
-                ${
-                  tab === "bean"
-                    ? "bg-[#c9a96e]/10 text-[#c9a96e]"
-                    : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"
-                }
-              `}
-            >
-              <BeanIcon />
-              Bean Types
+            <button onClick={() => setTab("bean")} className={`flex-1 flex items-center justify-center gap-2 py-4 text-[10px] tracking-[0.3em] uppercase transition-all border-r border-[#c9a96e]/10 ${tab === "bean" ? "bg-[#c9a96e]/10 text-[#c9a96e]" : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"}`}>
+              <BeanIcon /> Bean Types
             </button>
-
-            {/* Milk Tab */}
-            <button
-              onClick={() => setTab("milk")}
-              className={`
-                flex-1 flex items-center justify-center gap-2
-                py-4 text-[10px] tracking-[0.3em] uppercase
-                transition-all duration-300
-
-                ${
-                  tab === "milk"
-                    ? "bg-[#c9a96e]/10 text-[#c9a96e]"
-                    : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"
-                }
-              `}
-            >
-              <MilkIcon />
-              Milk Options
+            <button onClick={() => setTab("milk")} className={`flex-1 flex items-center justify-center gap-2 py-4 text-[10px] tracking-[0.3em] uppercase transition-all ${tab === "milk" ? "bg-[#c9a96e]/10 text-[#c9a96e]" : "text-[#f5f0e8]/35 hover:text-[#f5f0e8]/60"}`}>
+              <MilkIcon /> Milk Options
             </button>
-
           </div>
 
-          {/* Single Active Panel */}
           <div className="bm-in">
-
-            {tab === "bean" && (
-              <Panel type="bean" />
-            )}
-
-            {tab === "milk" && (
-              <Panel type="milk" />
-            )}
-
+            {tab === "bean" && <Panel type="bean" />}
+            {tab === "milk" && <Panel type="milk" />}
           </div>
-
         </div>
       </div>
     </>
