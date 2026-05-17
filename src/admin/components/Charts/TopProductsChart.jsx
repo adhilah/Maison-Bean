@@ -164,16 +164,68 @@ export default function TopProductsCard() {
     api.get("/order/all/ad").then((res) => {
       const map = {};
       (res.data || []).forEach((order) => {
-        if (order.status?.toLowerCase() === "cancelled") return;
-        order.items?.forEach((item) => {
-          const name = item.productName || item.product?.name || "Unknown";
-          const price = parseFloat(item.unitPrice) || 0;
-          const qty = parseInt(item.quantity) || 0;
-          if (!map[name]) map[name] = { name, units: 0, revenue: 0 };
-          map[name].units += qty;
-          map[name].revenue += qty * price;
-        });
-      });
+
+  const status =
+    (
+      order.status ??
+      order.Status ??
+      ""
+    ).toLowerCase();
+
+  if (status === "cancelled")
+    return;
+
+  // SUPPORT BOTH items / Items / orderItems
+
+  const items =
+    order.items ??
+    order.Items ??
+    order.orderItems ??
+    order.OrderItems ??
+    [];
+
+  items.forEach((item) => {
+
+    // SUPPORT BOTH camelCase + PascalCase
+
+    const name =
+      item.productName ??
+      item.ProductName ??
+      item.product?.name ??
+      item.Product?.Name ??
+      "Unknown";
+
+    const price =
+      parseFloat(
+        item.unitPrice ??
+        item.UnitPrice ??
+        0
+      ) || 0;
+
+    const qty =
+      parseInt(
+        item.quantity ??
+        item.Quantity ??
+        0
+      ) || 0;
+
+    if (!map[name]) {
+
+      map[name] = {
+
+        name,
+
+        units: 0,
+
+        revenue: 0,
+      };
+    }
+
+    map[name].units += qty;
+
+    map[name].revenue += qty * price;
+  });
+});
       const sorted = Object.values(map).sort((a, b) => b.units - a.units).slice(0, 10);
       const maxUnits = sorted[0]?.units || 1;
       setProducts(sorted.map((p) => ({ ...p, bar: (p.units / maxUnits) * 100 })));

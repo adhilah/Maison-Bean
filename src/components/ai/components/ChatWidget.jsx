@@ -1,32 +1,3 @@
-// import { useState } from "react";
-// import ChatWindow from "./ChatWindow";
-
-// const ChatWidget = () => {
-
-//   const [open, setOpen] = useState(false);
-
-//   return (
-//     <>
-//       <button
-//         onClick={() => setOpen(!open)}
-//         className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-[#c9a96e] text-black shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center text-2xl"
-//       >
-//         ☕
-//       </button>
-
-//       {open && (
-//         <ChatWindow
-//           onClose={() => setOpen(false)}
-//         />
-//       )}
-//     </>
-//   );
-// };
-
-// export default ChatWidget;
-
-
-
 import { useState } from "react";
 import ChatWindow from "./ChatWindow";
 
