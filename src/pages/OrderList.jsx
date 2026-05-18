@@ -342,8 +342,11 @@ useEffect(() => {
         </div>
 
         <div className="relative z-10">
-          <Navbar />
 
+  <Navbar />
+
+  {/* GLOBAL NAVBAR OFFSET */}
+  <div className="pt-[88px] sm:pt-[6px] lg:pt-[104px]">
           {/* ══ PAGE HEADER ══ */}
           <div className="max-w-screen-2xl mx-auto px-6 lg:px-14 pt-14 pb-6">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
@@ -373,7 +376,7 @@ useEffect(() => {
               <div className="w-[5px] h-[5px] rotate-45 bg-[#c9a96e]/35 flex-shrink-0" />
             </div>
           </div>
-
+</div>
           {/* ══ ORDER CARDS ══ */}
           <div className="max-w-screen-2xl mx-auto px-6 lg:px-14 pb-28 space-y-6">
             {orders.map((order, idx) => {

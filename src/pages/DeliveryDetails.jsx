@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../services/api";
-import { Link, useNavigate,useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
@@ -39,15 +39,6 @@ const LockIcon = ({ size = 12 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="11" width="18" height="11" rx="2" />
     <path d="M7 11V7a5 5 0 0110 0v4" />
-  </svg>
-);
-
-const CityIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="3" y1="22" x2="21" y2="22" />
-    <rect x="9" y="2" width="6" height="20" />
-    <rect x="3" y="7" width="6" height="15" />
-    <rect x="15" y="10" width="6" height="12" />
   </svg>
 );
 
@@ -97,175 +88,73 @@ const DeliveryDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-const buyNowProduct =
-  location.state?.product;
+  const buyNowProduct = location.state?.product;
+  const isBuyNow      = location.state?.buyNow;
 
-const isBuyNow =
-  location.state?.buyNow;
-
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [city, setCity]                       = useState("");
-  const [phone, setPhone]                     = useState("");
-  const [errors, setErrors]                   = useState({});
-  const [savedAddresses, setSavedAddresses]   = useState([]);
+  const [deliveryAddress, setDeliveryAddress]     = useState("");
+  const [city, setCity]                           = useState("");
+  const [phone, setPhone]                         = useState("");
+  const [errors, setErrors]                       = useState({});
+  const [savedAddresses, setSavedAddresses]       = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const items = isBuyNow
-  ? [buyNowProduct]
-  : cart;
+  const [loading, setLoading]                     = useState(false);
 
-  const subtotal = items.reduce(
-  (sum, item) =>
-    sum +
-    Number(
-      item.totalPrice ||
-      item.price ||
-      0
-    ),
-  0
-);
-
+  const items    = isBuyNow ? [buyNowProduct] : cart;
+  const subtotal = items.reduce((sum, item) => sum + Number(item.totalPrice || item.price || 0), 0);
   const shipping = 2;
   const total    = subtotal + shipping;
 
   const validateForm = () => {
     const err = {};
-    if (!deliveryAddress.trim())          err.deliveryAddress = "Delivery address is required";
-    if (!city.trim())                     err.city = "City is required";
-    if (!phone || phone.length !== 10)    err.phone = "Valid 10-digit phone number required";
+    if (!deliveryAddress.trim())        err.deliveryAddress = "Delivery address is required";
+    if (!city.trim())                   err.city = "City is required";
+    if (!phone || phone.length !== 10)  err.phone = "Valid 10-digit phone number required";
     setErrors(err);
     return Object.keys(err).length === 0;
   };
 
   const handleProceed = async () => {
+    try {
+      setLoading(true);
+      let addressId = selectedAddressId;
 
-  try {
+      if (!selectedAddressId) {
+        if (!validateForm()) {
+          toast.error("Please fill all required fields");
+          setLoading(false);
+          return;
+        }
+        const res = await api.post("/address", { deliveryAddress, city, phone });
+        addressId = res.data.addressId;
+        toast.success("Address saved successfully");
+      }
 
-    setLoading(true);
+      localStorage.setItem("selectedAddressId", addressId);
 
-    let addressId =
-      selectedAddressId;
-
-    // =========================
-    // NEW ADDRESS
-    // =========================
-
-    if (!selectedAddressId) {
-
-      if (!validateForm()) {
-
-        toast.error(
-          "Please fill all required fields"
-        );
-
-        setLoading(false);
-
+      if (isBuyNow) {
+        navigate("/payment", { state: { buyNow: true, product: buyNowProduct, addressId } });
         return;
       }
-
-      const res =
-        await api.post(
-          "/address",
-          {
-            deliveryAddress,
-            city,
-            phone,
-          }
-        );
-
-      addressId =
-        res.data.addressId;
-
-      toast.success(
-        "Address saved successfully"
-      );
+      navigate("/payment", { state: { addressId } });
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to save address");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // =========================
-    // STORE ADDRESS
-    // =========================
-
-    localStorage.setItem(
-      "selectedAddressId",
-      addressId
-    );
-
-    // =========================
-    // BUY NOW FLOW
-    // =========================
-
-    if (isBuyNow) {
-
-      navigate("/payment", {
-        state: {
-          buyNow: true,
-
-          product:
-            buyNowProduct,
-
-          addressId
-        }
-      });
-
-      return;
-    }
-
-    // =========================
-    // CART FLOW
-    // =========================
-
-    navigate("/payment", {
-      state: {
-        addressId
-      }
-    });
-
-  } catch (err) {
-
-    console.error(err);
-
-    toast.error(
-      err.response?.data?.message ||
-      "Failed to save address"
-    );
-
-  } finally {
-
-    setLoading(false);
-  }
-};
-
- useEffect(() => {
-
-  const fetchAddresses =
-    async () => {
-
+  useEffect(() => {
+    const fetchAddresses = async () => {
       try {
-
-        const res =
-          await api.get("/address");
-
-        console.log(
-          "ADDRESSES:",
-          res.data
-        );
-
-        setSavedAddresses(
-          res.data || []
-        );
-
+        const res = await api.get("/address");
+        setSavedAddresses(res.data || []);
       } catch (err) {
-
-        console.error(
-          "ADDRESS ERROR:",
-          err
-        );
+        console.error("ADDRESS ERROR:", err);
       }
     };
-
-  fetchAddresses();
-
-}, []);
+    fetchAddresses();
+  }, []);
 
   /* ── Empty cart ── */
   if (!items.length) return (
@@ -333,8 +222,8 @@ const isBuyNow =
         <div className="relative z-10">
           <Navbar />
 
-          {/* ══ HEADER ══ */}
-          <div className="max-w-screen-xl mx-auto px-6 lg:px-14 pt-14 pb-6 page-in">
+          {/* ══ HEADER — top padding clears fixed navbar (60px / 64px sm / 70px lg) + breathing room ══ */}
+          <div className="max-w-screen-xl mx-auto px-6 lg:px-14 pt-[88px] sm:pt-[96px] lg:pt-[104px] pb-6 page-in">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
               <div>
                 <p className="text-[#c9a96e] text-[10px] font-light tracking-[0.55em] uppercase mb-3 opacity-75">
@@ -344,8 +233,10 @@ const isBuyNow =
                   Delivery <span className="italic text-[#c9a96e]">Details</span>
                 </h1>
               </div>
-              <Link to="/cart"
-                className="text-[#c9a96e]/60 hover:text-[#c9a96e] text-[10px] tracking-[0.35em] uppercase flex items-center gap-3 transition-all group self-end md:self-auto">
+              <Link
+                to="/cart"
+                className="text-[#c9a96e]/60 hover:text-[#c9a96e] text-[10px] tracking-[0.35em] uppercase flex items-center gap-3 transition-all group self-end md:self-auto"
+              >
                 ← BACK TO CART
                 <span className="group-hover:w-10 transition-all duration-300 w-0 h-px bg-current inline-block" />
               </Link>
@@ -529,11 +420,7 @@ const isBuyNow =
                   {/* Items */}
                   <div className="space-y-3 mb-6 max-h-56 overflow-y-auto pr-1 slim-scroll">
                     {items.map((item, i) => {
-                      const price = Number(
-  item.totalPrice ||
-  item.price ||
-  0
-);
+                      const price = Number(item.totalPrice || item.price || 0);
                       return (
                         <div key={i} className="flex items-center gap-3 group">
                           <div className="relative w-12 h-10 flex-shrink-0 overflow-hidden bg-[#1a1510] border border-[#c9a96e]/10">

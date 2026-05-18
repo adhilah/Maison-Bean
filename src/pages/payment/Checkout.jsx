@@ -1,14 +1,14 @@
-import RazorpayButton from "./RazorpayButton";
+// import RazorpayButton from "./RazorpayButton";
 
-function Checkout() {
+// function Checkout() {
 
-    return (
-        <div>
-            <h1>Checkout</h1>
+//     return (
+//         <div>
+//             <h1>Checkout</h1>
 
-            <RazorpayButton amount={500} />
-        </div>
-    );
-}
+//             <RazorpayButton amount={500} />
+//         </div>
+//     );
+// }
 
-export default Checkout;
+// export default Checkout;

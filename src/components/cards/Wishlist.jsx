@@ -153,8 +153,11 @@ const WishlistPage = () => {
         </div>
 
         <div className="relative z-10">
-          <Navbar />
 
+  <Navbar />
+
+  {/* GLOBAL NAVBAR OFFSET */}
+  <div className="pt-[88px] sm:pt-[0px] lg:pt-[104px]">
           {/* ══ HEADER ══ */}
           <div className="max-w-screen-2xl mx-auto px-6 lg:px-14 pt-14 pb-6">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
@@ -175,7 +178,6 @@ const WishlistPage = () => {
                   )}
                 </div>
               </div>
-
               {/* Right controls */}
               <div className="flex items-center gap-4 self-end md:self-auto">
 
@@ -208,6 +210,7 @@ const WishlistPage = () => {
                   <span className="group-hover:w-10 transition-all duration-300 w-6 h-px bg-current inline-block" />
                 </button>
               </div>
+            </div>
             </div>
 
             {/* Decorative rule */}

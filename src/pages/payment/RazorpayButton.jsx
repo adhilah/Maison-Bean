@@ -1,78 +1,153 @@
 import React from "react";
-import { createOrder, verifyPayment } from "./paymentService";
+
+import { useNavigate }
+from "react-router-dom";
+
+import {
+    createOrder,
+    verifyPayment
+}
+from "./paymentService";
 
 const RazorpayButton = ({ amount }) => {
+
+    const navigate = useNavigate();
 
     const handlePayment = async () => {
 
         try {
 
-            // Step 1: Create Order
-            const order = await createOrder(amount);
+            // =====================================
+            // CREATE ORDER
+            // =====================================
+
+            const order =
+                await createOrder(amount);
 
             const options = {
-                key: "rzp_test_SoWqac341UeFbs",
 
-                amount: amount * 100,
+                key:
+                    "rzp_test_SoWqac341UeFbs",
 
-                currency: "INR",
+                amount:
+                    amount * 100,
 
-                name: "MaisonBean",
+                currency:
+                    "INR",
 
-                description: "Order Payment",
+                name:
+                    "MaisonBean",
 
-                order_id: order.orderId,
+                description:
+                    "Order Payment",
 
-                handler: async function (response) {
+                order_id:
+                    order.orderId,
+
+                // =====================================
+                // PAYMENT SUCCESS
+                // =====================================
+
+                handler: async function (
+                    response
+                ) {
 
                     console.log(response);
 
-                    // Step 2: Verify Payment
                     const verifyData = {
+
                         razorpayOrderId:
-                            response.razorpay_order_id,
+                            response
+                                .razorpay_order_id,
 
                         razorpayPaymentId:
-                            response.razorpay_payment_id,
+                            response
+                                .razorpay_payment_id,
 
                         razorpaySignature:
-                            response.razorpay_signature
+                            response
+                                .razorpay_signature
                     };
 
                     const result =
-                        await verifyPayment(verifyData);
+                        await verifyPayment(
+                            verifyData
+                        );
+
+                    // =====================================
+                    // SUCCESS
+                    // =====================================
 
                     if (result.success) {
-                        alert("Payment Success");
+
+                        alert(
+                            "Payment Success"
+                        );
+
+                        // NAVIGATE TO ORDERS PAGE
+                        window.location.href = "/orders";
                     }
+
+                    // =====================================
+                    // FAILED
+                    // =====================================
+
                     else {
-                        alert("Payment Verification Failed");
+
+                        alert(
+                            "Payment Verification Failed"
+                        );
                     }
                 },
+
+                // =====================================
+                // PREFILL
+                // =====================================
 
                 prefill: {
-                    name: "Customer Name",
-                    email: "customer@gmail.com",
-                    contact: "9999999999"
+
+                    name:
+                        "Customer Name",
+
+                    email:
+                        "customer@gmail.com",
+
+                    contact:
+                        "9999999999"
                 },
 
+                // =====================================
+                // THEME
+                // =====================================
+
                 theme: {
-                    color: "#0f172a"
+                    color:
+                        "#0f172a"
                 }
             };
 
-            const razor = new window.Razorpay(options);
+            const razor =
+                new window.Razorpay(
+                    options
+                );
 
             razor.open();
 
-        } catch (error) {
+        }
+
+        catch (error) {
+
             console.error(error);
+
+            alert(
+                "Payment Failed"
+            );
         }
     };
 
     return (
         <button onClick={handlePayment}>
-            Pay ₹{amount}
+            Pay ${amount}
         </button>
     );
 };

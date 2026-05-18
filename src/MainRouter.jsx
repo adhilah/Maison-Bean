@@ -28,8 +28,8 @@ import Sourcing from "./pages/Sourcing";
 import Visit from "./pages/Visit";
 import ForgotPassword from "./pages/ForgotPassword";
 import BeanMilkManager from "./admin/pages/BeanMilk";
-import PaymentSuccess from "./pages/payment/PaymentSuccess";
-import PaymentFailed from "./pages/payment/PaymentFailed";
+// import PaymentSuccess from "./pages/payment/PaymentSuccess";
+// import PaymentFailed from "./pages/payment/PaymentFailed";
 // ── Global loading screen ──────────────────────────────────────────────────
 const AppLoader = ({ message = "Loading…" }) => (
   <>
