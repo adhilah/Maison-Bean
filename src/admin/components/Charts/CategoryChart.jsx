@@ -201,7 +201,7 @@ const CustomTooltip = ({ active, payload }) => {
     <div style={{ background: "#110d07", border: "1px solid rgba(201,169,110,0.25)", padding: "10px 14px", fontFamily: "'Jost', sans-serif" }}>
       <p style={{ color: "rgba(201,169,110,0.6)", fontSize: 10, letterSpacing: "0.35em", textTransform: "uppercase", margin: "0 0 4px" }}>{name}</p>
       <p style={{ color: "#c9a96e", fontFamily: "'Cormorant Garamond', serif", fontSize: "1.2rem", fontWeight: 300, margin: 0 }}>
-        ₹{Number(value).toLocaleString("en-IN")}
+        ${Number(value).toLocaleString("en-IN")}
       </p>
     </div>
   );
@@ -263,7 +263,7 @@ export default function CategoryChart() {
             {/* Center */}
             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", textAlign: "center", pointerEvents: "none" }}>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem", fontWeight: 300, color: "#c9a96e", margin: 0, lineHeight: 1 }}>
-                ₹{(total / 1000).toFixed(1)}k
+                ${(total / 1000).toFixed(1)}k
               </p>
               <p style={{ fontSize: 8, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(245,240,232,0.25)", margin: "5px 0 0" }}>Total</p>
             </div>
@@ -283,7 +283,7 @@ export default function CategoryChart() {
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     <span style={{ fontSize: 10, color: "rgba(245,240,232,0.3)", minWidth: 36, textAlign: "right" }}>{pct}%</span>
                     <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1rem", fontWeight: 300, color: "rgba(201,169,110,0.8)", minWidth: 70, textAlign: "right" }}>
-                      ₹{Number(d.value).toLocaleString("en-IN")}
+                      ${Number(d.value).toLocaleString("en-IN")}
                     </span>
                   </div>
                 </div>

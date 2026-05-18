@@ -280,7 +280,7 @@ const FormModal = ({ type, initial, onSave, onClose }) => {
           )}
 
           <div>
-            <label className={labelCls}>Price Add-on (₹)</label>
+            <label className={labelCls}>Price Add-on ($)</label>
             <input className={inputCls} type="number" min="0" step="0.5"
               value={form.priceAdd ?? ""} onChange={(e) => set("priceAdd", Number(e.target.value) || 0)}
               placeholder="0 = included" />
@@ -328,7 +328,7 @@ const Row = ({ item, type, onEdit, onDelete, onToggleBlock, index }) => {
 
       <div className="flex-shrink-0 text-right hidden sm:block">
         <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/70">
-          {item.priceAdd > 0 ? `+₹${item.priceAdd}` : <span className="text-[#f5f0e8]/25 text-[11px] tracking-widest">included</span>}
+          {item.priceAdd > 0 ? `+$${item.priceAdd}` : <span className="text-[#f5f0e8]/25 text-[11px] tracking-widest">included</span>}
         </span>
       </div>
 

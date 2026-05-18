@@ -622,10 +622,10 @@ export default function AddProduct() {
                 </div>
 
                 {/* Price */}
-                <Field label="Base Price (₹)" icon={<RupeeIcon />}>
+                <Field label="Base Price ($)" icon={<RupeeIcon />}>
                   <div className="relative max-w-[200px]">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/50">
-                      ₹
+                      $
                     </span>
                     <input
                       type="number"
@@ -764,7 +764,7 @@ export default function AddProduct() {
                     {product.basePrice && (
                       <div className="absolute top-3 right-3 bg-[#0d0a05]/80 border border-[#c9a96e]/20 px-2.5 py-1">
                         <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/85">
-                          ₹{Number(product.basePrice).toFixed(0)}
+                          ${Number(product.basePrice).toFixed(0)}
                         </span>
                       </div>
                     )}

@@ -793,7 +793,7 @@ export default function OrderManagement() {
                           {/* Total */}
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="font-['Cormorant_Garamond',serif] text-[1.1rem] text-[#c9a96e]/80 font-light">
-                              ₹{parseFloat(order.total || 0).toFixed(0)}
+                              ${parseFloat(order.total || 0).toFixed(0)}
                             </span>
                           </td>
 

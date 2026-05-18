@@ -281,10 +281,10 @@ export default function EditProduct() {
                 </div>
 
                 {/* Price */}
-                <Field label="Base Price (₹)" icon={<RupeeIcon />}>
+                <Field label="Base Price ($)" icon={<RupeeIcon />}>
                   <div className="relative max-w-[200px]">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/60 pointer-events-none">
-                      ₹
+                      $
                     </span>
                     <input
                       type="number" name="basePrice" value={product.basePrice}
@@ -405,7 +405,7 @@ export default function EditProduct() {
                     {product.basePrice && (
                       <div className="absolute top-3 right-3 bg-[#0d0a05]/85 border border-[#c9a96e]/20 px-2.5 py-1">
                         <span className="font-['Cormorant_Garamond',serif] text-[1rem] text-[#c9a96e]/90">
-                          ₹{Number(product.basePrice).toFixed(0)}
+                          ${Number(product.basePrice).toFixed(0)}
                         </span>
                       </div>
                     )}

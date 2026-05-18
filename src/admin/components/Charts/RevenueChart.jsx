@@ -9,7 +9,7 @@ const CustomTooltip = ({ active, payload, label }) => {
       <p style={{ color: "rgba(201,169,110,0.7)", fontSize: 10, letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 8 }}>{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} style={{ color: p.dataKey === "revenue" ? "#c9a96e" : "rgba(245,240,232,0.55)", fontSize: 13, margin: "3px 0", fontWeight: 400 }}>
-          {p.dataKey === "revenue" ? `₹${Number(p.value).toLocaleString("en-IN")}` : `${p.value} orders`}
+          {p.dataKey === "revenue" ? `$${Number(p.value).toLocaleString("en-IN")}` : `${p.value} orders`}
         </p>
       ))}
     </div>
@@ -60,7 +60,7 @@ export default function RevenueChart() {
             <div>
               <p style={{ fontSize: 9, letterSpacing: "0.4em", textTransform: "uppercase", color: "rgba(245,240,232,0.25)", margin: "0 0 4px" }}>Total Revenue</p>
               <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem", fontWeight: 300, color: "#c9a96e", margin: 0, lineHeight: 1 }}>
-                ₹{data.reduce((s, d) => s + d.revenue, 0).toLocaleString("en-IN")}
+                ${data.reduce((s, d) => s + d.revenue, 0).toLocaleString("en-IN")}
               </p>
             </div>
             <div>
@@ -104,7 +104,7 @@ export default function RevenueChart() {
                 <YAxis
                   tick={{ fill: "rgba(245,240,232,0.35)", fontSize: 10, fontFamily: "'Jost', sans-serif" }}
                   axisLine={false} tickLine={false} width={52}
-                  tickFormatter={(v) => v >= 1000 ? `₹${(v / 1000).toFixed(0)}k` : `₹${v}`}
+                  tickFormatter={(v) => v >= 1000 ? `$${(v / 1000).toFixed(0)}k` : `$${v}`}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={{ stroke: "rgba(201,169,110,0.2)", strokeWidth: 1, strokeDasharray: "3 3" }} />
                 <Area type="monotone" dataKey="revenue" stroke="#c9a96e" strokeWidth={2} fill="url(#revGrad)" dot={false} activeDot={{ r: 4, fill: "#c9a96e", stroke: "#080604", strokeWidth: 2 }} />

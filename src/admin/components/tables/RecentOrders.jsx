@@ -105,7 +105,7 @@ export default function RecentOrders() {
                       </td>
                       <td style={{ padding: "14px 20px", whiteSpace: "nowrap" }}>
                         <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1rem", fontWeight: 300, color: "rgba(201,169,110,0.75)" }}>
-                          ₹{order.amount.toFixed(0)}
+                          ${order.amount.toFixed(0)}
                         </span>
                       </td>
                       <td style={{ padding: "14px 20px", whiteSpace: "nowrap" }}>

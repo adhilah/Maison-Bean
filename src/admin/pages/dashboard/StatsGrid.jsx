@@ -266,7 +266,7 @@ export default function UserDashboard() {
       title: "Total Revenue",
 
       value:
-        `₹${Number(
+        `$${Number(
           stats.revenue
         ).toFixed(2)}`,
 

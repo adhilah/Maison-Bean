@@ -971,7 +971,7 @@ const ProductRow = ({ product, onEdit, onToggle, onDelete, index }) => {
         <span className={`font-['Cormorant_Garamond',serif] text-[1rem] ${
           isBlocked ? "text-[#f5f0e8]/22" : "text-[#c9a96e]/80"
         }`}>
-          ₹{product.basePrice ?? product.price ?? 0}
+          ${product.basePrice ?? product.price ?? 0}
         </span>
       </div>
 

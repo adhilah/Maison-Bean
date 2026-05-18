@@ -391,7 +391,7 @@ export default function UserOrders({ isAdmin = false }) {
                       "'Playfair Display', Georgia, serif",
                   }}
                 >
-                  ₹{order.total}
+                  ${order.total}
                 </span>
 
               </td>
