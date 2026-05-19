@@ -98,6 +98,7 @@ const DeliveryDetails = () => {
   const [savedAddresses, setSavedAddresses]       = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [loading, setLoading]                     = useState(false);
+  const [showAddresses, setShowAddresses] = useState(false);
 
   const items    = isBuyNow ? [buyNowProduct] : cart;
   const subtotal = items.reduce((sum, item) => sum + Number(item.totalPrice || item.price || 0), 0);
@@ -274,56 +275,211 @@ const DeliveryDetails = () => {
               <div className="bg-[#0d0a05] panel-in">
 
                 {/* SAVED ADDRESSES */}
-                {savedAddresses.length > 0 && (
-                  <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7 mb-px">
-                    <div className="flex items-start gap-4 mb-6">
-                      <span className="text-[#c9a96e]/50 mt-0.5 flex-shrink-0">
-                        <LocationIcon />
-                      </span>
-                      <div>
-                        <p className="text-[#c9a96e] text-[9px] tracking-[0.45em] uppercase mb-1 opacity-65">
-                          SAVED LOCATIONS
-                        </p>
-                        <h2 className="font-['Cormorant_Garamond',serif] text-[1.5rem] font-light text-[#f5f0e8]">
-                          Choose Previous <span className="italic text-[#c9a96e]">Address</span>
-                        </h2>
-                      </div>
-                    </div>
+                {/* SAVED ADDRESSES */}
+{savedAddresses.length > 0 && (
+  <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7 mb-px">
 
-                    <div className="space-y-3">
-                      {savedAddresses.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => {
-                            setSelectedAddressId(item.id);
-                            setDeliveryAddress(item.deliveryAddress);
-                            setCity(item.city);
-                            setPhone(item.phone);
-                            setErrors({});
-                          }}
-                          className={`w-full text-left p-4 border transition-all
-                            ${selectedAddressId === item.id
-                              ? "border-[#c9a96e] bg-[#c9a96e]/05"
-                              : "border-[#c9a96e]/10 hover:border-[#c9a96e]/30"
-                            }`}
-                        >
-                          <p className="text-[#f5f0e8] text-sm leading-relaxed">
-                            {item.deliveryAddress}
-                          </p>
-                          <div className="flex items-center justify-between mt-3">
-                            <p className="text-[#c9a96e]/60 text-[10px] tracking-[0.2em] uppercase">
-                              {item.city}
-                            </p>
-                            <p className="text-[#f5f0e8]/35 text-[10px]">
-                              {item.phone}
-                            </p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+    <div className="flex items-center justify-between mb-5">
+      <div>
+        <p className="text-[#c9a96e] text-[9px] tracking-[0.45em] uppercase mb-1 opacity-65">
+          SAVED LOCATIONS
+        </p>
+
+        <h2 className="font-['Cormorant_Garamond',serif] text-[1.5rem] font-light text-[#f5f0e8]">
+          Choose <span className="italic text-[#c9a96e]">Address</span>
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        onClick={() =>
+          setShowAddresses(!showAddresses)
+        }
+        className="px-4 py-2 border border-[#c9a96e]/20
+        hover:border-[#c9a96e]/50
+        text-[#c9a96e]
+        text-[10px]
+        tracking-[0.3em]
+        uppercase transition-all"
+      >
+        {showAddresses ? "Close" : "Choose"}
+      </button>
+    </div>
+
+    {/* Selected Address Preview */}
+    {selectedAddressId && (
+      <div className="mb-5 p-4 border border-[#c9a96e]/15 bg-[#c9a96e]/[0.03]">
+        {savedAddresses
+          .filter(a => a.id === selectedAddressId)
+          .map(item => (
+            <div key={item.id}>
+              <p className="text-[#f5f0e8] text-sm leading-relaxed">
+                {item.deliveryAddress}
+              </p>
+
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-[#c9a96e]/60 text-[10px] tracking-[0.2em] uppercase">
+                  {item.city}
+                </p>
+
+                <p className="text-[#f5f0e8]/35 text-[10px]">
+                  {item.phone}
+                </p>
+              </div>
+            </div>
+          ))}
+      </div>
+    )}
+
+    {/* Dropdown Addresses */}
+    {showAddresses && (
+      <div className="space-y-3 extra-in">
+
+        {savedAddresses.map((item) => (
+          <div
+            key={item.id}
+            className={`border transition-all
+            ${
+              selectedAddressId === item.id
+                ? "border-[#c9a96e] bg-[#c9a96e]/05"
+                : "border-[#c9a96e]/10"
+            }`}
+          >
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedAddressId(item.id);
+
+                setDeliveryAddress(
+                  item.deliveryAddress
+                );
+
+                setCity(item.city);
+
+                setPhone(item.phone);
+
+                setErrors({});
+              }}
+              className="w-full text-left p-4"
+            >
+              <p className="text-[#f5f0e8] text-sm leading-relaxed">
+                {item.deliveryAddress}
+              </p>
+
+              <div className="flex items-center justify-between mt-3">
+                <p className="text-[#c9a96e]/60 text-[10px] tracking-[0.2em] uppercase">
+                  {item.city}
+                </p>
+
+                <p className="text-[#f5f0e8]/35 text-[10px]">
+                  {item.phone}
+                </p>
+              </div>
+            </button>
+
+            {/* Action Buttons */}
+            <div className="flex border-t border-[#c9a96e]/10">
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedAddressId(item.id);
+
+                  setDeliveryAddress(
+                    item.deliveryAddress
+                  );
+
+                  setCity(item.city);
+
+                  setPhone(item.phone);
+                }}
+                className="flex-1 py-3 text-[10px]
+                tracking-[0.3em]
+                uppercase
+                text-[#c9a96e]
+                hover:bg-[#c9a96e]/5
+                transition-all"
+              >
+                Use Address
+              </button>
+
+              <div className="w-px bg-[#c9a96e]/10" />
+
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await api.delete(
+                      `/address/${item.id}`
+                    );
+
+                    setSavedAddresses(prev =>
+                      prev.filter(
+                        a => a.id !== item.id
+                      )
+                    );
+
+                    if (
+                      selectedAddressId === item.id
+                    ) {
+                      setSelectedAddressId(null);
+                    }
+
+                    toast.success(
+                      "Address deleted"
+                    );
+                  } catch {
+                    toast.error(
+                      "Failed to delete address"
+                    );
+                  }
+                }}
+                className="flex-1 py-3 text-[10px]
+                tracking-[0.3em]
+                uppercase
+                text-[#f87171]/80
+                hover:bg-[#f87171]/5
+                transition-all"
+              >
+                Delete
+              </button>
+
+            </div>
+          </div>
+        ))}
+
+        {/* Add New Address */}
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedAddressId(null);
+
+            setDeliveryAddress("");
+
+            setCity("");
+
+            setPhone("");
+
+            setShowAddresses(false);
+          }}
+          className="w-full py-4 border border-dashed
+          border-[#c9a96e]/20
+          hover:border-[#c9a96e]/45
+          text-[#c9a96e]/70
+          hover:text-[#c9a96e]
+          text-[10px]
+          tracking-[0.35em]
+          uppercase
+          transition-all"
+        >
+          + Add New Address
+        </button>
+
+      </div>
+    )}
+  </div>
+)}
 
                 {/* ── Address Section ── */}
                 <div className="bg-[#110d07] border border-[#c9a96e]/10 p-7">
