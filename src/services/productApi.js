@@ -48,6 +48,8 @@ export const searchProducts =
     return response.data;
 };
 
+
+
 // ======================================
 // ADMIN PRODUCTS
 // ======================================
@@ -59,7 +61,7 @@ export const getAllProductsForAdmin =
 
     const response =
       await api.get(
-        "/products/admin/all"
+        "/products"
       );
 
     return response.data;
@@ -72,8 +74,14 @@ export const createProduct =
 
     const response =
       await api.post(
-        "/products/product/ad",
-        payload
+        "/products",
+        payload,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
       );
 
     return response.data;
@@ -86,21 +94,14 @@ export const updateProduct =
 
     const response =
       await api.put(
-        `/products/${id}/update/ad`,
-        payload
-      );
-
-    return response.data;
-};
-
-// BLOCK / UNBLOCK PRODUCT
-
-export const toggleProduct =
-  async (id) => {
-
-    const response =
-      await api.patch(
-        `/products/${id}/block/ad`
+        `/products/${id}`,
+        payload,
+        {
+          headers: {
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
       );
 
     return response.data;
@@ -113,7 +114,7 @@ export const deleteProduct =
 
     const response =
       await api.delete(
-        `/products/${id}/ad`
+        `/products/${id}`
       );
 
     return response.data;

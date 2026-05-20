@@ -394,7 +394,7 @@
 
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../../services/api";
+import { createProduct } from "../../services/productApi";
 import toast from "react-hot-toast";
 
 // ── Icons ──────────────────────────────────────────────────────
@@ -489,27 +489,107 @@ export default function AddProduct() {
     if (e.target.name === "image") setImageError(false);
   };
 
+  const handleImageChange = (e) => {
+  setProduct({
+    ...product,
+    image: e.target.files[0],
+  });
+
+  setImageError(false);
+};
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!product.name || !product.basePrice || !product.category) {
-      toast.error("Name, category and price are required");
-      return;
+
+  e.preventDefault();
+
+  if (
+    !product.name ||
+    !product.basePrice ||
+    !product.category
+  ) {
+    toast.error(
+      "Name, category and price are required"
+    );
+
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "name",
+      product.name
+    );
+
+    formData.append(
+      "description",
+      product.description
+    );
+
+    formData.append(
+      "price",
+      Number(product.basePrice)
+    );
+
+    formData.append(
+      "stock",
+      100
+    );
+
+    formData.append(
+      "category",
+      product.category
+    );
+
+    formData.append(
+      "baseCalories",
+      200
+    );
+
+    formData.append(
+      "healthBenefits",
+      product.healthBenefits
+    );
+
+    if (product.image) {
+
+      formData.append(
+        "image",
+        product.image
+      );
     }
-    try {
-      setLoading(true);
-      await api.post("/products/product/ad", {
-        ...product,
-        price: Number(product.basePrice),
-      });
-      toast.success("Product added successfully");
-      navigate("/admin/products");
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.message || "Failed to add product");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+    await createProduct(
+      formData
+    );
+
+    toast.success(
+      "Product added successfully"
+    );
+
+    navigate(
+      "/admin/products"
+    );
+
+  } catch (err) {
+
+    console.error(err);
+
+    toast.error(
+      err.response?.data?.message ||
+      "Failed to add product"
+    );
+
+  } finally {
+
+    setLoading(false);
+  }
+};
 
   const benefits = product.healthBenefits
     .split(",").map((b) => b.trim()).filter(Boolean);
@@ -675,19 +755,33 @@ export default function AddProduct() {
 
                 {/* Image URL */}
                 <Field
-                  label="Image URL"
-                  icon={<ImageIcon />}
-                  hint="Paste a direct image URL. High-quality product photos recommended."
-                >
-                  <input
-                    type="text"
-                    name="image"
-                    value={product.image}
-                    onChange={handleChange}
-                    placeholder="https://example.com/product.jpg"
-                    className={inputCls}
-                  />
-                </Field>
+  label="Product Image"
+  icon={<ImageIcon />}
+  hint="Upload a high quality product image"
+>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className={`
+      w-full bg-[#0d0a05]
+      border border-[#c9a96e]/15
+      px-4 py-3
+      text-[#f5f0e8]/70
+      text-[12px]
+      file:mr-4
+      file:px-4
+      file:py-2
+      file:border-0
+      file:bg-[#c9a96e]
+      file:text-[#0d0a05]
+      file:text-[10px]
+      file:uppercase
+      file:tracking-[0.2em]
+      file:cursor-pointer
+    `}
+  />
+</Field>
 
                 {/* Divider */}
                 <div className="h-px bg-[#c9a96e]/08" />
